@@ -1,1 +1,28 @@
-Hello world!
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Database Project</title>
+  <link rel="stylesheet" href="style.css" />
+  <script type="module" src="./main.mjs"></script>
+</head>
+
+<body>
+  <div id="userinfo">
+    <form id="gameForm">
+      <label for="name">Username:</label>
+      <input type="text" id="name" name="name" required />
+
+      <label for="age">Age</label>
+      <input type="text" id="age" name="age" required />
+
+    </form>
+    <button id="submitBtn">Submit</button>
+    <p id="p_fbLogin">Status: <span id="p_fbWriteRec"></span></p>
+    <p id="statusMessage"></p>
+  </div>
+</body>
+
+</html>
