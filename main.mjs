@@ -25,8 +25,9 @@ console.log('%c main.mjs',
   }
 }); // found from Chat GPT --  button wasn't working
 
-    import { }
+    import {checkuser }
     from './choosegame.mjs'; 
+    window.checkuser = checkuser;
 
     import {}
     from './game1.js'; 

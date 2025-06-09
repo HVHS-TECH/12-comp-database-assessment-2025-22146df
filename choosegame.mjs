@@ -42,6 +42,9 @@ checkuser,
 initChooseGame,
 };
 
+/*******************/
+//Run Functions
+checkuser();
 
 /******************************************************/
 // checkuser
@@ -50,20 +53,29 @@ initChooseGame,
 // Input: 'n/a'
 // Return: n/a
 /******************************************************/
-function checkuser(){
-const auth = getAuth();
 
-onAuthStateChanged(auth, (user) => {
-  if (user) {
-    console.log("User is still logged in:", user.email);
-    
-  } else {
-    console.log("No user logged in, redirecting to login...");
-    window.location.href = "index.html"; // redirect to my login page
-  }
-});
+function checkuser() {
+  console.log("Checking User");
+  const auth = getAuth();
+
+  onAuthStateChanged(auth, (user) => {
+    if (user) {
+      console.log("User is still logged in:", user.email);
+    } else {
+      console.log("No user logged in, redirecting to login...");
+     
+    }
+  });
+
+if (!window.location.href.includes("index.html")) {
+  console.log("redirect");
+  window.location.href = "index.html";
+} else {
+  console.log(window.location.href + " already on index");
+}
 
 }
+
 /******************************************************/
 // initchoosegame
 // Called by choosegame.html on page load
