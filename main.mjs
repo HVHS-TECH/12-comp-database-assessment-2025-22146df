@@ -16,7 +16,14 @@ console.log('%c main.mjs',
 
     import { writeUserInfo } 
     from './registration.mjs';
-    document.getElementById("submitBtn").addEventListener("click", writeUserInfo);
+    window.addEventListener("DOMContentLoaded", () => {
+  const btn = document.getElementById("submitBtn");
+  if (btn) {
+    btn.addEventListener("click", writeUserInfo);
+  } else {
+    console.warn("submitBtn not found in DOM.");
+  }
+}); // found from Chat GPT --  button wasn't working
 
     import { }
     from './choosegame.mjs'; 

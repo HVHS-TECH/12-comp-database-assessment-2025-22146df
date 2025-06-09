@@ -73,6 +73,10 @@ function writeUserInfo() {
       console.log("Data Successfully written");
       document.getElementById("p_fbWriteRec").innerText = "Data written to " + recordPath;
 
+      //swap to next window
+      window.location.href = "choosegame.html";
+      
+
     })
     .catch((error) => {
       console.error("Error writing data:", error);

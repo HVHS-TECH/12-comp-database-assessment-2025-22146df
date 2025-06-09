@@ -1,0 +1,68 @@
+/********************************************/
+/* Colour pallete */
+/* CSS HEX */
+/* --electric-blue: #6FE0E8ff;
+--space-cadet: #2A2A5Aff;
+--aero: #05BEDDff;
+--antiflash-white: #F3F6F9ff;
+--rich-black: #050517ff; 
+/*********************************************/
+body {
+  background-color: #1378a0;
+  color: #0ab84d;
+  font-family: Arial, sans-serif;
+  padding: 2rem;
+}
+
+.container {
+  max-width: 600px;
+  margin: auto;
+  background-color: #fff0f5;
+  padding: 2rem;
+  border-radius: 12px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+h1 {
+  color: pink;
+  font-size: 2.5rem;
+  margin-bottom: 0;
+}
+
+h2 {
+  color: #0ab84d;
+  font-size: 1.2rem;
+  margin-top: 0.2rem;
+}
+
+label {
+  display: block;
+  margin-top: 1rem;
+}
+
+input {
+  width: 100%;
+  padding: 0.5rem;
+  margin-top: 0.3rem;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+}
+
+button {
+  margin-top: 1.5rem;
+  padding: 0.7rem 1.2rem;
+  background-color: #05c57b;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+button:hover {
+  background-color: #5efaac;
+}
+
+#statusMessage {
+  margin-top: 1rem;
+  font-style: italic;
+}
