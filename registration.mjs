@@ -74,15 +74,15 @@ function userlogin(){
       userId = currentUser.uid;
       if (currentUser) {
         console.log("User Signed In", currentUser);
-        document.getElementById('fbUsername').innerText = currentUser.displayName || "Unknown User";
+        document.getElementById('userinfotext').innerText = currentUser.displayName || "Unknown User";
       } else {
         console.warn("No user returned after sign-in.");
-        document.getElementById('fbUsername').innerText = "Login worked with no data available";
+        document.getElementById('userinfotext').innerText = "Login worked with no data available";
       }
     })
     .catch((error) => {
       console.error("Login error:", error);
-      document.getElementById('fbUsername').innerText = "The Login has failed";
+      document.getElementById('userinfotext').innerText = "The Login has failed";
     });
 }
 
@@ -120,7 +120,7 @@ fb_initialise();
     .then(() => {
       console.log("Data Successfully written");
       localStorage.setItem("username", NAME);
-      document.getElementById("p_fbWriteRec").innerText = "Data written to " + recordPath;
+      document.getElementById("statusMessage").innerText = "Data written to " + recordPath;
 
       //swap to next window
       window.location.href = "choosegame.html";
@@ -129,7 +129,7 @@ fb_initialise();
     })
     .catch((error) => {
       console.error("Error writing data:", error);
-      document.getElementById("p_fbWriteRec").innerText = "Failed to write to " + recordPath;
+      document.getElementById("statusMessage").innerText = "Failed to write to " + recordPath;
 
     });
 
