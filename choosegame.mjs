@@ -19,6 +19,8 @@ import { query, orderByChild, limitToFirst, onValue } from "https://www.gstatic.
 //**************************************************************/
 // Firebase Configuration
 /**************************************************************/
+const COL_C = "#6FE0E8"; // electric-blue
+const COL_B = "#2A2A5A"; // space-cadet
 const firebaseConfig = {
   apiKey: "AIzaSyA8viBZ-gKBknRREyTiDinnugjj6Rjrog0",
   authDomain: "comp-2025-dylan-f.firebaseapp.com",
@@ -42,9 +44,18 @@ checkuser,
 initChooseGame,
 };
 
+/***********************************************************/
+//intiialise firebase
+
+function fb_initialise() {
+  console.log('%c fb_initialise(): ', 'color: ' + COL_C + '; background-color: ' + COL_B + ';');
+  console.info(FB_GAMEDB);
+}
+/******************************************************/
 /*******************/
 //Run Functions
-checkuser();
+fb_initialise();
+  checkuser();
 
 /******************************************************/
 // checkuser
@@ -63,18 +74,13 @@ function checkuser() {
       console.log("User is still logged in:", user.email);
     } else {
       console.log("No user logged in, redirecting to login...");
-     
+      if (!window.location.href.includes("index.html")) {
+        window.location.href = "index.html";
+      }
     }
   });
-
-if (!window.location.href.includes("index.html")) {
-  console.log("redirect");
-  window.location.href = "index.html";
-} else {
-  console.log(window.location.href + " already on index");
 }
 
-}
 
 /******************************************************/
 // initchoosegame

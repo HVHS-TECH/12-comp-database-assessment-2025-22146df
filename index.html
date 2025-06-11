@@ -10,7 +10,9 @@
 </head>
 
 <body>
+  
   <div id="userinfo">
+      <button onclick="userlogin()">Login with Google</button> <p id="fbUsername"></p>
     <form id="gameForm">
       <label for="name">Username:</label>
       <input type="text" id="name" name="name" required />
@@ -20,7 +22,7 @@
 
     </form>
     <button id="submitBtn">Submit</button>
-    <p id="p_fbLogin">Status: <span id="p_fbWriteRec"></span></p>
+    <p id="p_fbWriteRec"></p>
     <p id="statusMessage"></p>
   </div>
 </body>

@@ -1,5 +1,6 @@
 console.log('%c registration.mjs', 'color: blue; background-color: white;');
 
+
 //**************************************************************/
 // Importing required functions
 /**************************************************************/
@@ -19,6 +20,10 @@ import { query, orderByChild, limitToFirst, onValue } from "https://www.gstatic.
 //**************************************************************/
 // Firebase Configuration
 /**************************************************************/
+const COL_C = "#6FE0E8"; // electric-blue
+const COL_B = "#2A2A5A"; // space-cadet
+var currentUser = null;
+var userId = null;
 const firebaseConfig = {
   apiKey: "AIzaSyA8viBZ-gKBknRREyTiDinnugjj6Rjrog0",
   authDomain: "comp-2025-dylan-f.firebaseapp.com",
@@ -39,7 +44,48 @@ const FB_GAMEDB = getDatabase(FB_GAMEAPP);
 //Export functions to /main.mjs
 export {
 writeUserInfo,
+fb_initialise,
+userlogin,
 };
+/***********************************************************/
+//intiialise firebase
+
+function fb_initialise() {
+  console.log('%c fb_initialise(): ', 'color: ' + COL_C + '; background-color: ' + COL_B + ';');
+  console.info(FB_GAMEDB);
+}
+
+/******************************************************/
+// userlogin
+// allows user to authenticate and login
+// Login User
+// Input: user input through html boxes
+// Return: n/a
+/******************************************************/
+function userlogin(){
+  const AUTH = getAuth();
+  const PROVIDER = new GoogleAuthProvider();
+  PROVIDER.setCustomParameters({
+    prompt: 'select_account'
+  });
+  signInWithPopup(AUTH, PROVIDER)
+    .then((result) => {
+      currentUser = result.user;
+      userId = currentUser.uid;
+      if (currentUser) {
+        console.log("User Signed In", currentUser);
+        document.getElementById('fbUsername').innerText = currentUser.displayName || "Unknown User";
+      } else {
+        console.warn("No user returned after sign-in.");
+        document.getElementById('fbUsername').innerText = "Login worked with no data available";
+      }
+    })
+    .catch((error) => {
+      console.error("Login error:", error);
+      document.getElementById('fbUsername').innerText = "The Login has failed";
+    });
+}
+
 /******************************************************/
 // writeUserInfo
 // Called by index.html on page load
@@ -48,6 +94,8 @@ writeUserInfo,
 // Return: n/a
 /******************************************************/
 function writeUserInfo() {
+fb_initialise();
+
     console.log ("running writefunction")
   const RAWNAME = document.getElementById("name").value.trim();
   const AGE = document.getElementById("age").value.trim();
@@ -71,6 +119,7 @@ function writeUserInfo() {
   set(DATAREF, data)
     .then(() => {
       console.log("Data Successfully written");
+      localStorage.setItem("username", NAME);
       document.getElementById("p_fbWriteRec").innerText = "Data written to " + recordPath;
 
       //swap to next window
@@ -83,6 +132,8 @@ function writeUserInfo() {
       document.getElementById("p_fbWriteRec").innerText = "Failed to write to " + recordPath;
 
     });
+
+ 
 }
 
 

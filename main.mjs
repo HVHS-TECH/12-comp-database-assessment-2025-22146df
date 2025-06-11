@@ -14,7 +14,7 @@ console.log('%c main.mjs',
 // Import all the constants & functions required from fb_io module
 
 
-    import { writeUserInfo } 
+    import { writeUserInfo, userlogin } 
     from './registration.mjs';
     window.addEventListener("DOMContentLoaded", () => {
   const btn = document.getElementById("submitBtn");
@@ -24,6 +24,8 @@ console.log('%c main.mjs',
     console.warn("submitBtn not found in DOM.");
   }
 }); // found from Chat GPT --  button wasn't working
+
+window.userlogin = userlogin;
 
     import {checkuser }
     from './choosegame.mjs'; 
