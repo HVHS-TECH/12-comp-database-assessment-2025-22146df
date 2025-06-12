@@ -42,6 +42,7 @@ var username = localStorage.getItem("username");
 export {
 checkuser,
 initChooseGame,
+gnomeButton,
 };
 
 /***********************************************************/
@@ -98,9 +99,17 @@ function initChooseGame() {
 }
 
 /******************************************************/
-// GameButtons
+// gnomeButton
 // Called by choosegame.html on page load
-// Spawns Buttons so user can select game
+// Starts Gnome game
 // Input: 'n/a'
 // Return: n/a
 /******************************************************/
+function gnomeButton(){
+  const auth = getAuth();
+  onAuthStateChanged(auth, (user)=>{
+    if(user){
+      console.log("Transporting to game")
+    }
+  })
+}

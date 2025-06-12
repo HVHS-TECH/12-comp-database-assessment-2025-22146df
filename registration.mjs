@@ -45,7 +45,6 @@ const FB_GAMEDB = getDatabase(FB_GAMEAPP);
 export {
 writeUserInfo,
 fb_initialise,
-userlogin,
 };
 /***********************************************************/
 //intiialise firebase
@@ -62,7 +61,9 @@ function fb_initialise() {
 // Input: user input through html boxes
 // Return: n/a
 /******************************************************/
-function userlogin(){
+export function userLogin(){
+  console.log("login")
+
   const AUTH = getAuth();
   const PROVIDER = new GoogleAuthProvider();
   PROVIDER.setCustomParameters({
