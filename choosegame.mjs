@@ -43,6 +43,7 @@ export {
 checkuser,
 initChooseGame,
 gnomeButton,
+coingameBtn,
 };
 
 /***********************************************************/
@@ -109,7 +110,30 @@ function gnomeButton(){
   const auth = getAuth();
   onAuthStateChanged(auth, (user)=>{
     if(user){
-      console.log("Transporting to game")
+      console.log("Transporting to the Gnome game");
+      window.location.href = "game1.html";
+    }else{
+      alert("Error, taking you back to login page");
+      window.location.href = "index.html";
+    }
+  })
+}
+/******************************************************/
+// game2button (coingame)
+// Called by choosegame.html on page load
+// Starts Gnome game
+// Input: 'n/a'
+// Return: n/a
+/******************************************************/
+function coingameBtn(){
+  const auth = getAuth();
+  onAuthStateChanged(auth, (user)=>{
+    if(user){
+      console.log("Transporting to the coin game");
+      window.location.href = "game2.html";
+    }else{
+      alert("Error, taking you back to login page");
+      window.location.href = "index.html";
     }
   })
 }

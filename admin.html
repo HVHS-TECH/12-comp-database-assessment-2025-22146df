@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Database Project</title>
+  <link rel="stylesheet" href="style.css" />
+  <script type="module" src="./main.mjs"></script>
+
+</head>
+
+<body>
+ <h1>ADMIN PAGE</h1>
+ <div class="column">
+                <button id="writeBtn">t07: write record</button> <input id="adminWrite" type="text" placeholder="Enter data here"/>
+                 <p id="p_fbWriteRec">Status:</p>
+                <button onclick="fb_ReadRec()">t08: read record</button>
+                <button onclick="fb_ReadAll()">t09: read all</button>
+                <button onclick="fb_UpdateRec()">t10: update record</button>
+                <button onclick="fb_deleteall()" style="background-color: red; color: white;">DELETE ALL SCORES</button>
+
+            </div>
+</body>
+
+</html>

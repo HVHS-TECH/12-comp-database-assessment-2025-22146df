@@ -43,8 +43,9 @@ const FB_GAMEDB = getDatabase(FB_GAMEAPP);
 //****************************************************************/
 //Export functions to /main.mjs
 export {
-writeUserInfo,
-fb_initialise,
+  writeUserInfo,
+  fb_initialise,
+  adminPage,
 };
 /***********************************************************/
 //intiialise firebase
@@ -61,18 +62,16 @@ function fb_initialise() {
 // Input: user input through html boxes
 // Return: n/a
 /******************************************************/
-export function userLogin(){
-  console.log("login")
-
+export function userLogin() {
   const AUTH = getAuth();
   const PROVIDER = new GoogleAuthProvider();
   PROVIDER.setCustomParameters({
     prompt: 'select_account'
   });
-  signInWithPopup(AUTH, PROVIDER)
+
+  return signInWithPopup(AUTH, PROVIDER)
     .then((result) => {
-      currentUser = result.user;
-      userId = currentUser.uid;
+      const currentUser = result.user;
       if (currentUser) {
         console.log("User Signed In", currentUser);
         document.getElementById('userinfotext').innerText = currentUser.displayName || "Unknown User";
@@ -80,12 +79,15 @@ export function userLogin(){
         console.warn("No user returned after sign-in.");
         document.getElementById('userinfotext').innerText = "Login worked with no data available";
       }
+      return currentUser; // resolve with user for chaining
     })
     .catch((error) => {
       console.error("Login error:", error);
       document.getElementById('userinfotext').innerText = "The Login has failed";
+      throw error; // rethrow to allow .catch in caller to work
     });
 }
+
 
 /******************************************************/
 // writeUserInfo
@@ -95,25 +97,22 @@ export function userLogin(){
 // Return: n/a
 /******************************************************/
 function writeUserInfo() {
-fb_initialise();
+  fb_initialise();
 
-    console.log ("running writefunction")
+  console.log("running writefunction")
   const RAWNAME = document.getElementById("name").value.trim();
   const AGE = document.getElementById("age").value.trim();
-  let NAME  = RAWNAME.toLowerCase().replace(/\s+/g, "");
-
+  let NAME = RAWNAME.toLowerCase().replace(/\s+/g, "");
 
   if (!NAME || !AGE) {
     alert("Please fill out all fields.");
     return;
   }
 
-
-
   const recordPath = "userInfo/" + NAME;
   const data = {
     name: NAME,
-    age:AGE,
+    age: AGE,
   };
 
   const DATAREF = ref(FB_GAMEDB, recordPath); // Create the reference
@@ -122,22 +121,54 @@ fb_initialise();
       console.log("Data Successfully written");
       localStorage.setItem("username", NAME);
       document.getElementById("statusMessage").innerText = "Data written to " + recordPath;
-
       //swap to next window
       window.location.href = "choosegame.html";
-      
 
     })
     .catch((error) => {
       console.error("Error writing data:", error);
-      document.getElementById("statusMessage").innerText = "Failed to write to " + recordPath;
-
+      document.getElementById("statusMessage").innerText = "Failed to write to " + recordPath
     });
 
- 
+
 }
+/******************************************************/
+// adminPage
+// Runs when click button to go to admin page
+// Lets authenticated users through to admin page
+// Input: user input through click
+// Return: n/a
+/******************************************************/
+function adminPage() {
+  userLogin()
+    .then(() => {
+      const AUTH = getAuth();
+      const DB = getDatabase();
+      const user = AUTH.currentUser;
 
+      if (user) {
+        const uid = user.uid;
+        const recordPath = "admins/" + uid;
+        const DATAREF = ref(DB, recordPath);
 
+        return get(DATAREF).then((snapshot) => {
+          if (snapshot.exists()) {
+            console.log("Taking you to the Admin Page");
+            window.location.href = "admin.html";
+          } else {
+            alert("You are not authorised to view this page");
+            const button = document.getElementById("adminButton");
+            if (button) button.style.backgroundColor = "red";
+          }
+        });
+      } else {
+        throw new Error("User not logged in after userLogin()");
+      }
+    })
+    .catch((error) => {
+      console.error(error);
+    });
+}
 
 /****************************************************/
 //END

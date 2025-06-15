@@ -117,3 +117,31 @@ function movePlayer(){
 		player.vel.y = 0;
 	}
 }
+function keyPressed() {
+	if (gameState === "lose" && key === 'r') {
+		restartGame();
+	}
+}
+
+function restartGame() {
+	// Reset score
+	score = 0;
+
+	// Reset player
+	player = new Sprite(100, 100, PLAYERSIZE, PLAYERSIZE);
+	player.color = 'green';
+
+	// Reset coin group
+	coins = new Group();
+	coins.add(createCoin());
+
+	// Re-attach collision detection
+	player.collides(coins, getPoint);
+	function getPoint(collider1, collider2) {
+		collider2.remove();
+		score++;
+	}
+
+	// Set gameState back to playing
+	gameState = "play";
+}

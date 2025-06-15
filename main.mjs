@@ -14,7 +14,7 @@ console.log('%c main.mjs',
 // Import all the constants & functions required from fb_io module
 
 
-import { writeUserInfo, userLogin } from './registration.mjs';
+import { writeUserInfo, userLogin,adminPage } from './registration.mjs';
 
 window.addEventListener("DOMContentLoaded", () => {
   const btn = document.getElementById("submitBtn");
@@ -25,13 +25,25 @@ window.addEventListener("DOMContentLoaded", () => {
   }
 }); // found from Chat GPT --  button wasn't working
 
+window.adminPage = adminPage;
+
 window.userLogin = userLogin;
 
-import { checkuser, gnomeButton }
+import { checkuser, gnomeButton, coingameBtn }
   from './choosegame.mjs';
 window.checkuser = checkuser;
 window.gnomeButton = gnomeButton;
+window.coingameBtn = coingameBtn;
 
+
+import {fb_WriteRec,}
+  from './admin.mjs';
+document.addEventListener("DOMContentLoaded", () => {
+  const btn = document.getElementById("writeBtn");
+  if (btn) {
+    btn.addEventListener("click", fb_WriteRec);
+  }
+});
 // import { }
 //   from './game1.js';
 
