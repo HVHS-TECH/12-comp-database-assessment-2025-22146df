@@ -36,12 +36,27 @@ window.gnomeButton = gnomeButton;
 window.coingameBtn = coingameBtn;
 
 
-import {fb_WriteRec,}
+import {fb_WriteRec,fb_ReadAll,fb_deleteAll}
   from './admin.mjs';
+  //write button
 document.addEventListener("DOMContentLoaded", () => {
   const btn = document.getElementById("writeBtn");
   if (btn) {
     btn.addEventListener("click", fb_WriteRec);
+  }
+});
+//read all button
+document.addEventListener("DOMContentLoaded", () => {
+  const btn = document.getElementById("readBtn");
+  if (btn) {
+    btn.addEventListener("click", fb_ReadAll);
+  }
+});
+//delete all button
+document.addEventListener("DOMContentLoaded", () => {
+  const btn = document.getElementById("deleteBtn");
+  if (btn) {
+    btn.addEventListener("click", fb_deleteAll);
   }
 });
 // import { }

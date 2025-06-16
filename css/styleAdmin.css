@@ -1,0 +1,115 @@
+/********************************************/
+/* Colour pallete */
+/* CSS HEX */
+/* --electric-blue: #6FE0E8ff;
+--space-cadet: #2A2A5Aff;
+--aero: #05BEDDff;
+--antiflash-white: #F3F6F9ff;
+--rich-black: #050517ff; 
+/*********************************************/
+  :root {
+      --electric-blue: #6FE0E8;
+      --space-cadet: #2A2A5A;
+      --aero: #05BEDD;
+      --antiflash-white: #F3F6F9;
+      --rich-black: #050517;
+    }
+
+    body {
+      background-color: var(--rich-black);
+      color: var(--antiflash-white);
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      margin: 0;
+      padding: 2rem;
+    }
+
+    h1 {
+      text-align: center;
+      color: var(--electric-blue);
+    }
+
+    .column {
+      max-width: 600px;
+      margin: 0 auto;
+      background-color: var(--space-cadet);
+      padding: 2rem;
+      border-radius: 10px;
+      box-shadow: 0 0 15px rgba(0, 0, 0, 0.5);
+    }
+
+    button {
+      background-color: var(--electric-blue);
+      color: var(--rich-black);
+      border: none;
+      padding: 10px 16px;
+      border-radius: 5px;
+      font-weight: bold;
+      cursor: pointer;
+      margin: 10px 5px 10px 0;
+      transition: background-color 0.3s ease;
+    }
+
+    button:hover {
+      background-color: var(--aero);
+    }
+
+    input {
+      padding: 10px;
+      margin: 10px 5px 10px 0;
+      border: none;
+      border-radius: 5px;
+      width: calc(50% - 12px);
+    }
+
+    p {
+      margin: 8px 0;
+      font-size: 0.95rem;
+    }
+
+    /* Red Delete Button */
+    button[onclick*="deleteall"] {
+      background-color: crimson;
+      color: white;
+    }
+
+    #fbDataTreeView {
+      background-color: var(--antiflash-white);
+      color: var(--rich-black);
+      border-radius: 5px;
+      padding: 10px;
+      margin-top: 1rem;
+      max-height: 300px;
+      overflow-y: auto;
+      font-size: 0.9rem;
+    }
+
+    #fbDataTreeView ul {
+      list-style-type: none;
+      padding-left: 20px;
+    }
+
+    #fbDataTreeView li {
+      margin: 4px 0;
+    }
+
+    @media (max-width: 600px) {
+      input {
+        width: 100%;
+        margin-bottom: 10px;
+      }
+    }
+
+    .flash-green {
+  animation: flashGreen 1s infinite alternate;
+}
+
+@keyframes flashGreen {
+  from {
+    color: var(--antiflash-white);
+    background-color: transparent;
+  }
+  to {
+    color: black;
+    background-color: #fd0606; /* bright green */
+  }
+}

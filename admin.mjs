@@ -53,27 +53,27 @@ const FB_GAMEDB = getDatabase(FB_GAMEAPP);
 // EXPORT FUNCTIONS
 /**************************************************************/
 export {
- fb_WriteRec,
- // fb_ReadRec,
- // fb_ReadAll,
- // fb_deleteAll,
- // fb_ReadSorted,
- // fb_ReadOn,
+  fb_WriteRec,
+  fb_ReadAll,
+  fb_deleteAll,
+  // fb_ReadSorted,
+  // fb_ReadOn,
 };
 /******************************************************/
 // fb_WriteRec
-// Called by index.html on page load
+// Called via button on admin.html
 // Write a record to the realtime database
 // Input: n/a
 // Return: n/a
 /******************************************************/
 function fb_WriteRec() {
-  const USERSTRING = document.getElementById('adminWrite').value;
-  const recordPath = "test";
+  const ADMINKEY = document.getElementById('adminKey').value;
+  const ADMINDATA = document.getElementById('adminWrite').value;
+  const RECORDPATH = "ADMINKEY";
   const data = {
-  USERSTRING
+    ADMINDATA
   };
-  const DATAREF = ref(FB_GAMEDB, recordPath); // Create the reference
+  const DATAREF = ref(FB_GAMEDB, RECORDPATH); // Create the reference
 
   set(DATAREF, data)
     .then(() => {
@@ -84,6 +84,96 @@ function fb_WriteRec() {
     .catch((error) => {
       console.error("Error writing data:", error);
       document.getElementById("p_fbWriteRec").innerText = "Failed to write to " + recordPath;
+
+    });
+
+}
+
+/******************************************************/
+// fb_ReadAll
+// Called via button on admin.html
+// Read the realtime database
+// Input: n/a
+// Return: n/a
+/******************************************************/
+
+function fb_ReadAll() {
+  const READPATH = "/";
+  const DATAREF = ref(FB_GAMEDB, READPATH);
+
+  get(DATAREF).then((snapshot) => {
+    const fb_data = snapshot.val();
+    if (fb_data != null) {
+      console.log("Data successfully read:", fb_data);
+      document.getElementById("p_fbReadAll").innerText = "Read all data successfully";
+
+      const treeHTML = buildTreeView(fb_data);
+      document.getElementById("fbDataTreeView").innerHTML = treeHTML;
+    } else {
+      document.getElementById("p_fbReadAll").innerText = "No data found";
+    }
+  }).catch((error) => {
+    console.error("Error reading data:", error);
+    document.getElementById("p_fbReadAll").innerText = "Failed to read data";
+  });
+}
+/******************************************************/
+// buildTreeView
+// Forms read all data into something readable
+// Found Online 
+// Input: n/a
+// Return: n/a
+/******************************************************/
+function buildTreeView(obj) {
+  if (typeof obj !== 'object' || obj === null) {
+    return `<span>${obj}</span>`;
+  }
+
+  let html = `<ul>`;
+  for (const key in obj) {
+    html += `<li><strong>${key}</strong>: ${buildTreeView(obj[key])}</li>`;
+  }
+  html += `</ul>`;
+  return html;
+}
+
+/******************************************************/
+// fb_deleteAll
+// Deletes all records on DB
+// Called via button on admin.html
+// Input: n/a
+// Return: n/a
+/******************************************************/
+function fb_deleteAll() {
+  const confirmation = prompt("WARNING: This will delete ALL data. Type CONFIRM to proceed.");
+
+  if (confirmation !== "CONFIRM") {
+    console.log("Deletion cancelled");
+    document.getElementById("p_fbdeleteAll").innerText = "Deletion cancelled by user.";
+    const statusPara = document.getElementById("p_fbdeleteAll");
+    if (statusPara) {
+      statusPara.innerText = "Deletion cancelled by user.";
+      statusPara.classList.add("flash-green");
+
+    }
+    return; // Exit early
+  }
+  const RECORDPATH = "/";
+  const data = {
+    NOTHING
+  };
+  const DATAREF = ref(FB_GAMEDB, RECORDPATH); // Create the reference
+
+  set(DATAREF, data)
+    .then(() => {
+
+      console.log("Data Successfully written");
+      document.getElementById("p_fbdeleteAll").innerText = "DATA HAS BEEN DELETED "
+
+    })
+    .catch((error) => {
+      console.error("Error writing data:", error);
+      document.getElementById("p_fbdeleteAll").innerText = "Failed to delete "
 
     });
 
