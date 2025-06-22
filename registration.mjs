@@ -99,7 +99,7 @@ export function userLogin() {
 function writeUserInfo() {
   fb_initialise();
 
-  console.log("running writefunction")
+  console.log("running writefunction");
   const RAWNAME = document.getElementById("name").value.trim();
   const AGE = document.getElementById("age").value.trim();
   let NAME = RAWNAME.toLowerCase().replace(/\s+/g, "");
@@ -110,28 +110,32 @@ function writeUserInfo() {
   }
 
   const recordPath = "userInfo/" + NAME;
-  const data = {
-    name: NAME,
-    age: AGE,
-  };
+  const DATAREF = ref(FB_GAMEDB, recordPath);
 
-  const DATAREF = ref(FB_GAMEDB, recordPath); // Create the reference
-  set(DATAREF, data)
-    .then(() => {
-      console.log("Data Successfully written");
-      localStorage.setItem("username", NAME);
-      document.getElementById("statusMessage").innerText = "Data written to " + recordPath;
-      //swap to next window
-      window.location.href = "choosegame.html";
+  get(DATAREF).then((snapshot) => {
+    if (snapshot.exists()) {
+      update(DATAREF, { //update allowing non overwritten data
+        name: NAME,
+        age: AGE
+      });
+    } else {
+      set(DATAREF, {
+        name: NAME,
+        age: AGE,
+        gnomescore: 0,
+        coinscore: 0
+      });
+    }
 
-    })
-    .catch((error) => {
-      console.error("Error writing data:", error);
-      document.getElementById("statusMessage").innerText = "Failed to write to " + recordPath
-    });
-
-
+    localStorage.setItem("username", NAME);
+    document.getElementById("statusMessage").innerText = "Data written to " + recordPath;
+    window.location.href = "choosegame.html";
+  }).catch((error) => {
+    console.error("Error writing data:", error);
+    document.getElementById("statusMessage").innerText = "Failed to write to " + recordPath;
+  });
 }
+
 /******************************************************/
 // adminPage
 // Runs when click button to go to admin page
