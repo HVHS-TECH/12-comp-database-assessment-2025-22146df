@@ -1,5 +1,30 @@
 /*******************************************************/
-// setup()
+console.log('%c game2.mjs', 'color: blue; background-color: white;');
+
+
+window.setup = setup;
+window.draw = draw;
+window.keyPressed = keyPressed;
+
+
+import { initializeApp } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js";
+import { getDatabase, ref, set, get } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-database.js";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyA8viBZ-gKBknRREyTiDinnugjj6Rjrog0",
+  authDomain: "comp-2025-dylan-f.firebaseapp.com",
+  databaseURL: "https://comp-2025-dylan-f-default-rtdb.asia-southeast1.firebasedatabase.app",
+  projectId: "comp-2025-dylan-f",
+  storageBucket: "comp-2025-dylan-f.appspot.com",
+  messagingSenderId: "133223974410",
+  appId: "1:133223974410:web:d1cde3ac980749bde601f3",
+  measurementId: "G-WHVZ7GW4CF"
+};
+
+const app = initializeApp(firebaseConfig);
+const FB_GAMEDB = getDatabase(app);
+
+
 /*******************************************************/
 
 const GAMEWIDTH = 500;
@@ -12,14 +37,14 @@ var score = 0;
 
 const COINSIZE = 10;
 const COIN_TIMEOUT = 2000;
-var coin;
+var coins;
 
 var gameState = "play";
 
 function setup() {
 	console.log("setup: ");
 
-	cnv = new Canvas(GAMEWIDTH, GAMEHEIGHT);
+	 new Canvas(GAMEWIDTH, GAMEHEIGHT);
 	player = new Sprite(100, 100, PLAYERSIZE, PLAYERSIZE);
 	player.color = 'green';
 
@@ -67,6 +92,7 @@ function runGame(){
 }
 
 function loseScreen(){
+	saveScore();
 	background('red');
 	player.remove();
 	coins.remove();
@@ -144,4 +170,33 @@ function restartGame() {
 
 	// Set gameState back to playing
 	gameState = "play";
+}
+
+function saveScore() {
+  let NAME = localStorage.getItem("username");
+  if (!NAME) {
+	console.warn("No username found. Score not saved.");
+	window.location.href = "index.html";
+	return;
+  }
+
+  const RECORDPATH = `userInfo/${NAME}/coinscore`;
+  const DATAREF = ref(FB_GAMEDB, RECORDPATH);
+
+  get(DATAREF)
+	.then((snapshot) => {
+	  const existingScore = snapshot.exists() ? snapshot.val() : 0; 
+
+	  // Compare scores
+	  if (score > existingScore) {
+		return set(DATAREF, score).then(() =>
+		  console.log(`New high score saved (${score}) at ${RECORDPATH}`)
+		);
+	  } else {
+		console.log(`Score not saved. Existing score (${existingScore}) is higher or equal.`);
+	  }
+	})
+	.catch((error) => {
+	  console.error("Error accessing or writing score:", error);
+	});
 }

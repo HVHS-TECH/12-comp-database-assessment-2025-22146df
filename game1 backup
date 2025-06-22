@@ -1,0 +1,388 @@
+/************************************************************/
+//GAME 1 || GNOME DODGER
+/************************************************************/
+/*******************************************************/
+// P5.play: GnomeDodger
+//By Dylan Figliola
+/*******************************************************/
+console.log('%c registration.mjs', 'color: blue; background-color: white;');
+
+window.preload = preload;
+window.setup = setup;
+window.draw = draw;
+//**************************************************************/
+// Importing required functions
+/**************************************************************/
+
+import { initializeApp } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js";
+import { getAnalytics } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-analytics.js";
+import { getAuth, GoogleAuthProvider, signInWithPopup } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-auth.js";
+import { getDatabase, ref, set, get } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-database.js";
+// /**************************************************************/
+// // Firebase Configuration
+// /**************************************************************/
+// const COL_C = "#6FE0E8"; // electric-blue
+// const COL_B = "#2A2A5A"; // space-cadet
+// var currentUser = null;
+// var userId = null;
+// const firebaseConfig = {
+//   apiKey: "AIzaSyA8viBZ-gKBknRREyTiDinnugjj6Rjrog0",
+//   authDomain: "comp-2025-dylan-f.firebaseapp.com",
+//   databaseURL: "https://comp-2025-dylan-f-default-rtdb.asia-southeast1.firebasedatabase.app",
+//   projectId: "comp-2025-dylan-f",
+//   storageBucket: "comp-2025-dylan-f.firebasestorage.app",
+//   messagingSenderId: "133223974410",
+//   appId: "1:133223974410:web:d1cde3ac980749bde601f3",
+//   measurementId: "G-WHVZ7GW4CF"
+// };
+
+// // Initialize Firebase app globally
+// const FB_GAMEAPP = initializeApp(firebaseConfig);
+// const analytics = getAnalytics(FB_GAMEAPP);
+// const FB_GAMEDB = getDatabase(FB_GAMEAPP);
+
+// //****************************************************************/
+// //Export functions to /main.mjs
+// export {
+// };
+//VARIABLES
+const GAMEHEIGHT = 500;
+const GAMEWIDTH = 500;
+const PLAYER_HEIGHT = 25;
+const PLAYER_WIDTH = 25;
+const PLAYERSIZE = 25;
+const PLAYERSPEED = 5;
+const GNOMESIZE = 20;
+const GNOME_Y = 10;
+const GNOME_X = 10;
+const GNOMESPEED = [1, 2, 3, 4, 5, 6, 5, 5, 6, 5, 5, 6, 5, 5, 6, 5, 5, 6, 5, 9, 10, 10];
+const WALLTHICK = 5;
+
+let gnomex;
+let gnomey;
+var gameOver = (false);
+let score = 0;
+let stickman;
+let Lwall;
+var startTime;
+var timeLimit = 15;
+var remainingTime;
+var elapsedTime;
+
+
+
+var gnomesH = [];
+var gnomesV = [];
+
+
+/*******************************************************/
+//SETUP
+
+function preload() {
+  imgPlayer = loadImage('images/stickmangame.png');
+  imgGnome = loadImage('images/gnome.png');
+  imgBG = loadImage('images/Grassbg.jpg')
+}
+
+function setup() {
+  cnv = new Canvas(GAMEWIDTH, GAMEHEIGHT);
+  gameSetup();
+}
+/*******************************************************************************************/
+//GAME
+
+function draw() {
+
+  if (gameState === 'start') {
+    startScreen();
+  } else if (gameState === 'playing')
+    runGame();
+
+
+}
+/*******************************************************/
+//FUNCTIONS
+//PLAYER FUNCTIONS
+function movement() {
+  // Movement logic
+  if (kb.pressing('left')) {
+    stickman.vel.x = -PLAYERSPEED;
+  } else if (kb.pressing('right')) {
+    stickman.vel.x = PLAYERSPEED;
+  }
+
+  if (kb.released('left')) {
+    stickman.vel.x = 0;
+  } else if (kb.released('right')) {
+    stickman.vel.x = 0;
+  }
+
+  if (kb.pressing('up')) {
+    stickman.vel.y = -PLAYERSPEED;
+  } else if (kb.pressing('down')) {
+    stickman.vel.y = PLAYERSPEED;
+  }
+
+  if (kb.released('up')) {
+    stickman.vel.y = 0;
+  } else if (kb.released('down')) {
+    stickman.vel.y = 0;
+  }
+}
+
+function gnomeTouch() {
+  for (let i = 0; i < gnomesH.length; i++) {
+    if (stickman.collide(gnomesH[i])) {
+      endGame(); // End the game if collision detected
+      return;
+    }
+  }
+
+  for (let i = 0; i < gnomesV.length; i++) {
+    if (stickman.collide(gnomesV[i])) {
+      endGame(); // End the game if collision detected
+      return;
+    }
+  }
+}
+
+/**********************************************************/
+//GNOME FUNCTIONS
+function gnomeMakerH() {
+
+  for (let i = gnomesH.length; i < 10; i++) { // Keep spawning until we have 10 gnomes
+    let gnomeH = new Sprite(GNOME_X, random(5, 495), GNOMESIZE, 'k');
+    gnomeH.image = imgGnome;
+    imgGnome.resize(GNOMESIZE, GNOMESIZE);
+    gnomeH.color = 'red';
+    gnomeH.vel.x = random(GNOMESPEED) + random(-1, 1);
+    gnomesH.push(gnomeH);
+
+    console.log("status:" + gnomeH);
+  }
+}
+function gnomeDetectH() {
+  for (let i = gnomesH.length - 1; i >= 0; i--) {
+    if (gnomesH[i].x > GAMEWIDTH) { // If gnome moves off screen
+      gnomesH[i].remove();
+      gnomesH.splice(i, 1); // Remove from array
+      score++;
+    }
+  }
+  gnomeMakerH(); // Ensure 10 gnomes exist after checking
+
+}
+
+function gnomeDetectV() {
+  for (let i = gnomesV.length - 1; i >= 0; i--) {
+    if (gnomesV[i].y > GAMEHEIGHT) { // If gnome moves off screen
+      gnomesV[i].remove();
+      gnomesV.splice(i, 1);
+      score++;
+    }
+  }
+  gnomeMakerV(); // Ensure 10 gnomes exist after checking
+
+}
+function gnomeMakerV() {
+
+  for (let i = gnomesV.length; i < 10; i++) { // Keep spawning until we have 10 gnomes
+    let gnomeV = new Sprite(random(5, 495), GNOME_Y, GNOMESIZE, 'k');
+    gnomeV.image = imgGnome;
+    imgGnome.resize(GNOMESIZE, GNOMESIZE);
+    gnomeV.color = 'blue';
+    gnomeV.vel.y = random(GNOMESPEED) + random(-1, 1);
+    gnomesV.push(gnomeV);
+
+    console.log("status:" + gnomeV);
+  }
+}
+/**************************************************************************************/
+//DISPLAY FUNCTIONS
+function displayScore() {
+  fill(0, 0, 0);
+  textSize(20);
+  text("Score: " + score, GAMEWIDTH - 400, 30); // Move right
+}
+
+function displayTimer() {
+  if (gameOver) return;
+  elapsedTime = floor((millis() - startTime) / 1000); // Convert milliseconds to seconds
+  var remainingTime = max(timeLimit - elapsedTime, 0);
+  fill(0, 0, 0);
+  textSize(20);
+  text("Time: " + remainingTime + "s left!", GAMEWIDTH - 400, 55); // Move right
+  console.log(elapsedTime);
+
+  if (remainingTime === 0) {
+    winGame();
+  }
+}
+/*********************************************************************************/
+//GAME SCREEN FUNCTIONS
+function gameSetup() {
+  console.log("setting up game");
+  console.log("Stickman:", stickman);
+  console.log("Lwall:", Lwall); // Debugging log
+  gameState = "setup";
+  stickman = new Sprite((GAMEWIDTH / 2), (GAMEHEIGHT / 2), PLAYERSIZE, PLAYERSIZE, 'd');
+  stickman.color = 'black';
+  stickman.image = (imgPlayer);
+  imgPlayer.resize(PLAYERSIZE + 5, PLAYERSIZE + 5);
+
+  Lwall = new Sprite(0, (GAMEHEIGHT / 2), 5, GAMEHEIGHT, 'k');
+  Lwall.color = 'black';
+
+  Rwall = new Sprite(500, (GAMEHEIGHT / 2), 5, GAMEHEIGHT, 'k');
+  Rwall.color = 'black';
+
+  Twall = new Sprite((GAMEWIDTH / 2), 0, GAMEWIDTH, 5, 'k');
+  Twall.color = 'black';
+
+  Bwall = new Sprite((GAMEWIDTH / 2), 500, GAMEWIDTH, 5, 'k');
+  Bwall.color = 'black';
+
+  gameOver = false;
+  score = 0;
+  startTime = millis(); // Reset timer
+
+  gameState = "start";
+  console.log("Game state after setup:", gameState); // Checking if gameState swaps to "start"
+}
+
+function startScreen() {
+  console.log("startScreen")
+  background.color = ("#A7C7E7");
+  fill(0);
+  textSize(30);
+  textAlign(CENTER, CENTER);
+  text("Gnome Dodger", width / 2, height / 3);
+
+  //INSTRUCTIONS TEXT
+  fill(0); // text colour black again
+  textSize(20);
+  text("Instructions: The aim of the game is \nto dodge as many gnomes as you \ncan for 15 seconds, moving with the \narrow OR WASD keys. \nPress Enter To Start.",
+    width / 2, height / 3 + 200,);
+}
+
+function checkKey(_keyPressed) {
+  if ((_keyPressed === " " || _keyPressed === "Enter") && gameState === "start") {
+    console.log("Game Started!");
+    startGame();
+  }
+  else if (_keyPressed === 'r' || _keyPressed === 'R') {
+    console.log("Game Restarted!");
+    restartGame();
+  }
+}
+
+function keyPressed() {
+  checkKey(key);
+
+}
+function startGame() {
+  background("white");
+  gameState = 'playing';
+  startTime = millis();
+}
+
+function runGame() {
+  image(imgBG, 0, 0, GAMEWIDTH, GAMEHEIGHT);
+  gnomeMakerH();
+  gnomeMakerV();
+  movement();
+  gnomeDetectH();
+  gnomeDetectV();
+  displayScore();
+  displayTimer();
+  gnomeTouch();
+}
+function winGame() {
+  if (gameOver) return; // Prevent running multiple times
+
+  gameOver = true;
+  background("gold");
+  fill(0); // Set text color to black
+  textSize(20);
+  textAlign(CENTER, CENTER);
+  text("YOU WIN!\nYou dodged " + score + " gnomes\nover " + elapsedTime + "s!", GAMEWIDTH / 2, GAMEHEIGHT / 2);
+
+  text("Press R to restart", GAMEWIDTH / 2, GAMEHEIGHT / 2 + 50);
+
+  stickman.remove();
+  for (let i = 0; i < gnomesH.length; i++) {
+    gnomesH[i].remove();
+  }
+  gnomesH = [];
+  for (let i = 0; i < gnomesV.length; i++) {
+    gnomesV[i].remove();
+  }
+  gnomesV = [];
+  noLoop(); // Stop the game loop
+}
+
+function endGame() {
+  if (gameOver) return; // Prevent running twice
+  saveScore();
+
+  gameOver = true;
+  background("red");
+  fill(0); // Set text color to black
+  textSize(15);
+  textAlign(CENTER, CENTER);
+  text("You died after " + elapsedTime + "s, and dodged " + score + " gnomes!", GAMEWIDTH / 2, GAMEHEIGHT / 2);
+  text("Press R to restart", GAMEWIDTH / 2, GAMEHEIGHT / 2 + 50);
+  stickman.remove();
+  for (let i = 0; i < gnomesH.length; i++) {
+    gnomesH[i].remove();
+  }
+  gnomesH = [];
+  for (let i = 0; i < gnomesV.length; i++) {
+    gnomesV[i].remove();
+  }
+
+  gnomesV = [];
+
+
+  noLoop(); // found noLoop and Loop through GPT
+
+}
+function restartGame() {
+  background("white");
+  gameOver = false;
+  allSprites.remove();
+
+  gameSetup();
+  loop();
+}
+
+
+
+function saveScore() {
+  let NAME = localStorage.getItem("username");
+
+  if (!NAME) {
+    console.warn("No username found. Score not saved.");
+    return;
+  }
+
+  const RECORDPATH = "userInfo/" + NAME + "/gnomescore";
+  const USERSCORE = score;
+
+  const DATAREF = ref(FB_GAMEDB, RECORDPATH); // Create the reference
+
+  set(DATAREF, USERSCORE)
+    .then(() => {
+      console.log("Score saved at " + RECORDPATH);
+      localStorage.setItem("username", NAME);
+    })
+    .catch((error) => {
+      console.error("Error writing data:", error);
+    });
+}
+/****************************************************************************/
+/*******************************************************/
+//TO DO 
+/*******************************************************/
+//END OF GAME
+/*******************************************************/

@@ -40,10 +40,10 @@ var username = localStorage.getItem("username");
 //****************************************************************/
 //Export functions to /main.mjs
 export {
-checkuser,
-initChooseGame,
-gnomeButton,
-coingameBtn,
+  checkuser,
+  initChooseGame,
+  gnomeButton,
+  coingameBtn,
 };
 
 /***********************************************************/
@@ -57,7 +57,7 @@ function fb_initialise() {
 /*******************/
 //Run Functions
 fb_initialise();
-  checkuser();
+checkuser();
 
 /******************************************************/
 // checkuser
@@ -94,10 +94,11 @@ function checkuser() {
 function initChooseGame() {
   console.log("choosegame.mjs loaded");
   const INFOFORM = document.getElementById("userinfo");
-  if(INFOFORM){
-    INFOFORM.remove;
+  if (INFOFORM) {
+    INFOFORM.remove();  
   }
 }
+
 
 /******************************************************/
 // gnomeButton
@@ -106,13 +107,13 @@ function initChooseGame() {
 // Input: 'n/a'
 // Return: n/a
 /******************************************************/
-function gnomeButton(){
+function gnomeButton() {
   const auth = getAuth();
-  onAuthStateChanged(auth, (user)=>{
-    if(user){
+  onAuthStateChanged(auth, (user) => {
+    if (user) {
       console.log("Transporting to the Gnome game");
       window.location.href = "game1.html";
-    }else{
+    } else {
       alert("Error, taking you back to login page");
       window.location.href = "index.html";
     }
@@ -125,15 +126,127 @@ function gnomeButton(){
 // Input: 'n/a'
 // Return: n/a
 /******************************************************/
-function coingameBtn(){
+function coingameBtn() {
   const auth = getAuth();
-  onAuthStateChanged(auth, (user)=>{
-    if(user){
+  onAuthStateChanged(auth, (user) => {
+    if (user) {
       console.log("Transporting to the coin game");
       window.location.href = "game2.html";
-    }else{
+    } else {
       alert("Error, taking you back to login page");
       window.location.href = "index.html";
     }
   })
 }
+
+/******************************************************/
+// ldrBoard1 Gnome scores
+// Called by choosegame.html on page load
+// Goes to Gnome Top Scores leaderboard 
+// Input: 'n/a'
+// Return: n/a
+/******************************************************/
+function ldrBoard1() {
+  const medals = ["🥇", "🥈", "🥉"];
+  const auth = getAuth();
+  onAuthStateChanged(auth, (user) => {
+    if (user) {
+      const ldrMenu = document.getElementById("ldrMenu");
+      const scoreList1 = document.getElementById("scoreList1");
+
+      if (ldrMenu.classList.contains("hidden")) {
+        ldrMenu.classList.remove("hidden");
+
+        const scoresRef = ref(FB_GAMEDB, 'userInfo');
+        const topQuery = query(scoresRef, orderByChild('gnomescore'), limitToFirst(5));
+
+        onValue(topQuery, (snapshot) => {
+          if (!snapshot.exists()) {
+            scoreList1.textContent = "No scores available.";
+            return;
+          }
+          const scores = [];
+          const data = snapshot.val();
+          console.log("All Gnome scores data:", data);
+          snapshot.forEach(child => {
+            scores.push(child.val());
+          });
+          scores.reverse(); //bc firebase scores are reversed
+          scoreList1.innerHTML = "";
+          scores.forEach((data, index) => {
+            const li = document.createElement("li");
+            const medal = medals[index] || "";  // empty string if no medal for 4th place onwards
+            li.textContent = `${medal} ${data.name}: ${data.gnomescore}`;
+            scoreList1.appendChild(li);
+          });
+        }, { onlyOnce: true });
+
+      } else {
+        ldrMenu.classList.add("hidden");
+      }
+
+    } else {
+      alert("You must be logged in to view the leaderboard.");
+    }
+  });
+}
+
+/******************************************************/
+// ldrBoard2 (Coin Catcher Scores)
+// Called by choosegame.html on page load
+// Goes to Coin Catcher Scores leaderboard 
+// Input: 'n/a'
+// Return: n/a
+/******************************************************/
+function ldrBoard2() {
+  const medals = ["🥇", "🥈", "🥉"];
+  const auth = getAuth();
+  onAuthStateChanged(auth, (user) => {
+    if (user) {
+      const ldrMenu2 = document.getElementById("ldrMenu2");
+      const scoreList2 = document.getElementById("scoreList2");
+
+      if (ldrMenu2.classList.contains("hidden")) {
+        ldrMenu2.classList.remove("hidden");
+
+        const scoresRef = ref(FB_GAMEDB, 'userInfo');
+        const topQuery = query(scoresRef, orderByChild('coinscore'), limitToFirst(5));
+
+        onValue(topQuery, (snapshot) => {
+          if (!snapshot.exists()) {
+            scoreList2.textContent = "No scores available.";
+            return;
+          }
+          const scores = [];
+          snapshot.forEach(child => {
+            scores.push(child.val());
+          });
+          scores.reverse();
+          scoreList2.innerHTML = "";
+          scores.forEach((data, index) => {
+            const li = document.createElement("li");
+            const medal = medals[index] || "";
+            li.textContent = `${medal} ${data.name}: ${data.coinscore}`;
+            scoreList2.appendChild(li);
+          });
+        }, { onlyOnce: true });
+
+      } else {
+        ldrMenu2.classList.add("hidden");
+      }
+
+    } else {
+      alert("You must be logged in to view the leaderboard.");
+    }
+  });
+}
+window.addEventListener("DOMContentLoaded", () => {
+  const btn1 = document.getElementById("ldrBtn");
+  const btn2 = document.getElementById("ldrBtn2");
+
+  console.log('btn1:', btn1);  // should NOT be null
+  console.log('btn2:', btn2);  // should NOT be null
+
+  if (btn1) btn1.addEventListener("click", ldrBoard1);
+  if (btn2) btn2.addEventListener("click", ldrBoard2);
+});
