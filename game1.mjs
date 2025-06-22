@@ -45,7 +45,7 @@ const GNOMESPEED = [1, 2, 3, 4, 5, 6, 5, 5, 6, 5, 5, 6, 5, 5, 6, 5, 5, 6, 5, 9, 
 
 let gnomex, gnomey, gameOver = false;
 let score = 0, stickman, Lwall, Rwall, Twall, Bwall;
-let startTime, timeLimit = 15, elapsedTime;
+let startTime, timeLimit = 45, elapsedTime;
 let gnomesH = [], gnomesV = [];
 let imgPlayer, imgGnome, imgBG;
 let gameState = "start";
