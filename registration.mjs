@@ -129,11 +129,14 @@ function writeUserInfo() {
 
     localStorage.setItem("username", NAME);
     document.getElementById("statusMessage").innerText = "Data written to " + recordPath;
+    //swap to next window
     window.location.href = "choosegame.html";
-  }).catch((error) => {
-    console.error("Error writing data:", error);
-    document.getElementById("statusMessage").innerText = "Failed to write to " + recordPath;
-  });
+
+  })
+    .catch((error) => {
+      console.error("Error writing data:", error);
+      document.getElementById("statusMessage").innerText = "Failed to write to " + recordPath
+    });
 }
 
 /******************************************************/
