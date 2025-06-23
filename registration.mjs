@@ -98,14 +98,17 @@ export function userLogin() {
 /******************************************************/
 function writeUserInfo() {
   fb_initialise();
-
   console.log("running writefunction");
+  const user = getAuth().currentUser;
   const RAWNAME = document.getElementById("name").value.trim();
   const AGE = document.getElementById("age").value.trim();
   let NAME = RAWNAME.toLowerCase().replace(/\s+/g, "");
 
   if (!NAME || !AGE) {
     alert("Please fill out all fields.");
+    return;
+  }else if (!user){
+    alert("PLEASE LOG IN WITH GOOGLE");
     return;
   }
 

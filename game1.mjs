@@ -275,3 +275,13 @@ function saveScore() {
     });
 }
 
+export function backBtn() {
+  window.location.href = "choosegame.html";
+}
+
+document.addEventListener("DOMContentLoaded", () => {
+  const btn = document.getElementById("backBtn");
+  if (btn) {
+    btn.addEventListener("click", backBtn);
+  }
+});

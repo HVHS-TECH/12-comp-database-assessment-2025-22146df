@@ -1,38 +1,42 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Database Project</title>
   <link rel="stylesheet" href="css/choosegame.css" />
-  
-
 </head>
-
 <body>
- <h1>CHOOSE YOUR GAME</h1>
-<div class="game1button"> <button onclick="gnomeButton()">Gnome Dodger</button> </div>
-<div class="game2button"> <button onclick="coingameBtn()">Coin Catcher</button> </div>
 
+<div class="container">
 
+  <div class="column">
+    <h1>CHOOSE YOUR GAME</h1>
+    <div class="game1button">
+      <button onclick="gnomeButton()">Gnome Dodger</button>
+    </div>
+    <div class="game2button">
+      <button onclick="coingameBtn()">Coin Catcher</button>
+    </div>
+  </div>
 
+  <div class="column">
+    <h1>LEADERBOARDS</h1>
 
-<h1>LEADERBOARDS</h1>
+    <button id="ldrBtn">Gnome Top Scores</button>
+    <div id="ldrMenu" class="dropdown hidden">
+      <p>Gnome Dodger Top Scores:</p>
+      <ul id="scoreList1"></ul>
+    </div>
 
-<button id="ldrBtn">Gnome Top Scores</button>
-<div id="ldrMenu" class="dropdown hidden">
-  <p>Gnome Dodger Top Scores:</p>
-  <ul id="scoreList1"></ul>
-</div>
-
-<button id="ldrBtn2">Coin Catcher Top Scores</button>
-<div id="ldrMenu2" class="dropdown hidden">
-  <p>Coin Catcher Top Scores:</p>
-  <ul id="scoreList2"></ul>
+    <button id="ldrBtn2">Coin Catcher Top Scores</button>
+    <div id="ldrMenu2" class="dropdown hidden">
+      <p>Coin Catcher Top Scores:</p>
+      <ul id="scoreList2"></ul>
+    </div>
+  </div>
 </div>
 
 <script type="module" src="./main.mjs"></script>
 </body>
-
 </html>

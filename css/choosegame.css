@@ -37,14 +37,16 @@ button {
   background-color: var(--electric-blue);
   color: var(--rich-black);
   border: none;
-  padding: 12px 20px;
-  margin: 10px 8px;
-  border-radius: 8px;
-  font-size: 1rem;
+  padding: 18px 28px;    
+  margin: 12px 10px;
+  border-radius: 10px;
+  font-size: 1.2rem;        
   font-weight: bold;
   cursor: pointer;
   transition: background-color 0.3s ease;
+  min-width: 200px;        
 }
+
 
 button:hover {
   background-color: var(--aero);
@@ -195,5 +197,19 @@ p {
 }
 
 #scoreList2 li:nth-child(3) {
-  color: #cd7f32; /* bronze */
+  color: #cd7f32; 
+}
+
+.container {
+  display: flex;
+  gap: 2rem;
+  flex-wrap: wrap;
+  width: 100%;
+  max-width: 1200px;
+  margin-top: 2rem;
+}
+
+.column {
+  flex: 1 1 300px;
+  max-width: 500px;
 }

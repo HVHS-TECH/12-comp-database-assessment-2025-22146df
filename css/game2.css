@@ -1,0 +1,69 @@
+ :root {
+      --electric-blue: #6FE0E8;
+      --space-cadet: #2A2A5A;
+      --aero: #05BEDD;
+      --antiflash-white: #F3F6F9;
+      --rich-black: #050517;
+    }
+
+    body {
+      background-color: var(--rich-black);
+      color: var(--antiflash-white);
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      margin: 0;
+      padding: 2rem;
+    }
+
+    #userinfo {
+      max-width: 500px;
+      margin: 0 auto;
+      background-color: var(--space-cadet);
+      padding: 2rem;
+      border-radius: 10px;
+      box-shadow: 0 0 12px rgba(0, 0, 0, 0.4);
+    }
+
+    button {
+      background-color: var(--electric-blue);
+      color: var(--rich-black);
+      border: none;
+      padding: 10px 16px;
+      border-radius: 5px;
+      font-weight: bold;
+      cursor: pointer;
+      margin: 10px 5px 10px 0;
+      transition: background-color 0.3s ease;
+    }
+
+    button:hover {
+      background-color: var(--aero);
+    }
+
+    label {
+      display: block;
+      margin-top: 1rem;
+      margin-bottom: 0.5rem;
+    }
+
+    input {
+      width: 100%;
+      padding: 10px;
+      border: none;
+      border-radius: 5px;
+      margin-bottom: 1rem;
+    }
+
+    p {
+      margin-top: 0.5rem;
+    }
+
+    @media (max-width: 600px) {
+      #userinfo {
+        padding: 1rem;
+      }
+
+      button {
+        width: 100%;
+        margin-bottom: 10px;
+      }
+    }

@@ -12,7 +12,7 @@ import { signOut } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-auth.
 import { ref, set } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-database.js";
 import { get } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-database.js";
 import { update } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-database.js";
-import { query, orderByChild, limitToFirst, onValue } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-database.js";
+import { query, orderByChild, limitToFirst, onValue, limitToLast  } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-database.js";
 
 
 
@@ -158,7 +158,7 @@ function ldrBoard1() {
         ldrMenu.classList.remove("hidden");
 
         const scoresRef = ref(FB_GAMEDB, 'userInfo');
-        const topQuery = query(scoresRef, orderByChild('gnomescore'), limitToFirst(5));
+        const topQuery = query(scoresRef, orderByChild('gnomescore'), limitToLast(5));
 
         onValue(topQuery, (snapshot) => {
           if (!snapshot.exists()) {
