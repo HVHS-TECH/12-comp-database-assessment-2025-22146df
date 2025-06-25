@@ -178,7 +178,7 @@ function ldrBoard1() {
           scores.forEach((data, index) => {
             const li = document.createElement("li");
             const medal = medals[index] || "";
-            li.textContent = `${medal} ${data.name}: ${data.coinscore}`;
+            li.textContent = `${medal} ${data.name}: ${data.gnomescore}`;
             if (data.uid === currentUID) {
               li.style.backgroundColor = "var(--antiflash-white)";
               li.style.fontWeight = "bold";
