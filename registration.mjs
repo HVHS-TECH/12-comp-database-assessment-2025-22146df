@@ -105,13 +105,19 @@ function writeUserInfo() {
   let NAME = RAWNAME.toLowerCase().replace(/\s+/g, "");
     const uid = user.uid;
 
-  if (!NAME || !AGE) {
-    alert("Please fill out all fields.");
-    return;
-  }else if (!user){
-    alert("PLEASE LOG IN WITH GOOGLE");
-    return;
-  }
+if (!NAME || !AGE) {
+  alert("Please fill out all fields.");
+  return;
+} else if (!isNaN(NAME)) {
+  alert("Please enter a real name");
+  return;
+} else if (isNaN(AGE)) {
+  alert("Age must be a number");
+  return;
+} else if (!user) {
+  alert("PLEASE LOG IN WITH GOOGLE");
+  return;
+}
 
   const recordPath = "userInfo/" + NAME;
   const DATAREF = ref(FB_GAMEDB, recordPath);
