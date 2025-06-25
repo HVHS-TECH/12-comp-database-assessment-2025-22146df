@@ -59,15 +59,6 @@ document.addEventListener("DOMContentLoaded", () => {
     btn.addEventListener("click", fb_deleteAll);
   }
 });
-// import {backBtn }
-//   from './game1.mjs';
-// document.addEventListener("DOMContentLoaded", () => {
-//   const btn = document.getElementById("backBtn");
-//   if (btn) {
-//     btn.addEventListener("click", backBtn);
-//   }
-// });
 
-// import { }
-//   from './game2.js';
+
 /****************************************************************/

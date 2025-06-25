@@ -103,6 +103,7 @@ function writeUserInfo() {
   const RAWNAME = document.getElementById("name").value.trim();
   const AGE = document.getElementById("age").value.trim();
   let NAME = RAWNAME.toLowerCase().replace(/\s+/g, "");
+    const uid = user.uid;
 
   if (!NAME || !AGE) {
     alert("Please fill out all fields.");
@@ -118,11 +119,13 @@ function writeUserInfo() {
   get(DATAREF).then((snapshot) => {
     if (snapshot.exists()) {
       update(DATAREF, { //update allowing non overwritten data
+        uid: uid,
         name: NAME,
         age: AGE
       });
     } else {
       set(DATAREF, {
+        uid: uid,
         name: NAME,
         age: AGE,
         gnomescore: 0,
