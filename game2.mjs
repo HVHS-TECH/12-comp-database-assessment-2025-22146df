@@ -9,6 +9,7 @@ window.keyPressed = keyPressed;
 
 import { initializeApp } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js";
 import { getDatabase, ref, set, get } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-database.js";
+import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-auth.js";
 
 const firebaseConfig = {
   apiKey: "AIzaSyA8viBZ-gKBknRREyTiDinnugjj6Rjrog0",
@@ -24,7 +25,21 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 const FB_GAMEDB = getDatabase(app);
 
+/**********************************************************/
+//GET AUTH
+const auth = getAuth();
+let currentUser = null;
 
+onAuthStateChanged(auth, (user) => {
+  if (user) {
+    currentUser = user;
+    console.log("User signed in:", user.displayName || user.email);
+  } else {
+    console.warn("No user signed in.");
+    window.location.href = "index.html";
+  }
+});
+// ************************************************************/
 /*******************************************************/
 
 const GAMEWIDTH = 500;
@@ -172,46 +187,69 @@ function restartGame() {
 	gameState = "play";
 }
 
-function saveScore() {
-    if (score < 0 || score > 700) {
-      console.warn(`Score (${score}) out of valid range (0 to 700). Not saved.`);
-      return;
-    }
-  let NAME = localStorage.getItem("username");
-  if (!NAME) {
-	console.warn("No username found. Score not saved.");
-	window.location.href = "index.html";
-	return;
+export function saveScore() {
+	if (score < 0 || score > 700) {
+	  console.warn(`Score (${score}) out of valid range (0 to 700). Not saved.`);
+	  return;
+	}
+	if (!currentUser) {
+	  console.warn("No authenticated user. Score not saved.");
+	  return;
+	}
+
+	let NAME = localStorage.getItem("username");
+	if (!NAME) {
+	  console.warn("No username found. Score not saved.");
+	  window.location.href = "index.html";
+	  return;
+	}
+
+	const RECORDPATH = `userInfo/${NAME}/gnomescore`;
+	const DATAREF = ref(FB_GAMEDB, RECORDPATH);
+
+	get(DATAREF)
+	  .then((snapshot) => {
+		const existingScore = snapshot.exists() ? snapshot.val() : 0; // Reading current high score
+
+		// Compare scores
+		if (score > existingScore) {
+		  return set(DATAREF, score).then(() =>
+			console.log(`New high score saved (${score}) at ${RECORDPATH}`)
+		  );
+		} else {
+		  console.log(`Score not saved. Existing score (${existingScore}) is higher or equal.`);
+		}
+	  })
+	  .catch((error) => {
+		console.error("Error accessing or writing score:", error);
+	  });
   }
+  let confirmState = false;
+  export function menuBtn() {
+	const btn = document.getElementById("backBtn");
+	if (!btn) return;
 
-  const RECORDPATH = `userInfo/${NAME}/coinscore`;
-  const DATAREF = ref(FB_GAMEDB, RECORDPATH);
+	let message = document.getElementById("menuMsg");
+	if (!message) {
+	  message = document.createElement("p");
+	  message.id = "menuMsg";
+	  message.textContent = "Click again to CONFIRM";
+	  message.style.color = "red";
+	  message.style.marginTop = "0.5rem";
+	  message.style.display = "none";
+	  btn.insertAdjacentElement("afterend", message);
+	}
 
-  get(DATAREF)
-	.then((snapshot) => {
-	  const existingScore = snapshot.exists() ? snapshot.val() : 0; 
+	if (!confirmState) {
+	  confirmState = true;
+	  message.style.display = "block";
 
-	  // Compare scores
-	  if (score > existingScore) {
-		return set(DATAREF, score).then(() =>
-		  console.log(`New high score saved (${score}) at ${RECORDPATH}`)
-		);
-	  } else {
-		console.log(`Score not saved. Existing score (${existingScore}) is higher or equal.`);
-	  }
-	})
-	.catch((error) => {
-	  console.error("Error accessing or writing score:", error);
-	});
-}
-
-export function backBtn() {
-  window.location.href = "choosegame.html";
-}
-
-document.addEventListener("DOMContentLoaded", () => {
-  const btn = document.getElementById("backBtn");
-  if (btn) {
-    btn.addEventListener("click", backBtn);
+	  setTimeout(() => {
+		confirmState = false;
+		message.style.display = "none";
+	  }, 5000); // 5 seconds to confirm
+	} else {
+	  window.location.href = "choosegame.html";
+	}
   }
-});
+  window.menuBtn = menuBtn;

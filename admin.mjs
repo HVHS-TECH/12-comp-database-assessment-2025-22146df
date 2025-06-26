@@ -30,6 +30,7 @@ import { query, orderByChild, limitToFirst, onValue, remove } from "https://www.
 
 
 
+
 //**************************************************************/
 // Firebase Configuration
 /**************************************************************/
@@ -178,3 +179,14 @@ function fb_deleteAll() {
     });
 
 }
+
+export function logoutUser() {
+  const auth = getAuth();
+  signOut(auth).then(() => {
+    console.log("✅ User signed out.");
+    window.location.href = "index.html"; // or redirect somewhere else
+  }).catch((error) => {
+    console.error("❌ Sign out error:", error);
+  });
+}
+window.logoutUser = logoutUser;

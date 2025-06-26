@@ -229,7 +229,9 @@ function ldrBoard2() {
           }
 
           const scores = [];
+          const data = snapshot.val();
           snapshot.forEach(child => {
+             console.log("All Coin Catcher scores data:", data);
             scores.push(child.val());
           });
 

@@ -45,9 +45,9 @@ onAuthStateChanged(auth, (user) => {
     window.location.href = "index.html";
   }
 });
-// ************************************************************
+// ************************************************************/
 // Game Constants & Variables
-// ************************************************************
+// ************************************************************/
 const GAMEHEIGHT = 500;
 const GAMEWIDTH = 500;
 const PLAYERSIZE = 25;
@@ -179,7 +179,7 @@ function gnomeDetectH() {
     if (gnomesH[i].x > GAMEWIDTH) {
       gnomesH[i].remove();
       gnomesH.splice(i, 1);
-      score += 1;
+      score += -1;
     }
   }
 }
@@ -198,7 +198,7 @@ function gnomeDetectV() {
     if (gnomesV[i].y > GAMEHEIGHT) {
       gnomesV[i].remove();
       gnomesV.splice(i, 1);
-      score += 1;
+      score += -111;
     }
   }
 }
@@ -326,5 +326,5 @@ export function saveScore() {
       window.location.href = "choosegame.html";
     }
   }
-  window.menuBtn = menuBtn
+  window.menuBtn = menuBtn;
   window.saveScore = saveScore;
