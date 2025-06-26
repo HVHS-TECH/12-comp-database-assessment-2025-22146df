@@ -68,27 +68,32 @@ export {
 // Return: n/a
 /******************************************************/
 function fb_WriteRec() {
-  const ADMINKEY = document.getElementById('adminKey').value;
-  const ADMINDATA = document.getElementById('adminWrite').value;
-  const RECORDPATH = "ADMINKEY";
+  const ADMINKEY = document.getElementById('adminKey').value.trim();
+  const ADMINDATA = document.getElementById('adminWrite').value.trim();
+
+  if (ADMINKEY === "") {
+    document.getElementById("p_fbWriteRec").innerText = "Please enter a key.";
+    return;
+  }
+
+  const RECORDPATH = ADMINKEY;
   const data = {
-    ADMINDATA
+    message: ADMINDATA
   };
-  const DATAREF = ref(FB_GAMEDB, RECORDPATH); // Create the reference
+
+  const DATAREF = ref(FB_GAMEDB, RECORDPATH);
 
   set(DATAREF, data)
     .then(() => {
-      console.log("Data Successfully written");
-      document.getElementById("p_fbWriteRec").innerText = "Data written to " + recordPath;
-
+      console.log("Data written to:", RECORDPATH);
+      document.getElementById("p_fbWriteRec").innerText = "Data written to " + RECORDPATH;
     })
     .catch((error) => {
       console.error("Error writing data:", error);
-      document.getElementById("p_fbWriteRec").innerText = "Failed to write to " + recordPath;
-
+      document.getElementById("p_fbWriteRec").innerText = "Failed to write to " + RECORDPATH;
     });
-
 }
+
 
 /******************************************************/
 // fb_ReadAll
