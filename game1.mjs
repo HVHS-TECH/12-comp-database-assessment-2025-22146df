@@ -179,7 +179,7 @@ function gnomeDetectH() {
     if (gnomesH[i].x > GAMEWIDTH) {
       gnomesH[i].remove();
       gnomesH.splice(i, 1);
-      score += -1;
+      score += 1;
     }
   }
 }
@@ -198,7 +198,7 @@ function gnomeDetectV() {
     if (gnomesV[i].y > GAMEHEIGHT) {
       gnomesV[i].remove();
       gnomesV.splice(i, 1);
-      score += -111;
+      score += 1;
     }
   }
 }
