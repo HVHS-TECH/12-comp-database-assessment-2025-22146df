@@ -173,6 +173,10 @@ function restartGame() {
 }
 
 function saveScore() {
+    if (score < 0 || score > 700) {
+      console.warn(`Score (${score}) out of valid range (0 to 700). Not saved.`);
+      return;
+    }
   let NAME = localStorage.getItem("username");
   if (!NAME) {
 	console.warn("No username found. Score not saved.");
