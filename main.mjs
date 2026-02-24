@@ -29,9 +29,9 @@ window.adminPage = adminPage;
 
 window.userLogin = userLogin;
 
-import { checkuser, gnomeButton, coingameBtn }
+import { checkUser, gnomeButton, coingameBtn }
   from './choosegame.mjs';
-window.checkuser = checkuser;
+window.checkUser = checkUser;
 window.gnomeButton = gnomeButton;
 window.coingameBtn = coingameBtn;
 

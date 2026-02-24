@@ -32,7 +32,10 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 const FB_GAMEDB = getDatabase(app);
 /**********************************************************/
-//GET AUTH
+//getAuth
+// Check if user is signed in and gets user info
+// If not signed in, redirect to index.html
+/*******************************************************/
 const auth = getAuth();
 let currentUser = null;
 

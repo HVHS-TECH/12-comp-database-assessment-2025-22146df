@@ -40,7 +40,7 @@ var username = localStorage.getItem("username");
 //****************************************************************/
 //Export functions to /main.mjs
 export {
-  checkuser,
+  checkUser,
   initChooseGame,
   gnomeButton,
   coingameBtn,
@@ -57,17 +57,15 @@ function fb_initialise() {
 /*******************/
 //Run Functions
 fb_initialise();
-checkuser();
+checkUser();
 
-/******************************************************/
-// checkuser
-// Called by choosegame.html on page load
-// Checks User is still logged in
-// Input: 'n/a'
-// Return: n/a
-/******************************************************/
+/**********************************************************/
+//checkUser
+// Check if user is signed in and gets user info
+// If not signed in, redirect to index.html
+/*******************************************************/
 
-function checkuser() {
+function checkUser() {
   console.log("Checking User");
   const auth = getAuth();
 
