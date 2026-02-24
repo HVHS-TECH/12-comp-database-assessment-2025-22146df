@@ -43,7 +43,7 @@ export {
   checkUser,
   initChooseGame,
   gnomeButton,
-  coingameBtn,
+  GTNgameBtn,
 };
 
 /***********************************************************/
@@ -124,12 +124,12 @@ function gnomeButton() {
 // Input: 'n/a'
 // Return: n/a
 /******************************************************/
-function coingameBtn() {
+function GTNgameBtn() {
   const auth = getAuth();
   onAuthStateChanged(auth, (user) => {
     if (user) {
-      console.log("Transporting to the coin game");
-      window.location.href = "game2.html";
+      console.log("Transporting to the GTN game");
+      window.location.href = "GTNgame.html";
     } else {
       alert("Error, taking you back to login page");
       window.location.href = "index.html";

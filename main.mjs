@@ -23,17 +23,17 @@ window.addEventListener("DOMContentLoaded", () => {
   } else {
     console.warn("submitBtn not found in DOM.");
   }
-}); // found from Chat GPT --  button wasn't working
+});
 
 window.adminPage = adminPage;
 
 window.userLogin = userLogin;
 
-import { checkUser, gnomeButton, coingameBtn }
+import { checkUser, gnomeButton, GTNgameBtn }
   from './choosegame.mjs';
 window.checkUser = checkUser;
 window.gnomeButton = gnomeButton;
-window.coingameBtn = coingameBtn;
+window.GTNgameBtn = GTNgameBtn;
 
 
 import {fb_WriteRec,fb_ReadAll,fb_deleteAll}
