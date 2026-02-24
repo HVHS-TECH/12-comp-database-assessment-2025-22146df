@@ -1,7 +1,32 @@
 /*******************************************************/
-console.log('%c game2.mjs', 'color: blue; background-color: white;');
+// GTNgame.mjs
+// Guess The Number Game
+// Made by Dylan Figliola
+/*******************************************************/
 
+console.log(
+  "%c🎲 GUESS THE NUMBER 🎲\n %cReady to test your luck? 🔥",
+  `
+  color: #00ffcc;
+  background: linear-gradient(90deg, #000000, #111111);
+  font-size: 28px;
+  font-weight: 900;
+  padding: 10px 20px;
+  border-radius: 10px;
+  text-shadow: 0 0 10px #00ffcc;
+  letter-spacing: 2px;
+  `,
+  `
+  color: #ff66ff;
+  font-size: 18px;
+  font-weight: bold;
+  text-shadow: 0 0 8px #ff00ff;
+  `
+);
 
+/*******************************************************/
+//FIREBASE IMPORTS AND PAGE SETUP
+/*******************************************************/
 window.setup = setup;
 window.draw = draw;
 

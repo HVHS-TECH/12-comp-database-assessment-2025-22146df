@@ -5,9 +5,42 @@
 // By Dylan Figliola
 // ************************************************************
 
-console.log('%c game1.mjs', 'color: blue; background-color: white;');
+console.log(
+  "%c🐾 GNOME DODGER 🐾",
+  `
+  color: #00ff99;
+  background: black;
+  font-size: 26px;
+  font-weight: bold;
+  padding: 8px 16px;
+  border-radius: 6px;
+  letter-spacing: 1.5px;
+  `
+);
 
+console.log(
+  "%cDodge traps, collect coins, survive!",
+  `
+  color: #ffff66;
+  font-size: 16px;
+  font-style: italic;
+  padding-left: 4px;
+  `
+);
 
+console.log(
+  "%cUse arrow keys or WASD to move → ⬅️ ⬆️ ⬇️",
+  `
+  color: #66ccff;
+  font-size: 16px;
+  font-style: italic;
+  padding-left: 4px;
+  `
+);
+
+/*******************************************************/
+//FIREBASE IMPORTS AND PAGE SETUP
+/*******************************************************/
 window.setup = setup;
 window.draw = draw;
 window.preload = preload;
@@ -302,32 +335,60 @@ export function saveScore() {
   }
   let confirmState = false;
 
-  export function menuBtn() {
+export function menuBtn() {
     const btn = document.getElementById("backBtn");
     if (!btn) return;
 
     let message = document.getElementById("menuMsg");
     if (!message) {
-      message = document.createElement("p");
-      message.id = "menuMsg";
-      message.textContent = "Click again to CONFIRM";
-      message.style.color = "red";
-      message.style.marginTop = "0.5rem";
-      message.style.display = "none";
-      btn.insertAdjacentElement("afterend", message);
+        message = document.createElement("p");
+        message.id = "menuMsg";
+        message.textContent = "⚠️ CLICK AGAIN TO CONFIRM ⚠️";
+
+        // Styling
+        message.style.width = btn.offsetWidth + "px"; // match button width
+        message.style.fontSize = "18px";
+        message.style.fontWeight = "bold";
+        message.style.color = "#00ffff"; // neon cyan for contrast
+        message.style.background = "linear-gradient(90deg, #ff00cc, #6600ff)"; // gradient background
+        message.style.padding = "8px 0"; // vertical padding only
+        message.style.borderRadius = "8px";
+        message.style.marginTop = "0.5rem";
+        message.style.display = "none";
+        message.style.textAlign = "center";
+        message.style.letterSpacing = "1.5px";
+        message.style.textShadow = "0 0 6px #00ffff, 0 0 12px #00ccff";
+        message.style.animation = "pulse 1s infinite alternate";
+
+        btn.insertAdjacentElement("afterend", message);
     }
 
     if (!confirmState) {
-      confirmState = true;
-      message.style.display = "block";
+        confirmState = true;
+        message.style.display = "block";
 
-      setTimeout(() => {
-        confirmState = false;
-        message.style.display = "none";
-      }, 5000); // 5 seconds to confirm
+        setTimeout(() => {
+            confirmState = false;
+            message.style.display = "none";
+        }, 5000);
     } else {
-      window.location.href = "choosegame.html";
+        window.location.href = "choosegame.html";
     }
-  }
+};
+
+// Add pulse animation if not already added
+if (!document.getElementById("pulseStyle")) {
+    const style = document.createElement('style');
+    style.id = "pulseStyle";
+    style.textContent = `
+    @keyframes pulse {
+        0% { transform: scale(1); opacity: 0.9; }
+        50% { transform: scale(1.1); opacity: 1; }
+        100% { transform: scale(1); opacity: 0.9; }
+    }`;
+    document.head.appendChild(style);
+}
+/******************************************************/
+// button detections (remove this)
   window.menuBtn = menuBtn;
   window.saveScore = saveScore;
