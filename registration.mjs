@@ -102,6 +102,11 @@ function writeUserInfo() {
   const user = getAuth().currentUser;
   const RAWNAME = document.getElementById("name").value.trim();
   const AGE = document.getElementById("age").value.trim();
+  const PHONENUMBER = document.getElementById("phone").value.trim();
+  const STREET = document.getElementById("street").value.trim();
+  const SUBURB = document.getElementById("suburb").value.trim();
+  const CITY = document.getElementById("city").value.trim();
+  const COUNTRY = document.getElementById("country").value.trim();
   let NAME = RAWNAME.toLowerCase().replace(/\s+/g, "");
     const uid = user.uid;
 
@@ -127,7 +132,13 @@ if (!NAME || !AGE) {
       update(DATAREF, { //update allowing non overwritten data
         uid: uid,
         name: NAME,
-        age: AGE
+        age: AGE,
+        cell: PHONENUMBER,
+        street: STREET,
+        suburb: SUBURB,
+        city: CITY,
+        country: COUNTRY
+
       });
     } else {
       set(DATAREF, {

@@ -22,6 +22,13 @@
       border-radius: 10px;
       box-shadow: 0 0 12px rgba(0, 0, 0, 0.4);
     }
+    #address {
+      margin-right: 10rem;
+      margin-top: 0;
+      background-color: var(--space-cadet);
+      border-radius: 10px;
+      padding-top: 0%;
+    }
 
     button {
       background-color: var(--electric-blue);
@@ -40,9 +47,10 @@
     }
 
     label {
-      display: block;
+      display: list-item;
       margin-top: 1rem;
       margin-bottom: 0.5rem;
+      color: var(--electric-blue);
     }
 
     input {

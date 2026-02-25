@@ -18,25 +18,6 @@ console.log(
   `
 );
 
-console.log(
-  "%cDodge traps, collect coins, survive!",
-  `
-  color: #ffff66;
-  font-size: 16px;
-  font-style: italic;
-  padding-left: 4px;
-  `
-);
-
-console.log(
-  "%cUse arrow keys or WASD to move → ⬅️ ⬆️ ⬇️",
-  `
-  color: #66ccff;
-  font-size: 16px;
-  font-style: italic;
-  padding-left: 4px;
-  `
-);
 
 /*******************************************************/
 //FIREBASE IMPORTS AND PAGE SETUP
