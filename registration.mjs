@@ -107,6 +107,7 @@ function writeUserInfo() {
   const SUBURB = document.getElementById("suburb").value.trim();
   const CITY = document.getElementById("city").value.trim();
   const COUNTRY = document.getElementById("country").value.trim();
+  const SCHOOL = document.getElementById("school").value.trim();
   let NAME = RAWNAME.toLowerCase().replace(/\s+/g, "");
     const uid = user.uid;
 
@@ -137,7 +138,8 @@ if (!NAME || !AGE) {
         street: STREET,
         suburb: SUBURB,
         city: CITY,
-        country: COUNTRY
+        country: COUNTRY,
+        "location of study": SCHOOL
 
       });
     } else {
@@ -146,7 +148,13 @@ if (!NAME || !AGE) {
         name: NAME,
         age: AGE,
         gnomescore: 0,
-        coinscore: 0
+        coinscore: 0,
+        cell: PHONENUMBER,
+        street: STREET,
+        suburb: SUBURB,
+        city: CITY,
+        country: COUNTRY,
+        "location of study": SCHOOL
       });
     }
 
