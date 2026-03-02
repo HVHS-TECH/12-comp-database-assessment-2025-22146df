@@ -63,6 +63,13 @@ function fb_initialise() {
 // Return: n/a
 /******************************************************/
 export function userLogin() {
+  const user = getAuth().currentUser;
+  if (user) {
+    console.log("User already logged in:", user);
+    document.getElementById('userinfotext').innerText = "Already logged in as: " + (user.displayName || "Unknown User");
+    window.location.href = "choosegame.html";
+    
+  }else{
   const AUTH = getAuth();
   const PROVIDER = new GoogleAuthProvider();
   PROVIDER.setCustomParameters({
@@ -86,6 +93,7 @@ export function userLogin() {
       document.getElementById('userinfotext').innerText = "The Login has failed";
       throw error; // rethrow to allow .catch in caller to work
     });
+}
 }
 
 
@@ -123,7 +131,7 @@ if (!NAME || !AGE) {
 } else if (!user) {
   alert("PLEASE LOG IN WITH GOOGLE");
   return;
-}
+} 
 
   const recordPath = "userInfo/" + NAME;
   const DATAREF = ref(FB_GAMEDB, recordPath);
@@ -210,4 +218,10 @@ function adminPage() {
 
 /****************************************************/
 //END
+/****************************************************/
+/****************************************************/
+//TO DO LIST
+// - add a username restriction field, where if a user is creating an account, they cannot enter a username that already exists in the database.
+//  This is to prevent overwriting other users data, and also to make sure users can only access their own data. 
+
 /****************************************************/

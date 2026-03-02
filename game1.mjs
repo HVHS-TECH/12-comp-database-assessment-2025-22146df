@@ -278,98 +278,85 @@ function restartGame() {
 }
 
 export function saveScore() {
-    if (score < 0 || score > 700) {
-      console.warn(`Score (${score}) out of valid range (0 to 700). Not saved.`);
-      return;
-    }
-    if (!currentUser) {
-      console.warn("No authenticated user. Score not saved.");
-      return;
-    }
-
-    let NAME = localStorage.getItem("username");
-    if (!NAME) {
-      console.warn("No username found. Score not saved.");
-      window.location.href = "index.html";
-      return;
-    }
-
-    const RECORDPATH = `userInfo/${NAME}/gnomescore`;
-    const DATAREF = ref(FB_GAMEDB, RECORDPATH);
-
-    get(DATAREF)
-      .then((snapshot) => {
-        const existingScore = snapshot.exists() ? snapshot.val() : 0; // Reading current high score
-
-        // Compare scores
-        if (score > existingScore) {
-          return set(DATAREF, score).then(() =>
-            console.log(`New high score saved (${score}) at ${RECORDPATH}`)
-          );
-        } else {
-          console.log(`Score not saved. Existing score (${existingScore}) is higher or equal.`);
-        }
-      })
-      .catch((error) => {
-        console.error("Error accessing or writing score:", error);
-      });
+  if (score < 0 || score > 700) {
+    console.warn(`Score (${score}) out of valid range (0 to 700). Not saved.`);
+    return;
   }
-  let confirmState = false;
+  if (!currentUser) {
+    console.warn("No authenticated user. Score not saved.");
+    return;
+  }
+
+  let NAME = localStorage.getItem("username");
+  if (!NAME) {
+    console.warn("No username found. Score not saved.");
+    window.location.href = "index.html";
+    return;
+  }
+
+  const RECORDPATH = `userInfo/${NAME}/gnomescore`;
+  const DATAREF = ref(FB_GAMEDB, RECORDPATH);
+
+  get(DATAREF)
+    .then((snapshot) => {
+      const existingScore = snapshot.exists() ? snapshot.val() : 0; // Reading current high score
+
+      // Compare scores
+      if (score > existingScore) {
+        return set(DATAREF, score).then(() =>
+          console.log(`New high score saved (${score}) at ${RECORDPATH}`)
+        );
+      } else {
+        console.log(`Score not saved. Existing score (${existingScore}) is higher or equal.`);
+      }
+    })
+    .catch((error) => {
+      console.error("Error accessing or writing score:", error);
+    });
+}
+let confirmState = false;
 
 export function menuBtn() {
-    const btn = document.getElementById("backBtn");
-    if (!btn) return;
+  const btn = document.getElementById("backBtn");
+  if (!btn) return;
 
-    let message = document.getElementById("menuMsg");
-    if (!message) {
-        message = document.createElement("p");
-        message.id = "menuMsg";
-        message.textContent = "⚠️ CLICK AGAIN TO CONFIRM ⚠️";
+  let message = document.getElementById("menuMsg");
+  if (!message) {
+    message = document.createElement("p");
+    message.id = "menuMsg";
+    message.textContent = "⚠️ CLICK AGAIN TO CONFIRM ⚠️";
 
-        // Styling
-        message.style.width = btn.offsetWidth + "px"; // match button width
-        message.style.fontSize = "18px";
-        message.style.fontWeight = "bold";
-        message.style.color = "#00ffff"; // neon cyan for contrast
-        message.style.background = "linear-gradient(90deg, #ff00cc, #6600ff)"; // gradient background
-        message.style.padding = "8px 0"; // vertical padding only
-        message.style.borderRadius = "8px";
-        message.style.marginTop = "0.5rem";
-        message.style.display = "none";
-        message.style.textAlign = "center";
-        message.style.letterSpacing = "1.5px";
-        message.style.textShadow = "0 0 6px #00ffff, 0 0 12px #00ccff";
-        message.style.animation = "pulse 1s infinite alternate";
+    // Styling
+    message.style.width = btn.offsetWidth + 200 + "px";
+    message.style.fontSize = "18px";
+    message.style.fontWeight = "bold";
+    message.style.color = "#00ffff";
+    message.style.background = "linear-gradient(90deg, #7092cf, #4b8ccd)"; // gradient background
+    message.style.padding = "8px 0"; // vertical padding only
+    message.style.borderRadius = "8px";
+    message.style.marginTop = "0.5rem";
+    message.style.display = "none";
+    message.style.textAlign = "center";
+    message.style.letterSpacing = "1.5px";
+    message.style.textShadow = "0 0 6px #00ffff, 0 0 12px #00ccff";
+    message.style.animation = "pulse 1s infinite alternate";
 
-        btn.insertAdjacentElement("afterend", message);
-    }
+    btn.insertAdjacentElement("afterend", message);
+  }
 
-    if (!confirmState) {
-        confirmState = true;
-        message.style.display = "block";
+  if (!confirmState) {
+    confirmState = true;
+    message.style.display = "block";
 
-        setTimeout(() => {
-            confirmState = false;
-            message.style.display = "none";
-        }, 5000);
-    } else {
-        window.location.href = "choosegame.html";
-    }
+    setTimeout(() => {
+      confirmState = false;
+      message.style.display = "none";
+    }, 5000);
+  } else {
+    window.location.href = "choosegame.html";
+  }
 };
-
-// Add pulse animation if not already added
-if (!document.getElementById("pulseStyle")) {
-    const style = document.createElement('style');
-    style.id = "pulseStyle";
-    style.textContent = `
-    @keyframes pulse {
-        0% { transform: scale(1); opacity: 0.9; }
-        50% { transform: scale(1.1); opacity: 1; }
-        100% { transform: scale(1); opacity: 0.9; }
-    }`;
-    document.head.appendChild(style);
-}
 /******************************************************/
 // button detections (remove this)
-  window.menuBtn = menuBtn;
-  window.saveScore = saveScore;
+window.menuBtn = menuBtn;
+window.saveScore = saveScore;

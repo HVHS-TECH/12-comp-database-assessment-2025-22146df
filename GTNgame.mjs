@@ -69,8 +69,8 @@ onAuthStateChanged(auth, (user) => {
 // ************************************************************/
 /*******************************************************/
 
-const GAMEWIDTH = 1000;
-const GAMEHEIGHT = 500;
+const GAMEWIDTH = window.innerWidth;
+const GAMEHEIGHT = 600;
 
 const PLAYERSIZE = 20
 const MOVEMENTSPEED = 5;
@@ -84,9 +84,9 @@ var coins;
 var gameState = "play";
 
 function setup() {
-	console.log("setup: ");
+  console.log("setup: ");
 
-	 new Canvas(GAMEWIDTH, GAMEHEIGHT);
+  new Canvas(GAMEWIDTH, GAMEHEIGHT);
 }
 
 /*******************************************************/
@@ -114,10 +114,26 @@ export function menuBtn() {
   if (!message) {
     message = document.createElement("p");
     message.id = "menuMsg";
-    message.textContent = "Click again to CONFIRM";
+    message.textContent = "⚠️ CLICK AGAIN TO CONFIRM ⚠️";
     message.style.color = "red";
     message.style.marginTop = "0.5rem";
     message.style.display = "none";
+    btn.insertAdjacentElement("afterend", message);
+    // Styling
+    message.style.width = btn.offsetWidth + 200 + "px";
+    message.style.fontSize = "18px";
+    message.style.fontWeight = "bold";
+    message.style.color = "#00ffff";
+    message.style.background = "linear-gradient(90deg, #7092cf, #4b8ccd)"; // gradient background
+    message.style.padding = "8px 0"; // vertical padding only
+    message.style.borderRadius = "8px";
+    message.style.marginTop = "0.5rem";
+    message.style.display = "none";
+    message.style.textAlign = "center";
+    message.style.letterSpacing = "1.5px";
+    message.style.textShadow = "0 0 6px #00ffff, 0 0 12px #00ccff";
+    message.style.animation = "pulse 1s infinite alternate";
+
     btn.insertAdjacentElement("afterend", message);
   }
 
