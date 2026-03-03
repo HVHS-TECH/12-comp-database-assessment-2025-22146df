@@ -5,17 +5,37 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Database Project</title>
-  <link rel="stylesheet" href="css/style.css" />
+  <link rel="stylesheet" href="css/ldrBoard.css" />
 </head>
 
+<!--***************************************************
+  BODY
+****************************************************-->
 <body>
     <nav class="pages">
     <ol>
         <li class="page"><a href="choosegame.html">Games</a></li> 
         <li class="page" id="Current">Leaderboards</li>
         <li class="page"><a href="admin.html">ADMIN LOGIN</a></li>
-        
-        
-    
+
     </ol>
+    
+    <div class="column">
+    <h1>LEADERBOARDS</h1>
+
+    <button id="ldrBtn">Gnome Top Scores</button>
+    <div id="ldrMenu" class="dropdown hidden">
+      <p>Gnome Dodger Top Scores:</p>
+      <ul id="scoreList1"></ul>
+    </div>
+
+    <button id="ldrBtn2">Coin Catcher Top Scores</button>
+    <div id="ldrMenu2" class="dropdown hidden">
+      <p>Coin Catcher Top Scores:</p>
+      <ul id="scoreList2"></ul>
+    </div>
+  </div>
+</div>
+<script type="module" src="./leaderboards.mjs"></script>
+ <p>Made with p5.play and Google Firebase</p>
 </body>

@@ -223,5 +223,6 @@ function adminPage() {
 //TO DO LIST
 // - add a username restriction field, where if a user is creating an account, they cannot enter a username that already exists in the database.
 //  This is to prevent overwriting other users data, and also to make sure users can only access their own data. 
+// - Separate user login and onauthstatechanged and fbinit into a diffrent file, so that the games can import the user data without having to also import the registration functions.
 
 /****************************************************/

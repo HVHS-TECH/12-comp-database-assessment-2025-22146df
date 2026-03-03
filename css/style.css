@@ -75,8 +75,10 @@
         margin-bottom: 10px;
       }
     }
-
     
+  /******************************************************/
+  /* NAVBAR CSS
+  /******************************************************/
 nav.pages {
       background-color: var(--space-cadet);
       padding: 1rem;

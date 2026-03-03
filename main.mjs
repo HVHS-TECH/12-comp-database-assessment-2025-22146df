@@ -60,5 +60,9 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 });
 
+import { ldrBoard1, ldrBoard2, fb_initialise } from './leaderboards.mjs';
+window.ldrBoard1 = ldrBoard1;
+window.ldrBoard2 = ldrBoard2;
+window.fb_initialise = fb_initialise;
 
 /****************************************************************/

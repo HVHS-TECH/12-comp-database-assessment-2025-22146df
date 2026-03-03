@@ -17,57 +17,33 @@ body {
   flex-direction: column;
   align-items: center;
 }
-
-h1 {
-  color: var(--electric-blue);
-  text-align: center;
-  margin-bottom: 2rem;
-}
-
-.column {
-  background-color: var(--space-cadet);
-  padding: 2rem;
-  border-radius: 10px;
-  box-shadow: 0 0 15px rgba(0, 0, 0, 0.5);
-  max-width: 500px;
-  width: 100%;
-  text-align: center;
-}
-
 button {
-  background-color: var(--electric-blue);
-  color: var(--rich-black);
-  border: none;
-  padding: 18px 28px;    
-  margin: 12px 10px;
-  border-radius: 10px;
-  font-size: 1.2rem;        
-  font-weight: bold;
-  cursor: pointer;
-  transition: background-color 0.3s ease;
-  min-width: 200px;        
-}
+      background-color: var(--electric-blue);
+      color: var(--rich-black);
+      border: none;
+      padding: 10px 16px;
+      border-radius: 5px;
+      font-weight: bold;
+      cursor: pointer;
+      margin: 10px 5px 10px 0;
+      transition: background-color 0.3s ease;
+    }
+
+    button:hover {
+      background-color: var(--aero);
+    }
+
+    label {
+      display: list-item;
+      margin-top: 1rem;
+      margin-bottom: 0.5rem;
+      color: var(--electric-blue);
+    }
 
 
-button:hover {
-  background-color: var(--aero);
-}
-
-p {
-  font-size: 1rem;
-  margin-bottom: 1rem;
-}
-
-@media (max-width: 600px) {
-  .column {
-    padding: 1.5rem;
-  }
-
-  button {
-    width: 100%;
-    margin-bottom: 10px;
-  }
-}
+/*******************************************************/
+/* LEADERBOARD CSS
+/*******************************************************/    
 .hidden {
   display: none;
 }
@@ -214,8 +190,9 @@ p {
   flex: 1 1 300px;
   max-width: 500px;
 }
-
-
+ /******************************************************/
+  /* NAVBAR CSS
+  /******************************************************/
 nav.pages {
       background-color: var(--space-cadet);
       padding: 1rem;
