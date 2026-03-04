@@ -27,32 +27,16 @@ window.draw = draw;
 window.preload = preload;
 window.keyPressed = keyPressed;
 
-
-import { initializeApp } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js";
-import { getDatabase, ref, set, get, } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-database.js";
-import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-auth.js";
-
-const firebaseConfig = {
-  apiKey: "AIzaSyA8viBZ-gKBknRREyTiDinnugjj6Rjrog0",
-  authDomain: "comp-2025-dylan-f.firebaseapp.com",
-  databaseURL: "https://comp-2025-dylan-f-default-rtdb.asia-southeast1.firebasedatabase.app",
-  projectId: "comp-2025-dylan-f",
-  storageBucket: "comp-2025-dylan-f.appspot.com",
-  messagingSenderId: "133223974410",
-  appId: "1:133223974410:web:d1cde3ac980749bde601f3",
-  measurementId: "G-WHVZ7GW4CF"
-};
-
-const app = initializeApp(firebaseConfig);
-const FB_GAMEDB = getDatabase(app);
+import {FB_GAMEAPP, FB_GAMEDB, FB_AUTH } from './fb_core.mjs';
+import { ref, query, orderByChild, limitToLast, onValue, get, set } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-database.js";
+import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-auth.js";
 /**********************************************************/
 //getAuth
 // Check if user is signed in and gets user info
 // If not signed in, redirect to index.html
 /*******************************************************/
-const auth = getAuth();
+const auth = FB_AUTH;
 let currentUser = null;
-
 onAuthStateChanged(auth, (user) => {
   if (user) {
     currentUser = user;
@@ -80,6 +64,7 @@ let startTime, timeLimit = 45, elapsedTime;
 let gnomesH = [], gnomesV = [];
 let imgPlayer, imgGnome, imgBG;
 let gameState = "start";
+
 
 // ************************************************************
 // Preload assets
@@ -287,21 +272,14 @@ export function saveScore() {
     return;
   }
 
-  let NAME = localStorage.getItem("username");
-  if (!NAME) {
-    console.warn("No username found. Score not saved.");
-    window.location.href = "index.html";
-    return;
-  }
-
+  const NAME = currentUser.displayName || currentUser.email; // use Firebase info
   const RECORDPATH = `userInfo/${NAME}/gnomescore`;
   const DATAREF = ref(FB_GAMEDB, RECORDPATH);
 
   get(DATAREF)
     .then((snapshot) => {
-      const existingScore = snapshot.exists() ? snapshot.val() : 0; // Reading current high score
+      const existingScore = snapshot.exists() ? snapshot.val() : 0;
 
-      // Compare scores
       if (score > existingScore) {
         return set(DATAREF, score).then(() =>
           console.log(`New high score saved (${score}) at ${RECORDPATH}`)
@@ -314,7 +292,6 @@ export function saveScore() {
       console.error("Error accessing or writing score:", error);
     });
 }
-let confirmState = false;
 
 export function menuBtn() {
   const btn = document.getElementById("backBtn");

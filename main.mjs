@@ -3,18 +3,17 @@
 // Main entry for index.html
 // Written by Dylan Figliola, Term 2 2025
 /**************************************************************/
-const COL_C = 'white';
-const COL_B = '#CD7F32';
-console.log('%c main.mjs',
-  'color: blue; background-color: white;');
 
+console.log(
+  '%c main.mjs ',
+  'color: #FF6F61; background-color: #0D0D0D; font-weight: bold; font-size: 16px; padding: 6px 12px; border-radius: 2px; border: 2px solid #ff0000;'
+);
 /**************************************************************/
-// Import all external constants & functions required
+/****************************************************************/
+//Functions from registration.mjs
+//Functions for user registration, and admin verification
 /**************************************************************/
-// Import all the constants & functions required from fb_io module
-
-
-import { writeUserInfo, userLogin,adminPage } from './registration.mjs';
+import { writeUserInfo, adminPage } from './registration.mjs';
 
 window.addEventListener("DOMContentLoaded", () => {
   const btn = document.getElementById("submitBtn");
@@ -26,15 +25,18 @@ window.addEventListener("DOMContentLoaded", () => {
 });
 
 window.adminPage = adminPage;
-
-window.userLogin = userLogin;
-
-import { checkUser, gnomeButton, GTNgameBtn }
-  from './choosegame.mjs';
-window.checkUser = checkUser;
+/****************************************************************/
+//Functions from choosegame.mjs
+//Functions for game selection buttons on choosegame.html
+/**************************************************************/
+import { gnomeButton, GTNgameBtn } from './choosegame.mjs';
 window.gnomeButton = gnomeButton;
 window.GTNgameBtn = GTNgameBtn;
 
+/****************************************************************/
+//Functions from admin.mjs
+//Functions for admin page buttons and database management
+/**************************************************************/
 
 import {fb_WriteRec,fb_ReadAll,fb_deleteAll}
   from './admin.mjs';
@@ -60,9 +62,26 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 });
 
-import { ldrBoard1, ldrBoard2, fb_initialise } from './leaderboards.mjs';
+/****************************************************************/
+//Functions from leaderboards.mjs
+//Functions for leaderboard buttons and displaying scores
+//Leaderboards for GTN and Gnome Dodger
+/**************************************************************/
+import { ldrBoard1, ldrBoard2, } from './leaderboards.mjs';
 window.ldrBoard1 = ldrBoard1;
 window.ldrBoard2 = ldrBoard2;
-window.fb_initialise = fb_initialise;
 
 /****************************************************************/
+//Functions from fb_core.mjs
+//Common functions for firebase database connection, user login and authentication
+/**************************************************************/
+import { fb_initialise, fb_userLogin, fb_checkUser,  fb_startup } from './fb_core.mjs';
+window.fb_initialise = fb_initialise;
+window.fb_checkUser = fb_checkUser;
+window.fb_startup = fb_startup;
+document.addEventListener("DOMContentLoaded", () => {
+  const btn = document.getElementById("loginBtn");
+  if (btn) {
+    btn.addEventListener("click", fb_userLogin);
+  }
+});

@@ -1,84 +1,27 @@
-console.log('%c leaderboards.mjs', 'color: aqua; background-color: white;');
 
-//**************************************************************/
-// Importing required functions
+/**********************************************************/ 
+//Leaderboards page
+//Functions for leaderboard buttons and displaying scores
+//Leaderboards for GTN and Gnome Dodger
+
+console.log(
+  '%c leaderboards.mjs ',
+  'color: #00FFF7; background-color: #1B263B; font-weight: bold; font-size: 14px; padding: 4px 8px; border-radius: 4px;'
+);
 /**************************************************************/
-import { initializeApp } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js";
-import { getAnalytics } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-analytics.js";
-import { getDatabase } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-database.js";
-import { getAuth, GoogleAuthProvider, signInWithPopup } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-auth.js";
+// Essential Firebase Imports
+import {FB_GAMEAPP, FB_GAMEDB, FB_AUTH } from './fb_core.mjs';
+import { ref, query, orderByChild, limitToLast, onValue } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-database.js";
 import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-auth.js";
-import { signOut } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-auth.js";
-import { ref, set } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-database.js";
-import { get } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-database.js";
-import { update } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-database.js";
-import { query, orderByChild, limitToFirst, onValue, limitToLast } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-database.js";
-
-
-
-//**************************************************************/
-// Firebase Configuration
-/**************************************************************/
-const COL_C = "#6FE0E8"; // electric-blue
-const COL_B = "#2A2A5A"; // space-cadet
-const firebaseConfig = {
-    apiKey: "AIzaSyA8viBZ-gKBknRREyTiDinnugjj6Rjrog0",
-    authDomain: "comp-2025-dylan-f.firebaseapp.com",
-    databaseURL: "https://comp-2025-dylan-f-default-rtdb.asia-southeast1.firebasedatabase.app",
-    projectId: "comp-2025-dylan-f",
-    storageBucket: "comp-2025-dylan-f.firebasestorage.app",
-    messagingSenderId: "133223974410",
-    appId: "1:133223974410:web:d1cde3ac980749bde601f3",
-    measurementId: "G-WHVZ7GW4CF"
-};
-
-// Initialize Firebase app globally
-const FB_GAMEAPP = initializeApp(firebaseConfig);
-const analytics = getAnalytics(FB_GAMEAPP);
-const FB_GAMEDB = getDatabase(FB_GAMEAPP);
-var username = localStorage.getItem("username");
+let username = localStorage.getItem("username");
 //****************************************************************/
-/***********************************************************/
-//intiialise firebase
-
-function fb_initialise() {
-    console.log('%c fb_initialise(): ', 'color: ' + COL_C + '; background-color: ' + COL_B + ';');
-    console.info(FB_GAMEDB);
-}
 /******************************************************/
 //EXPORT FUNCTIONS
 export {
     ldrBoard1,
     ldrBoard2,
-    fb_initialise,
+
 };
-/*******************/
-//Run Functions
-fb_initialise();
-checkUser();
-
-/**********************************************************/
-//checkUser
-// Check if user is signed in and gets user info
-// If not signed in, redirect to index.html
-/*******************************************************/
-
-function checkUser(_auth) {
-    console.log("Checking User");
-    _auth = getAuth();
-
-    onAuthStateChanged(_auth, (user) => {
-        if (user) {
-            console.log("User is still logged in:", user.email);
-        } else {
-            console.log("No user logged in, redirecting to login...");
-            if (!window.location.href.includes("index.html")) {
-                window.location.href = "index.html";
-            }
-        }
-    });
-}
-
 /******************************************************/
 // ldrBoard1 Gnome scores
 // Called by choosegame.html on page load
@@ -89,7 +32,7 @@ function checkUser(_auth) {
 function ldrBoard1() {
     console.log("Loading Gnome Dodger Leaderboard");
   const medals = ["🥇", "🥈", "🥉"];
-  const auth = getAuth();
+  const auth = FB_AUTH;
 
   onAuthStateChanged(auth, (user) => {
     if (user) {
@@ -150,7 +93,7 @@ function ldrBoard1() {
 /******************************************************/
 function ldrBoard2() {
   const medals = ["🥇", "🥈", "🥉"];
-  const auth = getAuth();
+  const auth = FB_AUTH;
   onAuthStateChanged(auth, (user) => {
     if (user) {
       const ldrMenu2 = document.getElementById("ldrMenu2");

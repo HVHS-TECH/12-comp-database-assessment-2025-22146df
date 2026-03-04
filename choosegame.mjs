@@ -1,86 +1,24 @@
-console.log('%c choosegame.mjs', 'color: blue; background-color: white;');
+console.log(
+  '%c choosegame.mjs ',
+  'color: #00FF00; background-color: #001100; font-weight: bold; font-size: 14px; padding: 4px 8px; border-radius: 4px;'
+);
 
-//**************************************************************/
-// Importing required functions
+
+
 /**************************************************************/
-import { initializeApp } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js";
-import { getAnalytics } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-analytics.js";
-import { getDatabase } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-database.js";
-import { getAuth, GoogleAuthProvider, signInWithPopup } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-auth.js";
+// Essential Firebase Imports
+import {FB_GAMEAPP, FB_GAMEDB, FB_AUTH } from './fb_core.mjs';
+import { ref, query, orderByChild, limitToLast, onValue } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-database.js";
 import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-auth.js";
-import { signOut } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-auth.js";
-import { ref, set } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-database.js";
-import { get } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-database.js";
-import { update } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-database.js";
-import { query, orderByChild, limitToFirst, onValue, limitToLast } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-database.js";
-
-
-
-//**************************************************************/
-// Firebase Configuration
-/**************************************************************/
-const COL_C = "#6FE0E8"; // electric-blue
-const COL_B = "#2A2A5A"; // space-cadet
-const firebaseConfig = {
-  apiKey: "AIzaSyA8viBZ-gKBknRREyTiDinnugjj6Rjrog0",
-  authDomain: "comp-2025-dylan-f.firebaseapp.com",
-  databaseURL: "https://comp-2025-dylan-f-default-rtdb.asia-southeast1.firebasedatabase.app",
-  projectId: "comp-2025-dylan-f",
-  storageBucket: "comp-2025-dylan-f.firebasestorage.app",
-  messagingSenderId: "133223974410",
-  appId: "1:133223974410:web:d1cde3ac980749bde601f3",
-  measurementId: "G-WHVZ7GW4CF"
-};
-
-// Initialize Firebase app globally
-const FB_GAMEAPP = initializeApp(firebaseConfig);
-const analytics = getAnalytics(FB_GAMEAPP);
-const FB_GAMEDB = getDatabase(FB_GAMEAPP);
 var username = localStorage.getItem("username");
+//**************************************************************/
 //****************************************************************/
 //Export functions to /main.mjs
 export {
-  checkUser,
   initChooseGame,
   gnomeButton,
   GTNgameBtn,
 };
-
-/***********************************************************/
-//intiialise firebase
-
-function fb_initialise() {
-  console.log('%c fb_initialise(): ', 'color: ' + COL_C + '; background-color: ' + COL_B + ';');
-  console.info(FB_GAMEDB);
-}
-/******************************************************/
-/*******************/
-//Run Functions
-fb_initialise();
-checkUser();
-
-/**********************************************************/
-//checkUser
-// Check if user is signed in and gets user info
-// If not signed in, redirect to index.html
-/*******************************************************/
-
-function checkUser() {
-  console.log("Checking User");
-  const auth = getAuth();
-
-  onAuthStateChanged(auth, (user) => {
-    if (user) {
-      console.log("User is still logged in:", user.email);
-    } else {
-      console.log("No user logged in, redirecting to login...");
-      if (!window.location.href.includes("index.html")) {
-        window.location.href = "index.html";
-      }
-    }
-  });
-}
-
 
 /******************************************************/
 // initchoosegame
@@ -106,7 +44,7 @@ function initChooseGame() {
 // Return: n/a
 /******************************************************/
 function gnomeButton() {
-  const auth = getAuth();
+  const auth = FB_AUTH;
   onAuthStateChanged(auth, (user) => {
     if (user) {
       console.log("Transporting to the Gnome game");
@@ -125,7 +63,7 @@ function gnomeButton() {
 // Return: n/a
 /******************************************************/
 function GTNgameBtn() {
-  const auth = getAuth();
+  const auth = FB_AUTH;
   onAuthStateChanged(auth, (user) => {
     if (user) {
       console.log("Transporting to the GTN game");
