@@ -13,7 +13,7 @@ console.log(
 //Functions from registration.mjs
 //Functions for user registration, and admin verification
 /**************************************************************/
-import { writeUserInfo, adminPage } from './registration.mjs';
+import { writeUserInfo, adminPage, loginHandler } from './registration.mjs';
 
 window.addEventListener("DOMContentLoaded", () => {
   const btn = document.getElementById("submitBtn");
@@ -25,6 +25,7 @@ window.addEventListener("DOMContentLoaded", () => {
 });
 
 window.adminPage = adminPage;
+window.loginHandler = loginHandler;
 /****************************************************************/
 //Functions from choosegame.mjs
 //Functions for game selection buttons on choosegame.html
@@ -38,7 +39,7 @@ window.GTNgameBtn = GTNgameBtn;
 //Functions for admin page buttons and database management
 /**************************************************************/
 
-import {fb_WriteRec,fb_ReadAll,fb_deleteAll}
+import {fb_WriteRec,fb_ReadAll,fb_deleteAll, fb_logoutUser}
   from './admin.mjs';
   //write button
 document.addEventListener("DOMContentLoaded", () => {
@@ -59,6 +60,13 @@ document.addEventListener("DOMContentLoaded", () => {
   const btn = document.getElementById("deleteBtn");
   if (btn) {
     btn.addEventListener("click", fb_deleteAll);
+  }
+});
+//logout button
+document.addEventListener("DOMContentLoaded", () => {
+  const btn = document.getElementById("logoutBtn");
+  if (btn) {
+    btn.addEventListener("click", fb_logoutUser);
   }
 });
 
@@ -85,3 +93,12 @@ document.addEventListener("DOMContentLoaded", () => {
     btn.addEventListener("click", fb_userLogin);
   }
 });
+/****************************************************/
+//TO DO LIST
+// - add a username restriction field, where if a user is creating an account, they cannot enter a username that already exists in the database.
+//  This is to prevent overwriting other users data, and also to make sure users can only access their own data. 
+// Make sure all functions and modules have comments and are well documented.
+//Functions should only do one action.
+
+
+/****************************************************/

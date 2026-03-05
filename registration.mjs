@@ -5,13 +5,14 @@ console.log(
 /**************************************************************/
 // Essential Firebase Imports
 import {FB_GAMEAPP, FB_GAMEDB, FB_AUTH } from './fb_core.mjs';
-import { ref, query, orderByChild, limitToLast, onValue } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-database.js";
+import { ref, query, orderByChild, limitToLast, onValue, get, set, update } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-database.js";
 import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-auth.js";
 //****************************************************************/
 //Export functions to /main.mjs
 export {
   writeUserInfo,
   adminPage,
+  // loginHandler,
 };
 /******************************************************/
 // writeUserInfo
@@ -21,9 +22,8 @@ export {
 // Return: n/a
 /******************************************************/
 function writeUserInfo() {
-  fb_initialise();
   console.log("running writefunction");
-  const user = getAuth().currentUser;
+  const user = FB_AUTH.currentUser;
   const RAWNAME = document.getElementById("name").value.trim();
   const AGE = document.getElementById("age").value.trim();
   const PHONENUMBER = document.getElementById("phone").value.trim();
@@ -131,14 +131,34 @@ function adminPage() {
       console.error(error);
     });
 }
+/******************************************************/
+//loginHandler  
+//Checks if user is new or returning, and writes data to DB if new. 
+// Called by fb_core.mjs on login.
+export function loginHandler(currentUser) {
+const RECORDPATH = "userInfo/" + currentUser.uid;
+  const data = {
+    uid: currentUser.uid,
+  };
+
+  const DATAREF = ref(FB_GAMEDB, RECORDPATH);
+
+  update(DATAREF, data)
+    .then(() => {
+      console.log("UID saved @", RECORDPATH);
+      document.getElementById("statusMessage").innerText = "Data written to " + RECORDPATH;
+    })
+    .catch((error) => {
+      console.error("Error writing data:", error);
+      document.getElementById("statusMessage").innerText = "Failed to write to " + RECORDPATH;
+    });
+}
 
 /****************************************************/
 //END
 /****************************************************/
-/****************************************************/
-//TO DO LIST
-// - add a username restriction field, where if a user is creating an account, they cannot enter a username that already exists in the database.
-//  This is to prevent overwriting other users data, and also to make sure users can only access their own data. 
-// - Separate user login and onauthstatechanged and fbinit into a diffrent file, so that the games can import the user data without having to also import the registration functions.
-
-/****************************************************/
+//Registration TO DO List:
+// - Add error handling for writeUserInfo (e.g. empty fields, non-numeric age, etc.) 
+// - Add comments to functions 
+// - Add function to be called at bottom of loginhandler to check if user has existing data, 
+// and if so, redirect to choosegame.html without overwriting data. 

@@ -93,8 +93,8 @@ function fb_userLogin() {
     if (user) {
         console.log("User already logged in:", user.email);
         document.getElementById('userinfotext').innerText = "Already logged in as: " + (user.displayName || "Unknown User");
-            window.location.href = "choosegame.html";
-            console.log("Redirecting to choosegame.html...");
+        window.location.href = "choosegame.html";
+        console.log("Redirecting to choosegame.html...");
 
     } else {
 
@@ -106,23 +106,21 @@ function fb_userLogin() {
         signInWithPopup(AUTH, PROVIDER)
             .then((result) => {
                 const currentUser = result.user;
-                console.log("User signed in:", currentUser.displayName);
-
+                console.log("User signed in:", currentUser.displayName, currentUser.email, currentUser.uid);
+            
                 // Update DOM
                 document.getElementById('userinfotext').innerText =
-                    currentUser.displayName || "Unknown User";
+                currentUser.displayName || "Unknown User";
+                //Call loginHandler in registration.mjs to write user.uid to firebase.
+                console.info("Calling loginHandler with currentUser:", currentUser);
+                loginHandler(currentUser);
 
-                // Redirect after login if on index.html
-                if (window.location.pathname.includes("index.html")) {
-                    console.log("Redirecting to choosegame.html after login...");
-                    window.location.href = "choosegame.html";
-                }
-            })
-            .catch((error) => {
-                console.error("Login error:", error);
-                document.getElementById('userinfotext').innerText = "Login failed";
-            });
-    }
+    })
+            .catch ((error) => {
+        console.error("Login error:", error);
+        document.getElementById('userinfotext').innerText = "Login failed";
+    });
+}
 }
 /**********************************************************/
 // fb_checkUser
@@ -146,3 +144,31 @@ function fb_checkUser() {
         }
     });
 }
+
+
+/******************************************************/
+//UNUSED CODE (Delete)
+/******************************************************/
+
+
+                
+                //Detect User Info
+            //     const READPATH = "/";
+            //     const DATAREF = ref(FB_GAMEDB, READPATH);
+
+            //     get(DATAREF).then((snapshot) => {
+            //         const fb_data = snapshot.val();
+            //         if (fb_data != null) {
+            //             console.log("Data successfully read:", fb_data);
+            //             document.getElementById("p_fbReadAll").innerText = "Read all data successfully";
+
+            //             const treeHTML = buildTreeView(fb_data);
+            //             document.getElementById("fbDataTreeView").innerHTML = treeHTML;
+            //         } else {
+            //             document.getElementById("p_fbReadAll").innerText = "No data found";
+            //         }
+            //     }).catch((error) => {
+            //         console.error("Error reading data:", error);
+            //         document.getElementById("p_fbReadAll").innerText = "Failed to read data";
+            //     });
+            // }

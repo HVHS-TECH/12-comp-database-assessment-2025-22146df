@@ -14,7 +14,8 @@ console.log(
 // Essential Firebase Imports
 import {FB_GAMEAPP, FB_GAMEDB, FB_AUTH } from './fb_core.mjs';
 import { ref, query, orderByChild, limitToLast, onValue } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-database.js";
-import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-auth.js";
+import { onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-auth.js";
+
 //**************************************************************/
 // EXPORT FUNCTIONS
 /**************************************************************/
@@ -22,6 +23,7 @@ export {
   fb_WriteRec,
   fb_ReadAll,
   fb_deleteAll,
+  fb_logoutUser
   // fb_ReadSorted,
   // fb_ReadOn,
 };
@@ -149,9 +151,8 @@ function fb_deleteAll() {
     });
 
 }
-
-export function fb_logoutUser() {
-  const auth = getAuth();
+ function fb_logoutUser() {
+  const auth = FB_AUTH;
   signOut(auth).then(() => {
     console.log("✅ User signed out.");
     window.location.href = "index.html"; // or redirect somewhere else
@@ -159,4 +160,4 @@ export function fb_logoutUser() {
     console.error("❌ Sign out error:", error);
   });
 }
-window.fb_logoutUser = fb_logoutUser;
+
