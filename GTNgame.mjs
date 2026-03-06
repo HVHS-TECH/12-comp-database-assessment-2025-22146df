@@ -5,30 +5,26 @@
 /*******************************************************/
 
 console.log(
-  "%c🎲 GUESS THE NUMBER 🎲\n %cReady to test your luck? 🔥",
+  "%c🎲 GUESS THE NUMBER 🎲",
   `
   color: #00ffcc;
   background: linear-gradient(90deg, #000000, #111111);
-  font-size: 28px;
-  font-weight: 900;
-  padding: 10px 20px;
-  border-radius: 10px;
-  text-shadow: 0 0 10px #00ffcc;
-  letter-spacing: 2px;
-  `,
-  `
-  color: #ff66ff;
-  font-size: 18px;
-  font-weight: bold;
-  text-shadow: 0 0 8px #ff00ff;
   `
 );
+/*******************************************************/
+//VARIABLES AND GAME SETUP
+/*******************************************************/
+window.setup = setup;
+window.draw = draw;
+
+let confirmState = false;
+const GAMEWIDTH = window.innerWidth;
+const GAMEHEIGHT = 600;
+
 
 /*******************************************************/
 //FIREBASE IMPORTS AND PAGE SETUP
 /*******************************************************/
-window.setup = setup;
-window.draw = draw;
 
 
 import { initializeApp } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js";
@@ -69,19 +65,6 @@ onAuthStateChanged(auth, (user) => {
 // ************************************************************/
 /*******************************************************/
 
-const GAMEWIDTH = window.innerWidth;
-const GAMEHEIGHT = 600;
-
-const PLAYERSIZE = 20
-const MOVEMENTSPEED = 5;
-var player;
-var score = 0;
-
-const COINSIZE = 10;
-const COIN_TIMEOUT = 2000;
-var coins;
-
-var gameState = "play";
 
 function setup() {
   console.log("setup: ");
@@ -105,7 +88,7 @@ function draw() {
 // Asks user to confirm if they want to return to menu
 // If confirmed, redirects to choosegame.html
 /*******************************************************/
-let confirmState = false;
+
 export function menuBtn() {
   const btn = document.getElementById("backBtn");
   if (!btn) return;

@@ -135,6 +135,10 @@ function adminPage() {
 //loginHandler  
 //Checks if user is new or returning, and writes data to DB if new. 
 // Called by fb_core.mjs on login.
+//Exported to main.mjs
+//input: currentUser from firebase auth
+//output: n/a, but writes user uid to firebase DB
+/******************************************************/
 export function loginHandler(currentUser) {
 const RECORDPATH = "userInfo/" + currentUser.uid;
   const data = {

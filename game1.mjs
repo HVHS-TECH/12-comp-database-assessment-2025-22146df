@@ -10,11 +10,6 @@ console.log(
   `
   color: #00ff99;
   background: black;
-  font-size: 26px;
-  font-weight: bold;
-  padding: 8px 16px;
-  border-radius: 6px;
-  letter-spacing: 1.5px;
   `
 );
 
@@ -64,6 +59,7 @@ let startTime, timeLimit = 45, elapsedTime;
 let gnomesH = [], gnomesV = [];
 let imgPlayer, imgGnome, imgBG;
 let gameState = "start";
+let confirmState = false;
 
 
 // ************************************************************
@@ -240,7 +236,7 @@ function winGame() {
 function endGame() {
   if (gameOver) return;
   gameOver = true;
-  saveScore();
+  fb_saveScore();
   background("red");
   fill(0);
   textSize(15);
@@ -262,7 +258,7 @@ function restartGame() {
   loop();
 }
 
-export function saveScore() {
+export function fb_saveScore() {
   if (score < 0 || score > 700) {
     console.warn(`Score (${score}) out of valid range (0 to 700). Not saved.`);
     return;
@@ -336,4 +332,4 @@ export function menuBtn() {
 /******************************************************/
 // button detections (remove this)
 window.menuBtn = menuBtn;
-window.saveScore = saveScore;
+window.fb_saveScore = fb_saveScore;

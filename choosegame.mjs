@@ -49,9 +49,11 @@ function gnomeButton() {
     if (user) {
       console.log("Transporting to the Gnome game");
       window.location.href = "game1.html";
-    } else {
-      alert("Error, taking you back to login page");
+    } else if (!user) {
+      alert("No user found, taking you back to login page");
       window.location.href = "index.html";
+    }else {
+      console.error("Unexpected error state in gnomeButton");
     }
   })
 }
@@ -68,9 +70,11 @@ function GTNgameBtn() {
     if (user) {
       console.log("Transporting to the GTN game");
       window.location.href = "GTNgame.html";
-    } else {
-      alert("Error, taking you back to login page");
+    } else if (!user) {
+      alert("No user found, taking you back to login page");
       window.location.href = "index.html";
+    }else {
+      console.error("Unexpected error state in GTNgameBtn");
     }
   })
 }

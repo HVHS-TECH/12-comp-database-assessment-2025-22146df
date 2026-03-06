@@ -125,6 +125,7 @@ function fb_userLogin() {
 /**********************************************************/
 // fb_checkUser
 // Checks if user is currently logged in and redirects to login page if not
+// Called on startup by fb_startup
 // Input: n/a
 // Return: n/a
 /*******************************************************/

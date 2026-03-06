@@ -99,6 +99,8 @@ document.addEventListener("DOMContentLoaded", () => {
 //  This is to prevent overwriting other users data, and also to make sure users can only access their own data. 
 // Make sure all functions and modules have comments and are well documented.
 //Functions should only do one action.
+//File management
+//Function names convention
 
 
 /****************************************************/
