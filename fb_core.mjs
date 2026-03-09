@@ -16,6 +16,7 @@ import { ref, set } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-data
 import { get } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-database.js";
 import { update } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-database.js";
 import { query, orderByChild, limitToFirst, onValue } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-database.js";
+import { sleep } from "./main.mjs";
 
 
 
@@ -106,13 +107,14 @@ function fb_userLogin() {
         signInWithPopup(AUTH, PROVIDER)
             .then((result) => {
                 const currentUser = result.user;
-                console.log("User signed in:", currentUser.displayName, currentUser.email, currentUser.uid);
+                console.log("User signed in:", currentUser.displayName, currentUser.email, currentUser.uid, currentUser.photoURL);
             
                 // Update DOM
                 document.getElementById('userinfotext').innerText =
                 currentUser.displayName || "Unknown User";
                 //Call loginHandler in registration.mjs to write user.uid to firebase.
-                console.info("Calling loginHandler with currentUser:", currentUser);
+                
+                console.info("Calling loginHandler with currentUser:", currentUser.uid);
                 loginHandler(currentUser);
 
     })
@@ -137,6 +139,10 @@ function fb_checkUser() {
     onAuthStateChanged(auth, (_user) => {
         if (_user) {
             console.log("User is still logged in:", _user.email);
+            if (window.location.href.includes("index.html")) {  
+                console.log("Redirecting to choosegame.html...");
+                window.location.href = "choosegame.html";
+            }
         } else {
             console.log("No user logged in, redirecting to login..."); // Redirect to login page
             if (!window.location.href.includes("index.html")) {
@@ -147,6 +153,53 @@ function fb_checkUser() {
 }
 
 
+/**********************************************************/
+// fb_checkInfo
+// Checks if user has filled out required info in DB, and if so, redirects to choosegame.html
+// Called after login by loginHandler in registration.mjs
+// Called by loginHandler in registration.mjs
+// Input: n/a
+// Return: n/a
+/*******************************************************/
+export function fb_checkInfo() {
+
+  const currentUser = FB_AUTH.currentUser;
+
+  if (!currentUser) {
+    console.warn("No user logged in");
+    return;
+  }
+
+  const READPATH = "/userInfo/" + currentUser.uid + "/detailsFilled";
+  const DATAREF = ref(FB_GAMEDB, READPATH);
+
+  get(DATAREF)
+    .then(async (snapshot) => {
+      const fb_data = snapshot.val();
+
+      if (fb_data != null) {
+        console.log("Data successfully read:", fb_data);
+        if (fb_data === true) {
+        console.log(
+        "%cRequired info filled out. Redirecting to choosegame.html...",
+        "color: white; background: green; font-weight: bold; padding: 4px 8px; border-radius: 4px;"
+        );
+        await sleep(1000); 
+          window.location.href = "choosegame.html";
+        }
+      } else {
+        console.warn("No data found");
+        document.getElementById("warningtext").innerText = "Please fill out your details before proceeding.";
+        console.log(
+        "%cNo info filled out.",
+        "color: white; background: orange; font-weight: bold; padding: 4px 8px; border-radius: 4px;"
+        );
+      }
+    })
+    .catch((error) => {
+      console.error("Error reading data:", error);
+    });
+}
 /******************************************************/
 //UNUSED CODE (Delete)
 /******************************************************/

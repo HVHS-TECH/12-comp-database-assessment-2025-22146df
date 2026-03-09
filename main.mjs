@@ -13,7 +13,7 @@ console.log(
 //Functions from registration.mjs
 //Functions for user registration, and admin verification
 /**************************************************************/
-import { writeUserInfo, adminPage, loginHandler } from './registration.mjs';
+import { writeUserInfo, adminPage, loginHandler, } from './registration.mjs';
 
 window.addEventListener("DOMContentLoaded", () => {
   const btn = document.getElementById("submitBtn");
@@ -83,16 +83,22 @@ window.ldrBoard2 = ldrBoard2;
 //Functions from fb_core.mjs
 //Common functions for firebase database connection, user login and authentication
 /**************************************************************/
-import { fb_initialise, fb_userLogin, fb_checkUser,  fb_startup } from './fb_core.mjs';
+import { fb_initialise, fb_userLogin, fb_checkUser,  fb_startup,  fb_checkInfo } from './fb_core.mjs';
 window.fb_initialise = fb_initialise;
 window.fb_checkUser = fb_checkUser;
 window.fb_startup = fb_startup;
+window.fb_checkInfo = fb_checkInfo;
 document.addEventListener("DOMContentLoaded", () => {
   const btn = document.getElementById("loginBtn");
   if (btn) {
     btn.addEventListener("click", fb_userLogin);
   }
 });
+
+export function sleep(ms) {
+  return new Promise(resolve => setTimeout(resolve, ms));
+}
+window.sleep = sleep; // Export sleep function to global scope for use in other modules   
 /****************************************************/
 //TO DO LIST
 // - add a username restriction field, where if a user is creating an account, they cannot enter a username that already exists in the database.
