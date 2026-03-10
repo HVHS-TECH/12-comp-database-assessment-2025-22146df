@@ -17,6 +17,7 @@ import { get } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-database.
 import { update } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-database.js";
 import { query, orderByChild, limitToFirst, onValue } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-database.js";
 import { sleep } from "./main.mjs";
+import { initChooseGame } from "./choosegame.mjs";
 
 
 
@@ -55,6 +56,7 @@ export {
     fb_userLogin,
     fb_checkUser,
     fb_startup,
+    fb_getPfp,
 };
 /***********************************************************/
 /*****************************************************/
@@ -63,7 +65,7 @@ export {
 // Runs fb_initialise, fb_checkUser, and fb_userLogin
 // Input: n/a
 // Return: n/a
-
+/***********************************************************/
 function fb_startup() {
     fb_initialise();
     fb_checkUser();
@@ -74,7 +76,7 @@ function fb_startup() {
 // initializes the firebase app and database connection
 // Input: n/a
 // Return: n/a
-
+/***********************************************************/
 
 function fb_initialise() {
     console.log('%c fb_initialise(): ', 'color: ' + COL_C + '; background-color: ' + COL_B + ';');
@@ -186,6 +188,7 @@ export function fb_checkInfo() {
         );
         await sleep(1000); 
           window.location.href = "choosegame.html";
+          initChooseGame(); // Call initChooseGame to update UI with user info and profile picture
         }
       } else {
         console.warn("No data found");
@@ -199,6 +202,29 @@ export function fb_checkInfo() {
     .catch((error) => {
       console.error("Error reading data:", error);
     });
+}
+/******************************************************/
+// fb_getPfp
+// retrieves the user's profile picture from their Google account and displays it on the page
+// Called by initChooseGame on choosegame.html page load
+// Input: n/a
+// Return: n/a, but updates the src of the img element with id "pfp" to the user's profile picture URL
+/******************************************************/
+function fb_getPfp() {
+    const auth = getAuth();
+
+onAuthStateChanged(auth, (user) => {
+    
+    if (user) {
+        console.log("Retrieving profile picture for user:", user.email);
+        const pfp = document.getElementById("pfp");
+        pfp.src = user.photoURL;
+    }else if (!user) {
+        console.warn("No user found, cannot retrieve profile picture");
+    }
+ 
+    
+});
 }
 /******************************************************/
 //UNUSED CODE (Delete)

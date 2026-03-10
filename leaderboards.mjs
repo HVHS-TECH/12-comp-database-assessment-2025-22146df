@@ -22,6 +22,28 @@ export {
     ldrBoard2,
 
 };
+
+/******************************************************/
+//setupLdrBoardPage
+// Called by leaderboards.html on page load
+// Runs initialization functions for leaderboard page
+// Input: 'n/a'
+// Return: n/a
+/******************************************************/
+//  export function setupLdrBoardPage() {
+  
+//   initLdrBoardPage();
+
+//  }
+
+//  function initLdrBoardPage(user) { 
+//     console.log("leaderboards.mjs loaded", user);
+
+//     const pfpImg = document.getElementById("pfp");
+//     if (pfpImg && user && user.photoURL) {
+//         pfpImg.src = user.photoURL;
+//     }
+// }
 /******************************************************/
 // ldrBoard1 Gnome scores
 // Called by choosegame.html on page load

@@ -7,7 +7,7 @@ console.log(
 
 /**************************************************************/
 // Essential Firebase Imports
-import {FB_GAMEAPP, FB_GAMEDB, FB_AUTH } from './fb_core.mjs';
+import {FB_GAMEAPP, FB_GAMEDB, FB_AUTH, fb_checkUser } from './fb_core.mjs';
 import { ref, query, orderByChild, limitToLast, onValue } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-database.js";
 import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-auth.js";
 var username = localStorage.getItem("username");
@@ -21,18 +21,46 @@ export {
 };
 
 /******************************************************/
-// initchoosegame
+// setupChooseGame
 // Called by choosegame.html on page load
-// Resets UI so user can choose game
+// runs page load functions
 // Input: 'n/a'
 // Return: n/a
 /******************************************************/
-function initChooseGame() {
-  console.log("choosegame.mjs loaded");
-  const INFOFORM = document.getElementById("userinfo");
-  if (INFOFORM) {
-    INFOFORM.remove();
-  }
+export function setupChooseGame() {
+  document.addEventListener("DOMContentLoaded", () => {
+    onAuthStateChanged(FB_AUTH, (user) => {
+      if (!user) {
+        console.warn("No user logged in. Redirecting...");
+        window.location.href = "login.html"; // or wherever
+        return;
+      }
+
+      initChooseGame(user);
+    });
+  });
+}
+
+
+/******************************************************/
+// initchoosegame
+// Called by choosegame.html on page load
+// Logs user info and page load status to console.
+// Input: 'n/a'
+// Return: n/a
+/******************************************************/
+ function initChooseGame(user) {
+    console.log("choosegame.mjs loaded", user);
+
+    const INFOFORM = document.getElementById("userinfo");
+    if (INFOFORM) {
+        INFOFORM.remove();
+    }
+
+    const pfpImg = document.getElementById("pfp");
+    if (pfpImg && user && user.photoURL) {
+        pfpImg.src = user.photoURL;
+    }
 }
 
 

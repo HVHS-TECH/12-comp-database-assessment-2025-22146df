@@ -8,17 +8,18 @@
 </head>
 <body>
 
-<div class="container">
 <nav class="pages">
-  <ol>
-    <li class="page" id="Current">Games</li> 
-    <li class="page"><a href="leaderboards.html">Leaderboards</a></li>
-    <li class="page"><a href="admin.html">ADMIN LOGIN</a></li>
-    
-    
+  <div class="pagesLeft">
+    <div class="page" id="Current">Games</div>
+    <div class="page"><a href="leaderboards.html">Leaderboards</a></div>
+    <div class="page"><a href="admin.html">ADMIN LOGIN</a></div>
+  </div>
 
-  </ol>
+  <div class="pagesProfile">
+    <img id="pfp" class="pfp" src="images/defaultpfp.png" alt="Profile Picture" />
+  </div>
 </nav>
+
   <div class="column">
     <h1>CHOOSE YOUR GAME</h1>
     <div class="game1button">
@@ -31,6 +32,10 @@
 </div>
 
 <script type="module" src="./main.mjs"></script>
+<script type="module">
+    import { setupChooseGame} from './choosegame.mjs';
+    setupChooseGame();
+</script>
  <p>Made with p5.play and Google Firebase</p>
 </body>
 </html>

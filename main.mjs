@@ -30,7 +30,8 @@ window.loginHandler = loginHandler;
 //Functions from choosegame.mjs
 //Functions for game selection buttons on choosegame.html
 /**************************************************************/
-import { gnomeButton, GTNgameBtn } from './choosegame.mjs';
+import { initChooseGame, gnomeButton, GTNgameBtn } from './choosegame.mjs';
+window.initChooseGame = initChooseGame;
 window.gnomeButton = gnomeButton;
 window.GTNgameBtn = GTNgameBtn;
 
@@ -83,11 +84,12 @@ window.ldrBoard2 = ldrBoard2;
 //Functions from fb_core.mjs
 //Common functions for firebase database connection, user login and authentication
 /**************************************************************/
-import { fb_initialise, fb_userLogin, fb_checkUser,  fb_startup,  fb_checkInfo } from './fb_core.mjs';
+import { fb_initialise, fb_userLogin, fb_checkUser,  fb_startup,  fb_checkInfo, fb_getPfp, } from './fb_core.mjs';
 window.fb_initialise = fb_initialise;
 window.fb_checkUser = fb_checkUser;
 window.fb_startup = fb_startup;
 window.fb_checkInfo = fb_checkInfo;
+window.fb_getPfp = fb_getPfp;
 document.addEventListener("DOMContentLoaded", () => {
   const btn = document.getElementById("loginBtn");
   if (btn) {
