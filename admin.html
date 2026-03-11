@@ -7,37 +7,39 @@
   <title>Database Project</title>
   <link rel="stylesheet" href="./css/style.css" />
   <script type="module" src="./main.mjs"></script>
- 
+
 </head>
 
 <body>
   <nav class="pages">
-  <ol>
-    <li class="page"><a href="choosegame.html">Games</a></li> 
-    <li class="page"><a href="leaderboards.html">Leaderboards</a></li>
-    <li class="page" id="Current">ADMIN</li>
-    
-    
+    <div class="pagesLeft">
+      <div class="page" id="Current">Games</div>
+      <div class="page"><a href="leaderboards.html">Leaderboards</a></div>
+      <div class="page"><a href="admin.html">ADMIN LOGIN</a></div>
+    </div>
 
-  </ol>
-</nav>
+    <div class="pagesProfile">
+      <img id="pfp" class="pfp" src="images/defaultpfp.png" alt="Profile Picture" />
+    </div>
+  </nav>
   <h1>ADMIN PAGE</h1>
 
   <div class="column">
     <button id="logoutBtn">Log Out</button>
-    <button id="writeBtn">Write A Record</button> 
+    <button id="writeBtn">Write A Record</button>
     <input id="adminKey" type="text" placeholder="Enter key here" />
     <input id="adminWrite" type="text" placeholder="Enter data here" />
     <p id="p_fbWriteRec">Status:</p>
 
-    <button id="readBtn">Read Database</button> 
+    <button id="readBtn">Read Database</button>
     <p id="p_fbReadAll">Database:</p>
 
     <div id="fbDataTreeView"></div>
 
-   <button id="deleteBtn" style="background-color: red; color: white;">DELETE ALL SCORES</button> <p id="p_fbdeleteAll">Status:</p>
+    <button id="deleteBtn" style="background-color: red; color: white;">DELETE ALL SCORES</button>
+    <p id="p_fbdeleteAll">Status:</p>
   </div>
-   <p>Made with p5.play and Google Firebase</p>
+  <p>Made with p5.play and Google Firebase</p>
 </body>
 
 </html>

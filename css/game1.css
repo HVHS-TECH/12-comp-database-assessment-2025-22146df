@@ -69,49 +69,69 @@
     }
 
     
+/* ====================== Navbar ====================== */
 nav.pages {
-      background-color: var(--space-cadet);
-      padding: 1rem;
-      border-radius: 8px;
-      box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
-      margin-bottom: 2rem;
-      top: 0;
-      width: 100%;
-    }
-nav.pages ol {
-      list-style-type: none;
-      padding-left:0px;
-      justify-content: center;
-      margin: 0;
-      display: flex;
-      gap: 2rem;
+  display: flex;
+  justify-content: space-between; /* left links on left, profile on right */
+  align-items: center;
+  background-color: var(--space-cadet);
+  padding: 1rem;
+  border-radius: 8px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+  margin-bottom: 2rem;
+  width: 100%;
+}
 
-    }
+.pagesLeft {
+  display: flex;
+  gap: 2rem; /* spacing between links */
+}
 
-  .page {
-      color: var(--antiflash-white);
-      font-weight: bold;
-      font-size: 1.1rem;
-      padding-left: 100px;
-      padding-right: 100px;
-      padding-bottom: 15px;
-      padding-top: 15px;
-    }
+.page {
+  color: var(--antiflash-white);
+  font-weight: bold;
+  font-size: 1.1rem;
+  padding: 10px 15px;
+}
 
-    .page a {
-      color: var(--antiflash-white);
-      text-decoration: none;
-    }
+.page a {
+  color: var(--antiflash-white);
+  text-decoration: none;
+}
 
-    .page a:hover {
-      text-decoration: none;
-      color: var(--aero);
-    }
+.page a:hover {
+  text-decoration: none;
+  color: var(--aero);
+}
 
-    .page#Current {
-      background-color: var(--electric-blue);
-      padding-bottom: 15px;
-      padding-top: 15px;
-      border-radius: 5px;
-      color: var(--rich-black);
-    }
+.page#Current {
+  background-color: var(--electric-blue);
+  color: var(--rich-black);
+  border-radius: 5px;
+}
+
+/* Profile Picture */
+.pagesProfile {
+  display: flex;
+  align-items: center;
+}
+
+.pfp {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  object-fit: cover;
+  cursor: pointer;
+}
+
+/* ====================== Responsive ====================== */
+@media (max-width: 600px) {
+  nav.pages {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  .pagesLeft {
+    flex-wrap: wrap;
+    gap: 1rem;
+  }
+}

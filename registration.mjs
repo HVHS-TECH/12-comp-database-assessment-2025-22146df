@@ -41,20 +41,9 @@ function writeUserInfo() {
   const COUNTRY = document.getElementById("country").value.trim();
   const SCHOOL = document.getElementById("school").value.trim();
 
-  let NAME = RAWNAME.toLowerCase().replace(/\s+/g, "");
+  // ValidateInput(); // Runs function which validates all user data enetered into form. If invalid, shows alert and stops function execution.
+
   const uid = user.uid;
-
-  if (!NAME || !AGE) {
-    alert("Please fill out all fields.");
-    return;
-  } else if (!isNaN(NAME)) {
-    alert("Please enter a real name");
-    return;
-  } else if (isNaN(AGE)) {
-    alert("Age must be a number");
-    return;
-  }
-
   const RECORDPATH = "userInfo/" + uid;
   const DATAREF = ref(FB_GAMEDB, RECORDPATH);
 
@@ -114,6 +103,24 @@ function writeUserInfo() {
         "Failed to write to " + RECORDPATH;
     });
 }
+
+// function ValidateInput() {
+//     let NAME = RAWNAME.toLowerCase().replace(/\s+/g, "");
+
+//   if (!NAME || !AGE) {
+//     alert("Please fill out all fields.");
+//     return;
+//   } else if (!isNaN(NAME) || NAME.length < 2) {
+//     alert("Please enter a real name");
+//     return;
+//   } else if (isNaN(AGE) || AGE < 1 || AGE > 120) {
+//     alert("Age must be a REAL number between 1 and 120");
+//     return;
+//   } else if (isNaN(PHONENUMBER) || PHONENUMBER.length < 7) {
+//     alert("Please enter a valid phone number");
+//     return;
+//   }
+// }
 
 /******************************************************/
 // adminPage
