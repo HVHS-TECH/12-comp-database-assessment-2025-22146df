@@ -18,6 +18,7 @@ import { update } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-databa
 import { query, orderByChild, limitToFirst, onValue } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-database.js";
 import { sleep } from "./main.mjs";
 import { initChooseGame } from "./choosegame.mjs";
+import { loginHandler } from "./registration.mjs";
 
 
 
@@ -90,14 +91,25 @@ function fb_initialise() {
 // Input: user chooses to login through google popup
 // Return: n/a
 /******************************************************/
-function fb_userLogin() {
+async function fb_userLogin() {
     const AUTH = FB_AUTH;
     const user = AUTH.currentUser;
     if (user) {
+        try{
+            const ISVALID = await fb_checkInfo(); //Runs fb_checkInfo and returns info validity.
+        if (ISVALID) {
         console.log("User already logged in:", user.email);
-        document.getElementById('userinfotext').innerText = "Already logged in as: " + (user.displayName || "Unknown User");
+        document.getElementById('userinfotext').innerText =
+          "Already logged in as: " + (user.displayName || "Unknown User");
         window.location.href = "choosegame.html";
         console.log("Redirecting to choosegame.html...");
+      } else {
+        console.log("User data invalid or incomplete. Cannot redirect.");
+      }
+    } catch (err) {
+      console.error("Error checking user info:", err);
+    }
+        
 
     } else {
 
@@ -163,45 +175,44 @@ function fb_checkUser() {
 // Input: n/a
 // Return: n/a
 /*******************************************************/
-export function fb_checkInfo() {
-
+export async function fb_checkInfo() {
   const currentUser = FB_AUTH.currentUser;
 
   if (!currentUser) {
     console.warn("No user logged in");
-    return;
+    return false; // return false if no user
   }
-
   const READPATH = "/userInfo/" + currentUser.uid + "/detailsFilled";
   const DATAREF = ref(FB_GAMEDB, READPATH);
+  try {
+    const snapshot = await get(DATAREF);
+    const fb_data = snapshot.val();
 
-  get(DATAREF)
-    .then(async (snapshot) => {
-      const fb_data = snapshot.val();
-
-      if (fb_data != null) {
-        console.log("Data successfully read:", fb_data);
-        if (fb_data === true) {
-        console.log(
+    if (snapshot.exists() && fb_data === true) {
+      console.log("Data successfully read:", fb_data);
+      console.log(
         "%cRequired info filled out. Redirecting to choosegame.html...",
         "color: white; background: green; font-weight: bold; padding: 4px 8px; border-radius: 4px;"
-        );
-        await sleep(1000); 
-          window.location.href = "choosegame.html";
-          initChooseGame(); // Call initChooseGame to update UI with user info and profile picture
-        }
-      } else {
-        console.warn("No data found");
-        document.getElementById("warningtext").innerText = "Please fill out your details before proceeding.";
-        console.log(
+      );
+
+      // Optional sleep if you want a pause before redirect
+      await sleep(1000); 
+
+      return true; // valid
+    } else {
+      console.warn("No data found");
+      const warningMsg = document.getElementById("warningtext");
+      if (warningMsg) warningMsg.innerText = "Please fill out your details before proceeding.";
+      console.log(
         "%cNo info filled out.",
         "color: white; background: orange; font-weight: bold; padding: 4px 8px; border-radius: 4px;"
-        );
-      }
-    })
-    .catch((error) => {
-      console.error("Error reading data:", error);
-    });
+      );
+      return false; // invalid
+    }
+  } catch (error) {
+    console.error("Error reading data:", error);
+    return false; // treat errors as invalid
+  }
 }
 /******************************************************/
 // fb_getPfp

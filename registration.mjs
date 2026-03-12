@@ -41,12 +41,12 @@ function writeUserInfo() {
   const COUNTRY = document.getElementById("country").value.trim();
   const SCHOOL = document.getElementById("school").value.trim();
 
-  // ValidateInput(); // Runs function which validates all user data enetered into form. If invalid, shows alert and stops function execution.
+  validateInput(RAWNAME, AGE, PHONENUMBER); // Runs function which validates all user data enetered into form. If invalid, shows alert and stops function execution.
 
   const uid = user.uid;
   const RECORDPATH = "userInfo/" + uid;
   const DATAREF = ref(FB_GAMEDB, RECORDPATH);
-
+  let NAME = RAWNAME.toLowerCase().replace(/\s+/g, "");
   get(DATAREF)
     .then((snapshot) => {
       if (snapshot.exists()) {
@@ -104,23 +104,32 @@ function writeUserInfo() {
     });
 }
 
-// function ValidateInput() {
-//     let NAME = RAWNAME.toLowerCase().replace(/\s+/g, "");
 
-//   if (!NAME || !AGE) {
-//     alert("Please fill out all fields.");
-//     return;
-//   } else if (!isNaN(NAME) || NAME.length < 2) {
-//     alert("Please enter a real name");
-//     return;
-//   } else if (isNaN(AGE) || AGE < 1 || AGE > 120) {
-//     alert("Age must be a REAL number between 1 and 120");
-//     return;
-//   } else if (isNaN(PHONENUMBER) || PHONENUMBER.length < 7) {
-//     alert("Please enter a valid phone number");
-//     return;
-//   }
-// }
+/******************************************************/
+// validateInput
+// Called by writeUserInfo()
+// Validates user input from form, and shows alerts if invalid.
+// Input: user input through html boxes
+// Return: n/a, but shows alerts if invalid input is detected, and stops function execution.
+/******************************************************/
+
+function validateInput(RAWNAME, AGE, PHONENUMBER) {
+    let NAME = RAWNAME.toLowerCase().replace(/\s+/g, "");
+
+  if (!NAME || !AGE || !PHONENUMBER) {
+    alert("Please fill out all fields.");
+    return null; // stops execution
+  } else if (!isNaN(NAME) || NAME.length < 2) {
+    alert("Please enter a real name");
+    return null;
+  } else if (isNaN(AGE) || AGE < 1 || AGE > 120) {
+    alert("Age must be a REAL number between 1 and 120");
+    return null;
+  } else if (isNaN(PHONENUMBER) || PHONENUMBER.length < 7) {
+    alert("Please enter a valid phone number");
+    return null; 
+  }
+}
 
 /******************************************************/
 // adminPage
