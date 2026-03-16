@@ -94,7 +94,7 @@ function fb_initialise() {
 async function fb_userLogin() {
     const AUTH = FB_AUTH;
     const user = AUTH.currentUser;
-    if (user) {
+    if (currentUser) {
         try{
             const ISVALID = await fb_checkInfo(); //Runs fb_checkInfo and returns info validity.
         if (ISVALID) {
@@ -194,6 +194,7 @@ export async function fb_checkInfo() {
         "%cRequired info filled out. Redirecting to choosegame.html...",
         "color: white; background: green; font-weight: bold; padding: 4px 8px; border-radius: 4px;"
       );
+      window.location.href = "choosegame.html";
 
       // Optional sleep if you want a pause before redirect
       await sleep(1000); 

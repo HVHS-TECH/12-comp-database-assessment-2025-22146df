@@ -109,6 +109,6 @@ window.sleep = sleep; // Export sleep function to global scope for use in other 
 //Functions should only do one action.
 //File management
 //Function names convention
-
+// NextJS Google Address Autocomplete API
 
 /****************************************************/
