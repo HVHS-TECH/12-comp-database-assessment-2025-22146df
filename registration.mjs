@@ -41,7 +41,9 @@ function writeUserInfo() {
   const COUNTRY = document.getElementById("country").value.trim();
   const SCHOOL = document.getElementById("school").value.trim();
 
-  validateInput(RAWNAME, AGE, PHONENUMBER); // Runs function which validates all user data enetered into form. If invalid, shows alert and stops function execution.
+  if (!validateInput(RAWNAME, AGE, PHONENUMBER)) {
+    return;
+  }
 
   const uid = user.uid;
   const RECORDPATH = "userInfo/" + uid;
@@ -118,17 +120,18 @@ function validateInput(RAWNAME, AGE, PHONENUMBER) {
 
   if (!NAME || !AGE || !PHONENUMBER) {
     alert("Please fill out all fields.");
-    return null; // stops execution
+    return false;
   } else if (!isNaN(NAME) || NAME.length < 2) {
     alert("Please enter a real name");
-    return null;
+    return false;
   } else if (isNaN(AGE) || AGE < 1 || AGE > 120) {
     alert("Age must be a REAL number between 1 and 120");
-    return null;
+    return false;
   } else if (isNaN(PHONENUMBER) || PHONENUMBER.length < 7) {
     alert("Please enter a valid phone number");
-    return null; 
+    return false; 
   }
+  return true; // input is valid
 }
 
 /******************************************************/

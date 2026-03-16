@@ -195,8 +195,6 @@ export async function fb_checkInfo() {
         "color: white; background: green; font-weight: bold; padding: 4px 8px; border-radius: 4px;"
       );
       window.location.href = "choosegame.html";
-
-      // Optional sleep if you want a pause before redirect
       await sleep(1000); 
 
       return true; // valid
@@ -212,7 +210,7 @@ export async function fb_checkInfo() {
     }
   } catch (error) {
     console.error("Error reading data:", error);
-    return false; // treat errors as invalid
+    return false; // error = invalid
   }
 }
 /******************************************************/
