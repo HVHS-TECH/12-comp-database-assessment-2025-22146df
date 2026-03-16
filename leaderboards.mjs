@@ -23,27 +23,46 @@ export {
 
 };
 
-/******************************************************/
-//setupLdrBoardPage
-// Called by leaderboards.html on page load
-// Runs initialization functions for leaderboard page
-// Input: 'n/a'
-// Return: n/a
-/******************************************************/
-//  export function setupLdrBoardPage() {
-  
-//   initLdrBoardPage();
+/**************************************************************/
+// Sets up the leaderboard page when the script loads.
+//
+// Waits for the DOM to finish loading, then checks the Firebase
+// authentication state of the current user. If no user is logged in,
+// the function redirects the user back to the home page. If a valid
+// user is detected, the leaderboard page is initialized.
+// Input: n/a
+ // Calls initLdrBoardPage() {passes user}, once authentication has been verified.
+/**************************************************************/
+ export function setupLdrBoardPage() {
+  console.log("setupLdrBoardPage called");
+  document.addEventListener("DOMContentLoaded", () => {
+    onAuthStateChanged(FB_AUTH, (user) => {
+      if (!user) {
+        console.warn("No user logged in. Redirecting...");
+        window.location.href = "index.html";
+        return;
+      }
 
-//  }
+      initLdrBoardPage(user);
+    });
+  });
+}
 
-//  function initLdrBoardPage(user) { 
-//     console.log("leaderboards.mjs loaded", user);
+/**********************************************
+  Function: initLdrBoardPage
+  Initializes the leaderboard page for a logged-in user.
+   Displays the user's profile picture in the element with id "pfp"
+    if the user object contains a photoURL.
 
-//     const pfpImg = document.getElementById("pfp");
-//     if (pfpImg && user && user.photoURL) {
-//         pfpImg.src = user.photoURL;
-//     }
-// }
+**********************************************/
+ function initLdrBoardPage(user) { 
+    console.log("leaderboards.mjs loaded", user);
+
+    const pfpImg = document.getElementById("pfp");
+    if (pfpImg && user && user.photoURL) {
+        pfpImg.src = user.photoURL;
+    }
+}
 /******************************************************/
 // ldrBoard1 Gnome scores
 // Called by choosegame.html on page load

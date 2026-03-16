@@ -27,6 +27,47 @@ export {
   // fb_ReadSorted,
   // fb_ReadOn,
 };
+
+/**************************************************************/
+//  * Sets up the admin page when the script loads.
+//  *
+//  * Waits for the DOM to finish loading, then checks the Firebase
+//  * authentication state of the current user. If no user is logged in,
+//  * the function redirects the user back to the home page. If a valid
+//  * user is detected, the admin page is initialized.
+//  * Input: n/a
+ // Calls initAdmin() {passes user}, once authentication has been verified.
+/**************************************************************/
+export function setupAdmin() {
+  console.log("setupAdmin called");
+  document.addEventListener("DOMContentLoaded", () => {
+    onAuthStateChanged(FB_AUTH, (user) => {
+      if (!user) {
+        console.warn("No user logged in. Redirecting...");
+        window.location.href = "index.html";
+        return;
+      }
+
+      initAdmin(user);
+    });
+  });
+}
+
+/**********************************************
+  Function: initAdmin
+  Initializes the admin interface for a logged-in user.
+   Displays the user's profile picture in the element with id "pfp"
+    if the user object contains a photoURL.
+
+**********************************************/
+ function initAdmin(user) { 
+    console.log("admin.mjs loaded", user);
+
+    const pfpImg = document.getElementById("pfp");
+    if (pfpImg && user && user.photoURL) {
+        pfpImg.src = user.photoURL;
+    }
+}
 /******************************************************/
 // fb_WriteRec
 // Called via button on admin.html

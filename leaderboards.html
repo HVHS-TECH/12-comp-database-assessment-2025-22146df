@@ -14,8 +14,8 @@
 <body>
 <nav class="pages">
   <div class="pagesLeft">
-    <div class="page" id="Current">Games</div>
-    <div class="page"><a href="leaderboards.html">Leaderboards</a></div>
+    <div class="page"><a href="choosegame.html">Games</a></div>
+    <div class="page" id="Current">Leaderboards</div>
     <div class="page"><a href="admin.html">ADMIN LOGIN</a></div>
   </div>
 
@@ -41,5 +41,8 @@
   </div>
 </div>
 <script type="module" src="./main.mjs"></script>
+<script type="module">
+    import { setupLdrBoardPage} from './leaderboards.mjs';
+    setupLdrBoardPage(); </script>
  <p>Made with p5.play and Google Firebase</p>
 </body>

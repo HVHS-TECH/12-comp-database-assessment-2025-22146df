@@ -28,11 +28,12 @@ export {
 // Return: n/a
 /******************************************************/
 export function setupChooseGame() {
+  console.log("setupChooseGame called");
   document.addEventListener("DOMContentLoaded", () => {
     onAuthStateChanged(FB_AUTH, (user) => {
       if (!user) {
         console.warn("No user logged in. Redirecting...");
-        window.location.href = "login.html"; // or wherever
+        window.location.href = "index.html";
         return;
       }
 

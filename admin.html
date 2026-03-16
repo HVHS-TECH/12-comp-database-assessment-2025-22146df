@@ -13,9 +13,9 @@
 <body>
   <nav class="pages">
     <div class="pagesLeft">
-      <div class="page" id="Current">Games</div>
+      <div class="page"><a href="choosegame.html">Games</a></div>
       <div class="page"><a href="leaderboards.html">Leaderboards</a></div>
-      <div class="page"><a href="admin.html">ADMIN LOGIN</a></div>
+      <div class="page" id="Current">ADMIN</div>
     </div>
 
     <div class="pagesProfile">
@@ -40,6 +40,9 @@
     <p id="p_fbdeleteAll">Status:</p>
   </div>
   <p>Made with p5.play and Google Firebase</p>
+  <script type="module">
+    import { setupAdmin } from './admin.mjs';
+    setupAdmin();</script>
 </body>
 
 </html>
