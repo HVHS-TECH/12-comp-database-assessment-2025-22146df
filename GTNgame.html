@@ -19,14 +19,17 @@
   BODY
 ****************************************************-->
 <body>
-  <nav class="pages">
-  <ol>
-    <li class="page"><a href="choosegame.html">Games</a></li> <li class="page"><a href="leaderboards.html">Leaderboards</a></li><li class="page"><a href="admin.html">ADMIN LOGIN</a></li>
-    
-    
+<nav class="pages">
+    <div class="pagesLeft">
+      <div class="page"><a href="choosegame.html">Games</a></div>
+      <div class="page"><a href="leaderboards.html">Leaderboards</a></div>
+      <div class="page"><a href="admin.html">ADMIN LOGIN</a></div>
+    </div>
 
-  </ol>
-</nav>
+    <div class="pagesProfile">
+      <img id="pfp" class="pfp" src="images/defaultpfp.png" alt="Profile Picture" />
+    </div>
+  </nav>
   <h1>Guess The Number!!</h1>  <button id="backBtn">Back to Main Menu</button>
   
 
@@ -34,7 +37,10 @@
 
 
 
-   <script type="module" src="../GTNgame.mjs"></script>
+   <script type="module" src="./GTNgame.mjs"></script>
+    <script type="module">
+      import { setupGTN } from './GTNgame.mjs';
+      setupGTN();</script>
 </body>
 </html>
 <!--***************************************************

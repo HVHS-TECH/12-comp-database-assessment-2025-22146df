@@ -26,51 +26,41 @@ const GAMEHEIGHT = 600;
 //FIREBASE IMPORTS AND PAGE SETUP
 /*******************************************************/
 
-
-import { initializeApp } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js";
-import { getDatabase, ref, set, get } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-database.js";
-import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-auth.js";
-
-const firebaseConfig = {
-  apiKey: "AIzaSyA8viBZ-gKBknRREyTiDinnugjj6Rjrog0",
-  authDomain: "comp-2025-dylan-f.firebaseapp.com",
-  databaseURL: "https://comp-2025-dylan-f-default-rtdb.asia-southeast1.firebasedatabase.app",
-  projectId: "comp-2025-dylan-f",
-  storageBucket: "comp-2025-dylan-f.appspot.com",
-  messagingSenderId: "133223974410",
-  appId: "1:133223974410:web:d1cde3ac980749bde601f3",
-  measurementId: "G-WHVZ7GW4CF"
-};
-
-const app = initializeApp(firebaseConfig);
-const FB_GAMEDB = getDatabase(app);
+import {FB_GAMEAPP, FB_GAMEDB, FB_AUTH, fb_getPfp } from './fb_core.mjs';
+import { ref, query, orderByChild, limitToLast, onValue, get, set } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-database.js";
+import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-auth.js";
+import { currentUser } from './game1.mjs';
+let currentUser = null; // will hold the authenticated user object
 
 /**********************************************************/
-//GET AUTH
-// Check if user is signed in and gets user info
+//setupGTN
+// Check if user is signed in and runs initialization functions for GTN game
 // If not signed in, redirect to index.html
-/*******************************************************/
-const auth = getAuth();
-let currentUser = null;
+// Calls fb_getPfp() to display user's profile picture
+// Input: n/a
+// Return n/a
 
+/*******************************************************/
+export function setupGTN(){
+const auth = FB_AUTH;
 onAuthStateChanged(auth, (user) => {
   if (user) {
     currentUser = user;
-    console.log("User signed in:", user.displayName || user.email);
+    console.log("User signed in:", currentUser.displayName || currentUser.email);
   } else {
     console.warn("No user signed in.");
     window.location.href = "index.html";
   }
 });
-// ************************************************************/
+fb_getPfp(currentUser);
+// initSetupGTN();
+
+}
+/************************************************************/
+
 /*******************************************************/
 
 
-function setup() {
-  console.log("setup: ");
-
-  new Canvas(GAMEWIDTH, GAMEHEIGHT);
-}
 
 /*******************************************************/
 // draw()

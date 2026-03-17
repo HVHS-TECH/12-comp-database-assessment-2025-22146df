@@ -148,11 +148,11 @@ async function fb_userLogin() {
 
 function fb_checkUser() {
     console.log("Checking User");
-    const auth = getAuth();
+    const auth = FB_AUTH;
 
-    onAuthStateChanged(auth, (_user) => {
-        if (_user) {
-            console.log("User is still logged in:", _user.email);
+    onAuthStateChanged(auth, (user) => {
+        if (user) {
+            console.log("User is still logged in:", user.email);
             if (window.location.href.includes("index.html")) {  
                 console.log("Redirecting to choosegame.html...");
                 window.location.href = "choosegame.html";

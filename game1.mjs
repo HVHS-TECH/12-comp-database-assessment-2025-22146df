@@ -22,16 +22,17 @@ window.draw = draw;
 window.preload = preload;
 window.keyPressed = keyPressed;
 
-import {FB_GAMEAPP, FB_GAMEDB, FB_AUTH } from './fb_core.mjs';
+import {FB_GAMEAPP, FB_GAMEDB, FB_AUTH, fb_getPfp } from './fb_core.mjs';
 import { ref, query, orderByChild, limitToLast, onValue, get, set } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-database.js";
 import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-auth.js";
+export let currentUser = null; // will hold the authenticated user object
 /**********************************************************/
-//getAuth
-// Check if user is signed in and gets user info
+//setupGame1
+// Check if user is signed in and runs initialization functions for game1
 // If not signed in, redirect to index.html
 /*******************************************************/
+export function setupGame1(){
 const auth = FB_AUTH;
-let currentUser = null;
 onAuthStateChanged(auth, (user) => {
   if (user) {
     currentUser = user;
@@ -41,6 +42,10 @@ onAuthStateChanged(auth, (user) => {
     window.location.href = "index.html";
   }
 });
+fb_getPfp();
+preload();
+}
+
 // ************************************************************/
 // Game Constants & Variables
 // ************************************************************/
