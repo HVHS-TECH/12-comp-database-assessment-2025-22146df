@@ -14,14 +14,8 @@ console.log(
 /*******************************************************/
 //VARIABLES AND GAME SETUP
 /*******************************************************/
-window.setup = setup;
-window.draw = draw;
-
-let confirmState = false;
-const GAMEWIDTH = window.innerWidth;
-const GAMEHEIGHT = 600;
-
-
+let currentUser = null; // will hold the authenticated user object
+let confirmState = false; // for menu button confirmation
 /*******************************************************/
 //FIREBASE IMPORTS AND PAGE SETUP
 /*******************************************************/
@@ -29,8 +23,6 @@ const GAMEHEIGHT = 600;
 import {FB_GAMEAPP, FB_GAMEDB, FB_AUTH, fb_getPfp } from './fb_core.mjs';
 import { ref, query, orderByChild, limitToLast, onValue, get, set } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-database.js";
 import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-auth.js";
-import { currentUser } from './game1.mjs';
-let currentUser = null; // will hold the authenticated user object
 
 /**********************************************************/
 //setupGTN
@@ -53,7 +45,7 @@ onAuthStateChanged(auth, (user) => {
   }
 });
 fb_getPfp(currentUser);
-// initSetupGTN();
+// initGTN();
 
 }
 /************************************************************/
@@ -65,10 +57,6 @@ fb_getPfp(currentUser);
 /*******************************************************/
 // draw()
 /*******************************************************/
-function draw() {
-
-}
-
 
 
 

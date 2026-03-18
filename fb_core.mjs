@@ -237,28 +237,5 @@ onAuthStateChanged(auth, (user) => {
 });
 }
 /******************************************************/
-//UNUSED CODE (Delete)
+//UNUSED CODE 
 /******************************************************/
-
-
-                
-                //Detect User Info
-            //     const READPATH = "/";
-            //     const DATAREF = ref(FB_GAMEDB, READPATH);
-
-            //     get(DATAREF).then((snapshot) => {
-            //         const fb_data = snapshot.val();
-            //         if (fb_data != null) {
-            //             console.log("Data successfully read:", fb_data);
-            //             document.getElementById("p_fbReadAll").innerText = "Read all data successfully";
-
-            //             const treeHTML = buildTreeView(fb_data);
-            //             document.getElementById("fbDataTreeView").innerHTML = treeHTML;
-            //         } else {
-            //             document.getElementById("p_fbReadAll").innerText = "No data found";
-            //         }
-            //     }).catch((error) => {
-            //         console.error("Error reading data:", error);
-            //         document.getElementById("p_fbReadAll").innerText = "Failed to read data";
-            //     });
-            // }
