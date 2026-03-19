@@ -101,6 +101,21 @@ export function sleep(ms) {
   return new Promise(resolve => setTimeout(resolve, ms));
 }
 window.sleep = sleep; // Export sleep function to global scope for use in other modules   
+
+/****************************************************************/
+//Functions from GTNgame.mjs
+//Functions for GTN game setup, menu button, and game logic
+/**************************************************************/
+import { lobbyCreate, menuBtn } from './GTNgame.mjs';
+document.addEventListener("DOMContentLoaded", () => {
+  const btn = document.getElementById("createBtn");
+  if (btn) {
+    btn.addEventListener("click", lobbyCreate);
+  }
+});
+window.menuBtn = menuBtn;
+
+
 /****************************************************/
 //TO DO LIST
 // - add a username restriction field, where if a user is creating an account, they cannot enter a username that already exists in the database.
