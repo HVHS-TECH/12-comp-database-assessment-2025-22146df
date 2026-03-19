@@ -121,8 +121,8 @@ function validateInput(RAWNAME, AGE, PHONENUMBER) {
   if (!NAME || !AGE || !PHONENUMBER) {
     alert("Please fill out all fields.");
     return false;
-  } else if (!isNaN(NAME) || NAME.length < 2) {
-    alert("Please enter a real name");
+  } else if (!isNaN(NAME) || NAME.length < 2 || NAME.length >=15) {
+    alert("Please enter a real name within 2-15 characters,");
     return false;
   } else if (isNaN(AGE) || AGE < 1 || AGE > 120) {
     alert("Age must be a REAL number between 1 and 120");

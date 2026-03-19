@@ -68,7 +68,7 @@ function generateLobbyID() {
   }
     // Removes spaces from username if there is no name, sets Anon Player Lobby
     const NAMEATTACH = currentUser.displayName ? currentUser.displayName.replace(/\s+/g, '') : "Anon Player"; 
-    let lobbyID = NAMEATTACH + ":" + result;
+    let lobbyID = NAMEATTACH + ": " + result; // 1 in 580 tredicillion chance of collision with 16 char ID and username match.
     console.log("Generated lobby ID:", lobbyID);
   return lobbyID;
 
