@@ -96,11 +96,17 @@ export function lobbyCreate() {
       player1: currentUser.uid,
       active: true,
   });
+
+  lobbyDisplay();
 }
 
 
 /*******************************************************/
-// draw()
+// lobbyDisplay
+// Displays created lobbys as a box sidebar on the left side
+// Each lobby box displays the Username of the creator
+// Shows amount of players in the lobby (max 2)
+// Called by lobbyCreate() after a lobby is created
 /*******************************************************/
 
 
