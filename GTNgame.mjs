@@ -63,13 +63,13 @@ function generateLobbyID() {
     result += CHARS.charAt(Math.floor(Math.random() * CHARS.length));
     // DASH AFTER EVERY 4 CHARACTERS 
     if ((i + 1) % 4 === 0 && i < 15) {
-        result += '-';
+      result += '-';
     }
   }
-    // Removes spaces from username if there is no name, sets Anon Player Lobby
-    const NAMEATTACH = currentUser.displayName ? currentUser.displayName.replace(/\s+/g, '') : "Anon Player"; 
-    let lobbyID = NAMEATTACH + ": " + result; // 1 in 580 tredicillion chance of collision with 16 char ID and username match.
-    console.log("Generated lobby ID:", lobbyID);
+  // Removes spaces from username if there is no name, sets Anon Player Lobby
+  const NAMEATTACH = currentUser.displayName ? currentUser.displayName.replace(/\s+/g, '') : "Anon Player";
+  let lobbyID = NAMEATTACH + ": " + result; // 1 in 580 tredicillion chance of collision with 16 char ID and username match.
+  console.log("Generated lobby ID:", lobbyID);
   return lobbyID;
 
 
@@ -82,8 +82,10 @@ function generateLobbyID() {
 /*******************************************************/
 export function lobbyCreate() {
   
+
   currentUser = FB_AUTH.currentUser;
-  console.log(currentUser.displayName + " is making a lobby");
+    lobbyClear(); 
+  console.log("%cCreated lobby for user:" + currentUser.displayName, "color: green; font-weight: bold;");
   if (!currentUser) {
     console.error("No user found, please log in.");
     p_lobbyStatus.innerText = "Error: No user found. Please log in.";
@@ -93,28 +95,54 @@ export function lobbyCreate() {
   const RECORDPATH = "lobbies/" + generateLobbyID(currentUser);
   const DATAREF = ref(FB_GAMEDB, RECORDPATH);
   set(DATAREF, {
-      player1: currentUser.uid,
-      active: true,
+    player1: currentUser.uid,
+    active: true,
   });
 
-  lobbyDisplay();
+  lobbyAdd();
 }
 
 
 /*******************************************************/
-// lobbyDisplay
+// lobbyAdd
 // Displays created lobbys as a box sidebar on the left side
 // Each lobby box displays the Username of the creator
 // Shows amount of players in the lobby (max 2)
 // Called by lobbyCreate() after a lobby is created
 /*******************************************************/
-function lobbyDisplay() {
+function lobbyAdd() {
 
+  const LOBBYELM = document.getElementById("lobbyElm");
+  const LOBBY = document.createElement("div");
+  LOBBY.className = "lobbyBox";
+  LOBBY.user = currentUser.uid;
+  LOBBY.innerText = "Lobby Name: " + currentUser.displayName + "\nPlayers: 1/2";
+  LOBBYELM.appendChild(LOBBY);
 }
 
 /*******************************************************/
+// lobbyClear
+// Clears any lobbies from the same user, to prevent duplicates when refreshing page or creating multiple lobbies
+// Called by lobbyCreate() before creating a new lobby, and also on page load to clear any old lobbies
+/*******************************************************/
+function lobbyClear() {
+  const LOBBYELM = document.getElementById("lobbyElm");
+  const LOBBYNUM = LOBBYELM.getElementsByClassName("lobbyBox");
+
+
+  for (let i = LOBBYNUM.length - 1; i >= 0; i--) {
+    if (LOBBYNUM[i].user === currentUser.uid) {
+      LOBBYELM.removeChild(LOBBYNUM[i]);
+      console.log("%cRemoved lobby for user: " + currentUser.displayName, "color: red; font-weight: bold;");
+      return; 
+    }
+  }
+}
+/*******************************************************/
+
+/*******************************************************/
 //menuBtn
-// Called by game2.html when menu button is clicked
+// Called by GTNgame.html when menu button is clicked
 // Asks user to confirm if they want to return to menu
 // If confirmed, redirects to choosegame.html
 /*******************************************************/
@@ -187,18 +215,18 @@ document.body.appendChild(deleteLobbiesBtn);
 
 // Event listener for deleting all lobbies
 deleteLobbiesBtn.addEventListener("click", async () => {
-    if (!confirm("Are you SURE you want to delete ALL lobbies? This cannot be undone.")) {
-        console.log("%cCancelled: no lobbies deleted.", "color: orange; font-weight: bold;");
-        return;
-    }
+  if (!confirm("Are you SURE you want to delete ALL lobbies? This cannot be undone.")) {
+    console.log("%cCancelled: no lobbies deleted.", "color: orange; font-weight: bold;");
+    return;
+  }
 
-    try {
-        const LOBBYREF = ref(FB_GAMEDB, "lobbies");
-        await remove(LOBBYREF); 
-        console.log("%cSuccess: All lobbies deleted!", 
-          "color: red; font-weight: bold; font-size: 25px; background: black; padding: 10px; border: 3px solid red;");
-    } catch (error) {
-        console.error("%cError deleting lobbies:", "color: red; font-weight: bold; font-size: 25px; background: black; padding: 10px; border: 3px solid red;", error);
-    }
+  try {
+    const LOBBYREF = ref(FB_GAMEDB, "lobbies");
+    await remove(LOBBYREF);
+    console.log("%cSuccess: All lobbies deleted!",
+      "color: red; font-weight: bold; font-size: 25px; background: black; padding: 10px; border: 3px solid red;");
+  } catch (error) {
+    console.error("%cError deleting lobbies:", "color: red; font-weight: bold; font-size: 25px; background: black; padding: 10px; border: 3px solid red;", error);
+  }
 });
 /*******************************************************/
