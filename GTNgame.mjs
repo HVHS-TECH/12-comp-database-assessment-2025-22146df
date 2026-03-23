@@ -41,7 +41,7 @@ export function setupGTN() {
       console.log("User signed in:", currentUser.displayName || currentUser.email);
     } else {
       console.warn("No user signed in.");
-      window.location.href = "index.html";
+      // window.location.href = "index.html";
     }
   });
   fb_getPfp(currentUser);
@@ -108,8 +108,9 @@ export function lobbyCreate() {
 // Shows amount of players in the lobby (max 2)
 // Called by lobbyCreate() after a lobby is created
 /*******************************************************/
+function lobbyDisplay() {
 
-
+}
 
 /*******************************************************/
 //menuBtn
