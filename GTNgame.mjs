@@ -81,10 +81,10 @@ function generateLobbyID() {
 // Input: n/a
 /*******************************************************/
 export function lobbyCreate() {
-  
+
 
   currentUser = FB_AUTH.currentUser;
-    lobbyClear(); 
+  lobbyClear();
   console.log("%cCreated lobby for user:" + currentUser.displayName, "color: green; font-weight: bold;");
   if (!currentUser) {
     console.error("No user found, please log in.");
@@ -118,7 +118,62 @@ function lobbyAdd() {
   LOBBY.user = currentUser.uid;
   LOBBY.innerText = "Lobby Name: " + currentUser.displayName + "\nPlayers: 1/2";
   LOBBYELM.appendChild(LOBBY);
+
+  lobbyBtn(LOBBY);
 }
+
+/*******************************************************/
+// lobbyBtn
+// Creates a button for each Lobby created, allowing other users to join the lobby by clicking the button
+// Called by lobbyAdd() when a lobby box is created.
+/*******************************************************/
+function lobbyBtn(lobbyDiv) {
+  // Create the Join button
+  const joinBtn = document.createElement("button");
+  joinBtn.innerText = "Join Lobby";
+  joinBtn.className = "joinBtn";
+  lobbyDiv.appendChild(joinBtn);
+  
+  ownerCheck(joinBtn);
+
+
+  // Event listener for the Join button
+  joinBtn.addEventListener("click", () => {
+    console.log("Attempting to join lobby:", lobbyID);
+    lobbyJoin(lobbyDiv);
+  });
+
+}
+
+/*******************************************************/
+// ownerCheck
+// Checks if the current user is the owner of the lobby and disables the join button if they are
+// Called by lobbyBtn() when a lobby button is created
+/*******************************************************/
+function ownerCheck(Btn) {
+  const lobbyDiv = Btn.parentElement;
+
+  if (currentUser.uid === lobbyDiv.user) {
+    console.log("User is the owner of this lobby. Indicating ownership.");
+
+    lobbyDiv.classList.add("owner"); // new class for styling
+    Btn.remove();
+
+    const OWNERLABEL = document.createElement("div");
+    OWNERLABEL.innerText = "Your Lobby";
+    OWNERLABEL.style.fontWeight = "bold";
+    OWNERLABEL.style.color = "#68b6ff";
+    lobbyDiv.appendChild(OWNERLABEL);
+  }
+}
+/*******************************************************/
+
+/*******************************************************/
+// lobbyJoin
+// writes to firebase that the 2nd player has joined the lobby, allowing the game to start
+// Called by lobbyBtn() when a user clicks the "Join Lobby" button on a lobby box
+/*******************************************************/
+
 
 /*******************************************************/
 // lobbyClear
@@ -134,7 +189,7 @@ function lobbyClear() {
     if (LOBBYNUM[i].user === currentUser.uid) {
       LOBBYELM.removeChild(LOBBYNUM[i]);
       console.log("%cRemoved lobby for user: " + currentUser.displayName, "color: red; font-weight: bold;");
-      return; 
+      return;
     }
   }
 }
@@ -225,6 +280,7 @@ deleteLobbiesBtn.addEventListener("click", async () => {
     await remove(LOBBYREF);
     console.log("%cSuccess: All lobbies deleted!",
       "color: red; font-weight: bold; font-size: 25px; background: black; padding: 10px; border: 3px solid red;");
+      lobbyClear();
   } catch (error) {
     console.error("%cError deleting lobbies:", "color: red; font-weight: bold; font-size: 25px; background: black; padding: 10px; border: 3px solid red;", error);
   }

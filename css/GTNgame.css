@@ -141,7 +141,6 @@ nav.pages {
 
 
 /* ====================== Sidebar ====================== */
-
 .sidebar {
   position: fixed;
   overflow-x: hidden;
@@ -160,4 +159,22 @@ nav.pages {
 .sidebar .lobbyTitle {
   text-align: center;
   margin-top: 1rem;
+}
+
+.lobbyBox {
+  width: 90%;
+  padding: 10px;
+  margin-bottom: 10px;
+  background-color: #2b2f45;
+  border: 1px solid #444;
+  border-radius: 8px;
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  color: white;
+}
+
+.lobbyBox.owner {
+  background-color: #3d3f6b;
+  border: 2px solid #68b6ff;
 }
