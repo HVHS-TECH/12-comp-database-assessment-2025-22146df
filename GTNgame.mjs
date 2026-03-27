@@ -45,6 +45,7 @@ export function setupGTN() {
     }
   });
   fb_getPfp(currentUser);
+  lobbyDetect();
   // initGTN();
 
 }
@@ -97,6 +98,11 @@ export function lobbyCreate() {
   set(DATAREF, {
     player1: currentUser.uid,
     active: true,
+    players: 1,
+    creator: currentUser.displayName || "Anon Player"
+  })
+    .then(() => {
+      console.log("Lobby created with ID:", RECORDPATH);
   });
 
   lobbyAdd();
@@ -151,8 +157,7 @@ function lobbyBtn(lobbyDiv) {
 // Called by lobbyBtn() when a lobby button is created
 /*******************************************************/
 function ownerCheck(Btn) {
-  const lobbyDiv = Btn.parentElement;
-
+  let lobbyDiv = Btn.parentElement;
   if (currentUser.uid === lobbyDiv.user) {
     console.log("User is the owner of this lobby. Indicating ownership.");
 
@@ -164,6 +169,9 @@ function ownerCheck(Btn) {
     OWNERLABEL.style.fontWeight = "bold";
     OWNERLABEL.style.color = "#68b6ff";
     lobbyDiv.appendChild(OWNERLABEL);
+    return true;
+  }else{
+    return false;
   }
 }
 /*******************************************************/
@@ -179,6 +187,8 @@ function ownerCheck(Btn) {
 // lobbyClear
 // Clears any lobbies from the same user, to prevent duplicates when refreshing page or creating multiple lobbies
 // Called by lobbyCreate() before creating a new lobby, and also on page load to clear any old lobbies
+// Input: n/a
+// Return: n/a
 /*******************************************************/
 function lobbyClear() {
   const LOBBYELM = document.getElementById("lobbyElm");
@@ -194,6 +204,33 @@ function lobbyClear() {
   }
 }
 /*******************************************************/
+//lobbyDetect
+//Checks for changes in the lobbies in firebase, allowing for lobbies to be displayed on html for both players
+//Called on page load to start listening for lobby changes (setupGTN)
+//Lobby functions like lobbyAdd and lobbyJoin also trigger changes in firebase that this function listens for
+/*******************************************************/
+
+function lobbyDetect(){
+  const LOBBYREF = ref(FB_GAMEDB, "lobbies");
+  onValue(LOBBYREF, (snapshot) => {
+    const LOBBIES = snapshot.val();
+     
+    
+const lobbyContainer = document.getElementById("lobbyElm");
+    lobbyContainer.innerHTML = "";
+
+    if (!LOBBIES) {
+      lobbyContainer.innerHTML = "<p>No lobbies available</p>";
+      return;
+    }
+     Object.entries(LOBBIES).forEach(([lobbyID, lobbyData]) => {
+      lobbyAdd(lobbyID, lobbyData);
+      console.log("Lobby generated for player 2 " + lobbyID);
+      //Generates a lobby for player 2 when player 1 creates a lobby.
+
+})
+})
+}
 
 /*******************************************************/
 //menuBtn

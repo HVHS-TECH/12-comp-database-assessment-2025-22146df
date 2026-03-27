@@ -19,15 +19,15 @@ export {
   gnomeButton,
   GTNgameBtn,
 };
-
 /******************************************************/
+
 // setupChooseGame
 // Called by choosegame.html on page load
 // runs page load functions
 // Input: 'n/a'
 // Return: n/a
 /******************************************************/
-export function setupChooseGame() {
+function setupChooseGame() {
   console.log("setupChooseGame called");
   document.addEventListener("DOMContentLoaded", () => {
     onAuthStateChanged(FB_AUTH, (user) => {
@@ -108,3 +108,4 @@ function GTNgameBtn() {
   })
 }
 
+setupChooseGame();

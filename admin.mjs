@@ -13,7 +13,7 @@ console.log(
 /**************************************************************/
 // Essential Firebase Imports
 import {FB_GAMEAPP, FB_GAMEDB, FB_AUTH } from './fb_core.mjs';
-import { ref, query, orderByChild, limitToLast, onValue } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-database.js";
+import { ref, query, orderByChild, limitToLast, onValue, get} from "https://www.gstatic.com/firebasejs/9.6.1/firebase-database.js";
 import { onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-auth.js";
 
 //**************************************************************/
@@ -121,7 +121,7 @@ function fb_ReadAll() {
       console.log("Data successfully read:", fb_data);
       document.getElementById("p_fbReadAll").innerText = "Read all data successfully";
 
-      const treeHTML = buildTreeView(fb_data);
+      const treeHTML = fb_buildTreeView(fb_data);
       document.getElementById("fbDataTreeView").innerHTML = treeHTML;
     } else {
       document.getElementById("p_fbReadAll").innerText = "No data found";
