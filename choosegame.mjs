@@ -27,7 +27,7 @@ export {
 // Input: 'n/a'
 // Return: n/a
 /******************************************************/
-function setupChooseGame() {
+export function setupChooseGame() {
   console.log("setupChooseGame called");
   document.addEventListener("DOMContentLoaded", () => {
     onAuthStateChanged(FB_AUTH, (user) => {
@@ -103,5 +103,3 @@ function GTNgameBtn() {
     }
   })
 }
-
-setupChooseGame();
