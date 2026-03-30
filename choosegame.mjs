@@ -33,7 +33,9 @@ function setupChooseGame() {
     onAuthStateChanged(FB_AUTH, (user) => {
       if (!user) {
         console.warn("No user logged in. Redirecting...");
+        if (!document.URL.includes("index.html")) {
         window.location.href = "index.html";
+        }
         return;
       }
 
@@ -52,12 +54,6 @@ function setupChooseGame() {
 /******************************************************/
  function initChooseGame(user) {
     console.log("choosegame.mjs loaded", user);
-
-    const INFOFORM = document.getElementById("userinfo");
-    if (INFOFORM) {
-        INFOFORM.remove();
-    }
-
     const pfpImg = document.getElementById("pfp");
     if (pfpImg && user && user.photoURL) {
         pfpImg.src = user.photoURL;

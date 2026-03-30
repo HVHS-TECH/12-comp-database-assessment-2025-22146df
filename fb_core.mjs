@@ -96,7 +96,7 @@ async function fb_userLogin() {
     const user = AUTH.currentUser;
     if (currentUser) {
         try{
-            const ISVALID = await fb_checkInfo(); //Runs fb_checkInfo and returns info validity.
+            const ISVALID = await fb_checkInfo(); //Runs fb_checkInfo and returns info if valid or if not.
         if (ISVALID) {
         console.log("User already logged in:", user.email);
         document.getElementById('userinfotext').innerText =
@@ -159,8 +159,8 @@ function fb_checkUser() {
             }
         } else {
             console.log("No user logged in, redirecting to login..."); // Redirect to login page
-            if (!window.location.href.includes("index.html")) {
-                window.location.href = "index.html";
+            if (!document.URL.includes("index.html")) {
+               // window.location.href = "index.html";
             }
         }
     });

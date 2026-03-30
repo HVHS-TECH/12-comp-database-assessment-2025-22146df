@@ -226,7 +226,7 @@ const lobbyContainer = document.getElementById("lobbyElm");
      Object.entries(LOBBIES).forEach(([lobbyID, lobbyData]) => {
       lobbyAdd(lobbyID, lobbyData);
       console.log("Lobby generated for player 2 " + lobbyID);
-      //Generates a lobby for player 2 when player 1 creates a lobby.
+      //generates a lobby for player 2 when player 1 creates a lobby.
 
 })
 })
