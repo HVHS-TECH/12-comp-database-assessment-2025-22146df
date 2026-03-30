@@ -105,7 +105,7 @@ export function lobbyCreate() {
       console.log("Lobby created with ID:", RECORDPATH);
   });
 
-  lobbyAdd();
+  lobbyAdd(lobbyID);
 }
 
 
@@ -116,7 +116,7 @@ export function lobbyCreate() {
 // Shows amount of players in the lobby (max 2)
 // Called by lobbyCreate() after a lobby is created
 /*******************************************************/
-function lobbyAdd() {
+function lobbyAdd(lobbyID) {
 
   const LOBBYELM = document.getElementById("lobbyElm");
   const LOBBY = document.createElement("div");
@@ -125,7 +125,7 @@ function lobbyAdd() {
   LOBBY.innerText = "Lobby Name: " + currentUser.displayName + "\nPlayers: 1/2";
   LOBBYELM.appendChild(LOBBY);
 
-  lobbyBtn(LOBBY);
+  lobbyBtn(LOBBY,lobbyID);
 }
 
 /*******************************************************/
@@ -133,14 +133,14 @@ function lobbyAdd() {
 // Creates a button for each Lobby created, allowing other users to join the lobby by clicking the button
 // Called by lobbyAdd() when a lobby box is created.
 /*******************************************************/
-function lobbyBtn(lobbyDiv) {
+function lobbyBtn(lobbyDiv,lobbyID) {
   // Create the Join button
   const joinBtn = document.createElement("button");
   joinBtn.innerText = "Join Lobby";
   joinBtn.className = "joinBtn";
   lobbyDiv.appendChild(joinBtn);
   
-  ownerCheck(joinBtn);
+  ownerCheck(joinBtn,lobbyID);
 
 
   // Event listener for the Join button
@@ -156,9 +156,25 @@ function lobbyBtn(lobbyDiv) {
 // Checks if the current user is the owner of the lobby and disables the join button if they are
 // Called by lobbyBtn() when a lobby button is created
 /*******************************************************/
-function ownerCheck(Btn) {
+function ownerCheck(Btn,lobbyID) {
+let PLAYERUID = null;
+    const RECORDPATH = "lobbies/" + lobbyID + "/player1";
+  const DATAREF = ref(FB_GAMEDB, RECORDPATH);
+  get(DATAREF).then((snapshot) => {
+    if (snapshot.exists()) {
+      PLAYERUID = snapshot.val();
+      console.log("Lobby owner UID:", PLAYERUID);
+      console.log("Current user's UID: ", currentUser.uid)
+    }
+  }).catch((error) => {
+    console.error("Error reading owner data:", error);
+  });
+
+
   let lobbyDiv = Btn.parentElement;
-  if (currentUser.uid === lobbyDiv.user) {
+  console.log(PLAYERUID);
+  //FIX FIX FIX ITS NULL
+  if (currentUser.uid == PLAYERUID) {
     console.log("User is the owner of this lobby. Indicating ownership.");
 
     lobbyDiv.classList.add("owner"); // new class for styling
@@ -174,6 +190,13 @@ function ownerCheck(Btn) {
     return false;
   }
 }
+/*******************************************************/
+// fb_readOwner
+// Reads fb lobby when created to check for owner and display owner info on lobby box
+//Called at the start of ownerCheck() to check if the current user is the owner of the lobby
+// Input: n/a
+// Returns player 1 uid
+/*******************************************************/
 /*******************************************************/
 
 /*******************************************************/
