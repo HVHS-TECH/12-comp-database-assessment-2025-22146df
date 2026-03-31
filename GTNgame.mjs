@@ -103,9 +103,8 @@ export function lobbyCreate() {
   })
     .then(() => {
       console.log("Lobby created with ID:", RECORDPATH);
-  });
+    });
 
-  lobbyAdd(lobbyID);
 }
 
 
@@ -116,16 +115,16 @@ export function lobbyCreate() {
 // Shows amount of players in the lobby (max 2)
 // Called by lobbyCreate() after a lobby is created
 /*******************************************************/
-function lobbyAdd(lobbyID) {
+function lobbyAdd(lobbyID, lobbyData) {
 
   const LOBBYELM = document.getElementById("lobbyElm");
   const LOBBY = document.createElement("div");
   LOBBY.className = "lobbyBox";
-  LOBBY.user = currentUser.uid;
-  LOBBY.innerText = "Lobby Name: " + currentUser.displayName + "\nPlayers: 1/2";
+  LOBBY.user = lobbyData.player1;
+  LOBBY.innerText = "Lobby Name: " + lobbyData.creator + "\nPlayers: " + lobbyData.players + "/2";
   LOBBYELM.appendChild(LOBBY);
 
-  lobbyBtn(LOBBY,lobbyID);
+  lobbyBtn(LOBBY, lobbyID);
 }
 
 /*******************************************************/
@@ -133,14 +132,14 @@ function lobbyAdd(lobbyID) {
 // Creates a button for each Lobby created, allowing other users to join the lobby by clicking the button
 // Called by lobbyAdd() when a lobby box is created.
 /*******************************************************/
-function lobbyBtn(lobbyDiv,lobbyID) {
+function lobbyBtn(lobbyDiv, lobbyID) {
   // Create the Join button
   const joinBtn = document.createElement("button");
   joinBtn.innerText = "Join Lobby";
   joinBtn.className = "joinBtn";
   lobbyDiv.appendChild(joinBtn);
-  
-  ownerCheck(joinBtn,lobbyID);
+
+  ownerCheck(joinBtn, lobbyID);
 
 
   // Event listener for the Join button
@@ -156,39 +155,43 @@ function lobbyBtn(lobbyDiv,lobbyID) {
 // Checks if the current user is the owner of the lobby and disables the join button if they are
 // Called by lobbyBtn() when a lobby button is created
 /*******************************************************/
-function ownerCheck(Btn,lobbyID) {
-let PLAYERUID = null;
+async function ownerCheck(Btn, lobbyID) {
+  try {
     const RECORDPATH = "lobbies/" + lobbyID + "/player1";
-  const DATAREF = ref(FB_GAMEDB, RECORDPATH);
-  get(DATAREF).then((snapshot) => {
-    if (snapshot.exists()) {
-      PLAYERUID = snapshot.val();
-      console.log("Lobby owner UID:", PLAYERUID);
-      console.log("Current user's UID: ", currentUser.uid)
+    const DATAREF = ref(FB_GAMEDB, RECORDPATH);
+    const LOBBYDIV = Btn.parentElement;
+
+
+    const SNAPSHOT = await get(DATAREF);
+    if (!SNAPSHOT.exists()) {
+      console.warn("No player1 in the lobby");
+      return false;
     }
-  }).catch((error) => {
-    console.error("Error reading owner data:", error);
-  });
 
+    const PLAYERUID = SNAPSHOT.val();
+    console.log("Lobby owner UID:", PLAYERUID);
+    console.log("Current user's UID:", currentUser.uid);
 
-  let lobbyDiv = Btn.parentElement;
-  console.log(PLAYERUID);
-  //FIX FIX FIX ITS NULL
-  if (currentUser.uid == PLAYERUID) {
-    console.log("User is the owner of this lobby. Indicating ownership.");
+    if (currentUser.uid === PLAYERUID) {
+      console.log("User is the owner of this lobby. Indicating ownership.");
 
-    lobbyDiv.classList.add("owner"); // new class for styling
-    Btn.remove();
+      LOBBYDIV.classList.add("owner");
+      Btn.remove();
 
-    const OWNERLABEL = document.createElement("div");
-    OWNERLABEL.innerText = "Your Lobby";
-    OWNERLABEL.style.fontWeight = "bold";
-    OWNERLABEL.style.color = "#68b6ff";
-    lobbyDiv.appendChild(OWNERLABEL);
-    return true;
-  }else{
+      const OWNERLABEL = document.createElement("div");
+      OWNERLABEL.innerText = "Your Lobby";
+      OWNERLABEL.style.fontWeight = "bold";
+      OWNERLABEL.style.color = "#68b6ff";
+      LOBBYDIV.appendChild(OWNERLABEL);
+
+      return true;
+    }
+    return false;
+  } catch (error) {
+    console.error("Reading Error (owner)");
     return false;
   }
+
 }
 /*******************************************************/
 // fb_readOwner
@@ -233,26 +236,26 @@ function lobbyClear() {
 //Lobby functions like lobbyAdd and lobbyJoin also trigger changes in firebase that this function listens for
 /*******************************************************/
 
-function lobbyDetect(){
+function lobbyDetect() {
   const LOBBYREF = ref(FB_GAMEDB, "lobbies");
   onValue(LOBBYREF, (snapshot) => {
     const LOBBIES = snapshot.val();
-     
-    
-const lobbyContainer = document.getElementById("lobbyElm");
+
+
+    const lobbyContainer = document.getElementById("lobbyElm");
     lobbyContainer.innerHTML = "";
 
     if (!LOBBIES) {
       lobbyContainer.innerHTML = "<p>No lobbies available</p>";
       return;
     }
-     Object.entries(LOBBIES).forEach(([lobbyID, lobbyData]) => {
+    Object.entries(LOBBIES).forEach(([lobbyID, lobbyData]) => {
       lobbyAdd(lobbyID, lobbyData);
       console.log("Lobby generated for player 2 " + lobbyID);
       //generates a lobby for player 2 when player 1 creates a lobby.
 
-})
-})
+    })
+  })
 }
 
 /*******************************************************/
@@ -340,7 +343,7 @@ deleteLobbiesBtn.addEventListener("click", async () => {
     await remove(LOBBYREF);
     console.log("%cSuccess: All lobbies deleted!",
       "color: red; font-weight: bold; font-size: 25px; background: black; padding: 10px; border: 3px solid red;");
-      lobbyClear();
+    lobbyClear();
   } catch (error) {
     console.error("%cError deleting lobbies:", "color: red; font-weight: bold; font-size: 25px; background: black; padding: 10px; border: 3px solid red;", error);
   }
