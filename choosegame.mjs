@@ -17,7 +17,7 @@ var username = localStorage.getItem("username");
 export {
   initChooseGame,
   gnomeButton,
-  GTNgameBtn,
+  GTNpageBtn,
 };
 /******************************************************/
 
@@ -89,17 +89,17 @@ function gnomeButton() {
 // Input: 'n/a'
 // Return: n/a
 /******************************************************/
-function GTNgameBtn() {
+function GTNpageBtn() {
   const auth = FB_AUTH;
   onAuthStateChanged(auth, (user) => {
     if (user) {
       console.log("Transporting to the GTN game");
-      window.location.href = "GTNgame.html";
+      window.location.href = "GTNpage.html";
     } else if (!user) {
       alert("No user found, taking you back to login page");
       window.location.href = "index.html";
     }else {
-      console.error("Unexpected error state in GTNgameBtn");
+      console.error("Unexpected error state in GTNpageBtn");
     }
   })
 }

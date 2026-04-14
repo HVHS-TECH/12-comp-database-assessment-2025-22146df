@@ -30,10 +30,10 @@ window.loginHandler = loginHandler;
 //Functions from choosegame.mjs
 //Functions for game selection buttons on choosegame.html
 /**************************************************************/
-import { initChooseGame, gnomeButton, GTNgameBtn } from './choosegame.mjs';
+import { initChooseGame, gnomeButton, GTNpageBtn } from './choosegame.mjs';
 window.initChooseGame = initChooseGame;
 window.gnomeButton = gnomeButton;
-window.GTNgameBtn = GTNgameBtn;
+window.GTNpageBtn = GTNpageBtn;
 
 /****************************************************************/
 //Functions from admin.mjs
@@ -103,10 +103,10 @@ export function sleep(ms) {
 window.sleep = sleep; // Export sleep function to global scope for use in other modules   
 
 /****************************************************************/
-//Functions from GTNgame.mjs
-//Functions for GTN game setup, menu button, and game logic
+//Functions from GTNpage.mjs
+//Functions for GTN game setup, menu button, and lobby creation
 /**************************************************************/
-import { lobbyCreate, menuBtn } from './GTNgame.mjs';
+import { lobbyCreate, menuBtn } from './GTNpage.mjs';
 document.addEventListener("DOMContentLoaded", () => {
   const btn = document.getElementById("createBtn");
   if (btn) {

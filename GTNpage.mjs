@@ -1,5 +1,5 @@
 /*******************************************************/
-// GTNgame.mjs
+// GTNpage.mjs
 // Guess The Number Game
 // Made by Dylan Figliola
 /*******************************************************/
@@ -21,7 +21,7 @@ let confirmState = false; // for menu button confirmation
 /*******************************************************/
 
 import { FB_GAMEAPP, FB_GAMEDB, FB_AUTH, fb_getPfp } from './fb_core.mjs';
-import { ref, query, orderByChild, limitToLast, onValue, get, set, remove } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-database.js";
+import { ref, query, orderByChild, limitToLast, onValue, get, set, remove, update } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-database.js";
 import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-auth.js";
 
 /**********************************************************/
@@ -55,7 +55,7 @@ export function setupGTN() {
 //Attaches Lobby with the user that created it
 //Binds the lobby to their username
 //Input: n/a
-// Called by lobbyCreate() when "Create a Lobby" button is clicked on GTNgame.html
+// Called by lobbyCreate() when "Create a Lobby" button is clicked on GTNpage.html
 /*******************************************************/
 function generateLobbyID() {
   const CHARS = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
@@ -77,7 +77,7 @@ function generateLobbyID() {
 }
 /************************************************************/
 //lobbyCreate
-// Called when "Create a Lobby" button is clicked on GTNgame.html (button with id "createLobbyBtn")
+// Called when "Create a Lobby" button is clicked on GTNpage.html (button with id "createLobbyBtn")
 // Creates a new lobby in Firebase with a unique ID, and adds the current user to it
 // Input: n/a
 /*******************************************************/
@@ -145,7 +145,7 @@ function lobbyBtn(lobbyDiv, lobbyID) {
   // Event listener for the Join button
   joinBtn.addEventListener("click", () => {
     console.log("Attempting to join lobby:", lobbyID);
-    lobbyJoin(lobbyDiv);
+    lobbyJoin(lobbyID);
   });
 
 }
@@ -193,13 +193,7 @@ async function ownerCheck(Btn, lobbyID) {
   }
 
 }
-/*******************************************************/
-// fb_readOwner
-// Reads fb lobby when created to check for owner and display owner info on lobby box
-//Called at the start of ownerCheck() to check if the current user is the owner of the lobby
-// Input: n/a
-// Returns player 1 uid
-/*******************************************************/
+
 /*******************************************************/
 
 /*******************************************************/
@@ -207,7 +201,40 @@ async function ownerCheck(Btn, lobbyID) {
 // writes to firebase that the 2nd player has joined the lobby, allowing the game to start
 // Called by lobbyBtn() when a user clicks the "Join Lobby" button on a lobby box
 /*******************************************************/
+async function lobbyJoin(lobbyID) {
+  try {
+    if (!currentUser) {
+      console.warn("No user found, please log in.");
+      window.location.href = "index.html";
+      return;
+    }
+    const RECORDPATH = "lobbies/" + lobbyID;
+    const DATAREF = ref(FB_GAMEDB, RECORDPATH);
+    const SNAPSHOT = await get(DATAREF);
+    if (!SNAPSHOT.exists()) {
+      console.warn("Lobby does not exist:", lobbyID);
+      return;
+    }
+    const LOBBYDATA = SNAPSHOT.val();
+    if (LOBBYDATA.players >= 2) {
+      console.warn("Lobby is full:", lobbyID);
+      return;
+    }
 
+
+    await update(DATAREF, {
+      player2: currentUser.uid,
+      player2Name: currentUser.displayName || "Anon Player",
+      players: 2,
+      active: false
+    });
+    console.log("Joined lobby:", lobbyID);
+  
+  } catch (error) {
+    console.error("Error joining lobby:", error);
+    return;
+  }
+}
 
 /*******************************************************/
 // lobbyClear
@@ -260,7 +287,7 @@ function lobbyDetect() {
 
 /*******************************************************/
 //menuBtn
-// Called by GTNgame.html when menu button is clicked
+// Called by GTNpage.html when menu button is clicked
 // Asks user to confirm if they want to return to menu
 // If confirmed, redirects to choosegame.html
 /*******************************************************/
