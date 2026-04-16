@@ -2,7 +2,7 @@
 <html lang="en">
 
 <head>
-  <title>GTNpage 2026</title>
+  <title>GTNgame 2026</title>
   <meta charset="UTF-8">
   <meta name="description" content="13COMP P5.play">
   <meta name="keywords" content="13COMP, P5.play">
@@ -12,7 +12,7 @@
   <!-- P5.js & P5.play *****************************-->
 
   <script type="module" src="https://q5js.org/q5.js"></script>
-  <link rel="stylesheet" href="./css/GTNpage.css" />
+  <link rel="stylesheet" href="./css/GTNgame.css" />
   <!-- This link should work-->
 
 </head>
@@ -45,26 +45,6 @@
   </nav>
   <h1>Guess The Number!</h1> <button id="backBtn">Back to Main Menu</button>
 
-  <div class="gameProfile">
-    <h2 class="panelTitle">Your Lobby</h2>
-
-    <div class="playerCards">
-      <div class="playerCard" id="player1Card">
-        <h3 class="playerLabel">Host</h3>
-        <img id="player1Pfp" class="playerPfp" src="images/defaultpfp.png" alt="Host Profile Picture" />
-      </div>
-
-      <div class="versusText">VS</div>
-
-      <div class="playerCard" id="player2Card">
-        <h3 class="playerLabel">Player 2</h3>
-        <img id="player2Pfp" class="playerPfp" src="images/defaultpfp.png" alt="Player 2 Profile Picture" />
-      </div>
-    </div>
-
-    <p id="matchStatus" class="matchStatus">Waiting for both players...</p>
-  </div>
-
   <div class="content">
     <div class="instructions">
       <h2 class="panelTitle">How to Play</h2>
@@ -86,13 +66,30 @@
       <div class="tipsBlock">
         <h3 class="rulesTitle">Tips</h3>
         <p class="tipText">
-          Tips will indicate if your guess is too low, or too high. If your guess is 10 below or above, you will see a
-          🔥 next to the hint.
+          Tips will indicate if your guess is too low, or too high. If your guess is 10 below or above, you will see a 🔥 next to the hint.
         </p>
       </div>
     </div>
 
+    <div class="gameProfile">
+      <h2 class="panelTitle">Players</h2>
 
+      <div class="playerCards">
+        <div class="playerCard" id="player1Card">
+          <h3 class="playerLabel">Host</h3>
+          <img id="player1Pfp" class="playerPfp" src="images/defaultpfp.png" alt="Host Profile Picture" />
+        </div>
+
+        <div class="versusText">VS</div>
+
+        <div class="playerCard" id="player2Card">
+          <h3 class="playerLabel">Player 2</h3>
+          <img id="player2Pfp" class="playerPfp" src="images/defaultpfp.png" alt="Player 2 Profile Picture" />
+        </div>
+      </div>
+
+      <p id="matchStatus" class="matchStatus">Waiting for both players...</p>
+    </div>
   </div>
 
 
@@ -100,9 +97,9 @@
   <p id="p_lobbyStatus"></p>
   <button id="createBtn">Create a Lobby</button>
 
-  <script type="module" src="./GTNpage.mjs"></script>
+  <script type="module" src="./GTNgame.mjs"></script>
   <script type="module">
-    import { setupGTN } from './GTNpage.mjs';
+    import { setupGTN } from './GTNgame.mjs';
 
     setupGTN();</script>
   <p>Made with p5.play and Google Firebase</p>
