@@ -276,6 +276,24 @@ nav.pages {
 }
 
 /*******************************************************/
+/* WAVE TEXT */
+/*******************************************************/
+.waveText span {
+  display: inline-block;
+  animation: waveBounce 1.2s ease-in-out infinite;
+}
+
+@keyframes waveBounce {
+  0%, 60%, 100% {
+    transform: translateY(0);
+    opacity: 0.7;
+  }
+  30% {
+    transform: translateY(-6px);
+    opacity: 1;
+  }
+}
+/*******************************************************/
 /* RESPONSIVE */
 /*******************************************************/
 @media (max-width: 900px) {

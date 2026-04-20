@@ -46,8 +46,28 @@ export function setupGTN() {
   });
   fb_getPfp(currentUser);
   lobbyDetect();
-  // initGTN();
+  waveText();
 
+}
+
+/************************************************************/
+//waveText
+// Adds a wave animation to the match status text on GTNpage.html
+// Called by setupGTN() on page load
+/*******************************************************/
+
+function waveText() {
+const WAVETEXT = document.getElementById("matchStatus");
+const text = WAVETEXT.innerText;
+
+WAVETEXT.innerHTML = "";
+
+[...text].forEach((char, i) => {
+  const span = document.createElement("span");
+  span.textContent = char === " " ? "\u00A0" : char; // preserve spaces by replacing normal spaces with non-breaking spaces
+  span.style.animationDelay = `${i * 0.05}s`;
+  WAVETEXT.appendChild(span);
+});
 }
 /************************************************************/
 //generateLobbyID
@@ -99,7 +119,8 @@ export function lobbyCreate() {
     player1: currentUser.uid,
     active: true,
     players: 1,
-    creator: currentUser.displayName || "Anon Player"
+    creator: currentUser.displayName || "Anon Player",
+    player1Pfp: currentUser.photoURL || null,
   })
     .then(() => {
       console.log("Lobby created with ID:", RECORDPATH);
@@ -226,7 +247,8 @@ async function lobbyJoin(lobbyID) {
       player2: currentUser.uid,
       player2Name: currentUser.displayName || "Anon Player",
       players: 2,
-      active: false
+      active: false,
+      player2Pfp: currentUser.photoURL || null,
     });
     console.log("Joined lobby:", lobbyID);
   
@@ -280,6 +302,23 @@ function lobbyDetect() {
       lobbyAdd(lobbyID, lobbyData);
       console.log("Lobby generated for player 2 " + lobbyID);
       //generates a lobby for player 2 when player 1 creates a lobby.
+
+      const STATUS = document.getElementById("matchStatus");
+      if (lobbyData.players === 2 && (lobbyData.player1 === currentUser.uid || lobbyData.player2 === currentUser.uid)) {
+      STATUS.textContent = "Game starting...";
+      STATUS.classList.remove("waveText");
+    }
+
+    const p1 = document.getElementById("player1Pfp");
+    const p2 = document.getElementById("player2Pfp");
+
+    if (p1) {
+      p1.src = lobbyData.player1Pfp || "images/defaultpfp.png";
+    }
+
+    if (p2) {
+      p2.src = lobbyData.player2Pfp || "images/defaultpfp.png";
+    }
 
     })
   })
