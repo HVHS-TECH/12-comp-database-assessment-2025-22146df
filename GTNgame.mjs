@@ -98,7 +98,8 @@ export function lobbyCreate() {
     player1: currentUser.uid,
     active: true,
     players: 1,
-    creator: currentUser.displayName || "Anon Player"
+    creator: currentUser.displayName || "Anon Player",
+    player1Pfp: currentUser.photoURL || null,
   })
     .then(() => {
       console.log("Lobby created with ID:", RECORDPATH);

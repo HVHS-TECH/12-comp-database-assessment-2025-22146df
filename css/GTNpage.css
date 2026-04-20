@@ -40,12 +40,13 @@ button {
   background: linear-gradient(135deg, var(--electric-blue), var(--aero));
   color: var(--rich-black);
   border: none;
-  padding: 10px 16px;
+  padding: 20px 25px;
   border-radius: 8px;
   font-weight: bold;
   cursor: pointer;
   margin: 10px 5px 10px 0;
   transition: transform 0.2s ease, filter 0.2s ease;
+  font-size: 20px;
 }
 
 button:hover {

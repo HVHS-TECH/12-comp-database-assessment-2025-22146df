@@ -64,7 +64,7 @@
 
     <p id="matchStatus" class="matchStatus">Waiting for both players...</p>
   </div>
-
+<button id="createBtn">Create a Lobby</button>
   <div class="content">
     <div class="instructions">
       <h2 class="panelTitle">How to Play</h2>
@@ -77,7 +77,8 @@
         <h3 class="rulesTitle">Rules</h3>
         <ul class="rulesList">
           <li>Join a lobby or create your own.</li>
-          <li>Take turns making guesses.</li>
+          <li>A random number will be generated between 1 and 100, and it's your job to guess it</li>
+          <li>Take turns making guesses</li>
           <li>Use the hints given after your or the opponent's turn to make your next guess</li>
           <li>The first player to guess the correct number wins!</li>
         </ul>
@@ -86,8 +87,8 @@
       <div class="tipsBlock">
         <h3 class="rulesTitle">Tips</h3>
         <p class="tipText">
-          Tips will indicate if your guess is too low, or too high. If your guess is 10 below or above, you will see a
-          🔥 next to the hint.
+          Tips will indicate if your guess is too low, or too high. If your guess is 10 or less below/above the random number, you will see a
+          🔥 next to the hint
         </p>
       </div>
     </div>
@@ -98,7 +99,7 @@
 
 
   <p id="p_lobbyStatus"></p>
-  <button id="createBtn">Create a Lobby</button>
+  
 
   <script type="module" src="./GTNpage.mjs"></script>
   <script type="module">
