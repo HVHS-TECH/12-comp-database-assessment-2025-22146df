@@ -57,17 +57,17 @@ export function setupGTN() {
 /*******************************************************/
 
 function waveText() {
-const WAVETEXT = document.getElementById("matchStatus");
-const text = WAVETEXT.innerText;
+  const WAVETEXT = document.getElementById("matchStatus");
+  const text = WAVETEXT.innerText;
 
-WAVETEXT.innerHTML = "";
+  WAVETEXT.innerHTML = "";
 
-[...text].forEach((char, i) => {
-  const span = document.createElement("span");
-  span.textContent = char === " " ? "\u00A0" : char; // preserve spaces by replacing normal spaces with non-breaking spaces
-  span.style.animationDelay = `${i * 0.05}s`;
-  WAVETEXT.appendChild(span);
-});
+  [...text].forEach((char, i) => {
+    const span = document.createElement("span");
+    span.textContent = char === " " ? "\u00A0" : char; // preserve spaces by replacing normal spaces with non-breaking spaces
+    span.style.animationDelay = `${i * 0.05}s`;
+    WAVETEXT.appendChild(span);
+  });
 }
 /************************************************************/
 //generateLobbyID
@@ -251,7 +251,7 @@ async function lobbyJoin(lobbyID) {
       player2Pfp: currentUser.photoURL || null,
     });
     console.log("Joined lobby:", lobbyID);
-  
+
   } catch (error) {
     console.error("Error joining lobby:", error);
     return;
@@ -283,6 +283,8 @@ function lobbyClear() {
 //Checks for changes in the lobbies in firebase, allowing for lobbies to be displayed on html for both players
 //Called on page load to start listening for lobby changes (setupGTN)
 //Lobby functions like lobbyAdd and lobbyJoin also trigger changes in firebase that this function listens for
+// watches for 2 players joining the same lobby, and changes the match status text to "Game starting..." with animation
+// Loads pfp for players only in the lobby, so that other users can't see pfps of lobbies they aren't in (basic privacy measure)
 /*******************************************************/
 
 function lobbyDetect() {
@@ -305,22 +307,23 @@ function lobbyDetect() {
 
       const STATUS = document.getElementById("matchStatus");
       if (lobbyData.players === 2 && (lobbyData.player1 === currentUser.uid || lobbyData.player2 === currentUser.uid)) {
-      STATUS.textContent = "Game starting...";
-      STATUS.classList.remove("waveText");
-    }
+        STATUS.textContent = "Game starting...";
+        STATUS.classList.remove("waveText");
+      }
 
-    const p1 = document.getElementById("player1Pfp");
-    const p2 = document.getElementById("player2Pfp");
+      const p1 = document.getElementById("player1Pfp");
+      const p2 = document.getElementById("player2Pfp");
 
-    if (p1) {
-      p1.src = lobbyData.player1Pfp || "images/defaultpfp.png";
-    }
+      if (lobbyData.player1 === currentUser.uid || lobbyData.player2 === currentUser.uid) {
+        if (p1) {
+          p1.src = lobbyData.player1Pfp || "images/defaultpfp.png";
+        }
 
-    if (p2) {
-      p2.src = lobbyData.player2Pfp || "images/defaultpfp.png";
-    }
-
-    })
+        if (p2) {
+          p2.src = lobbyData.player2Pfp || "images/defaultpfp.png";
+        }
+      }
+    });
   })
 }
 
@@ -415,3 +418,5 @@ deleteLobbiesBtn.addEventListener("click", async () => {
   }
 });
 /*******************************************************/
+//TO DO
+// SORT LOBBYDETECT split into multiple functions for better readability and organization
