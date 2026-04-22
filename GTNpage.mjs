@@ -278,6 +278,35 @@ function lobbyClear() {
     }
   }
 }
+
+/*******************************************************/
+// lobbyEmpty
+// Monitors firebase to check if a lobby has 0 players, and if so, deletes the lobby from firebase and page.
+// Uses onvalue to for changes in the firebase
+// Input: n/a
+// Return: n/a
+/*******************************************************/
+
+// function lobbyEmpty() {
+//   const LOBBYREF = ref(FB_GAMEDB, "lobbies");
+//   onValue(LOBBYREF, (snapshot) => {
+//     const LOBBIES = snapshot.val();
+
+//     if (!LOBBIES) {
+//       console.log("No lobbies found, skipping empty check.");
+//       return;
+//     }
+
+//     Object.entries(LOBBIES).forEach(([lobbyID, lobbyData]) => {
+//       if (lobbyData.players === 0) {
+//         const RECORDPATH = "lobbies/" + lobbyID;
+//         const DATAREF = ref(FB_GAMEDB, RECORDPATH);
+//         remove(DATAREF);
+//         console.log("Removed empty lobby:", lobbyID);
+//       }
+//     });
+//   });
+// }
 /*******************************************************/
 //lobbyDetect
 //Checks for changes in the lobbies in firebase, allowing for lobbies to be displayed on html for both players
@@ -291,28 +320,30 @@ function lobbyDetect() {
   const LOBBYREF = ref(FB_GAMEDB, "lobbies");
   onValue(LOBBYREF, (snapshot) => {
     const LOBBIES = snapshot.val();
-
-
     const lobbyContainer = document.getElementById("lobbyElm");
-    lobbyContainer.innerHTML = "";
+    const STATUS = document.getElementById("matchStatus");
 
+    const p1 = document.getElementById("player1Pfp");
+    const p2 = document.getElementById("player2Pfp");
+
+    lobbyContainer.innerHTML = "";
     if (!LOBBIES) {
       lobbyContainer.innerHTML = "<p>No lobbies available</p>";
       return;
     }
-    Object.entries(LOBBIES).forEach(([lobbyID, lobbyData]) => {
+
+    Object.entries(LOBBIES).forEach(([lobbyID, lobbyData]) => { //generates a lobby on screen for player 2 when player 1 creates a lobby.
       lobbyAdd(lobbyID, lobbyData);
       console.log("Lobby generated for player 2 " + lobbyID);
-      //generates a lobby for player 2 when player 1 creates a lobby.
 
-      const STATUS = document.getElementById("matchStatus");
+
+
       if (lobbyData.players === 2 && (lobbyData.player1 === currentUser.uid || lobbyData.player2 === currentUser.uid)) {
         STATUS.textContent = "Game starting...";
         STATUS.classList.remove("waveText");
       }
 
-      const p1 = document.getElementById("player1Pfp");
-      const p2 = document.getElementById("player2Pfp");
+
 
       if (lobbyData.player1 === currentUser.uid || lobbyData.player2 === currentUser.uid) {
         if (p1) {
@@ -420,3 +451,4 @@ deleteLobbiesBtn.addEventListener("click", async () => {
 /*******************************************************/
 //TO DO
 // SORT LOBBYDETECT split into multiple functions for better readability and organization
+
