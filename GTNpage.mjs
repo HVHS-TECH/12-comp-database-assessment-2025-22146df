@@ -169,7 +169,29 @@ function lobbyBtn(lobbyDiv, lobbyID) {
     lobbyJoin(lobbyID);
   });
 
+  const LOBBYREF = ref(FB_GAMEDB, "lobbies", lobbyID);
+  onValue(LOBBYREF, (snapshot) => {
+    const LOBBY = snapshot.val();
+
+    if (LOBBY.player2 && currentUser.uid == player2) {
+      // Create the Disconnect button
+      const disconBtn = document.createElement("button");
+      disconBtn.innerText = "Leave Lobby";
+      disconBtn.className = "disconBtn";
+      lobbyDiv.appendChild(disconBtn);
+
+      // Event listener for the Disconnect button
+      disconBtn.addEventListener("click", () => {
+        console.log("Attempting to leave lobby:", lobbyID);
+        lobbyDisconnect(lobbyID);
+      });
+    }
+
+
+  });
 }
+
+
 
 /*******************************************************/
 // ownerCheck
@@ -287,26 +309,34 @@ function lobbyClear() {
 // Return: n/a
 /*******************************************************/
 
-// function lobbyEmpty() {
-//   const LOBBYREF = ref(FB_GAMEDB, "lobbies");
-//   onValue(LOBBYREF, (snapshot) => {
-//     const LOBBIES = snapshot.val();
+function lobbyEmpty() {
+  const LOBBYREF = ref(FB_GAMEDB, "lobbies");
+  onValue(LOBBYREF, (snapshot) => {
+    const LOBBIES = snapshot.val();
 
-//     if (!LOBBIES) {
-//       console.log("No lobbies found, skipping empty check.");
-//       return;
-//     }
+    if (!LOBBIES) {
+      console.log("No lobbies found, skipping empty check.");
+      return;
+    }
 
-//     Object.entries(LOBBIES).forEach(([lobbyID, lobbyData]) => {
-//       if (lobbyData.players === 0) {
-//         const RECORDPATH = "lobbies/" + lobbyID;
-//         const DATAREF = ref(FB_GAMEDB, RECORDPATH);
-//         remove(DATAREF);
-//         console.log("Removed empty lobby:", lobbyID);
-//       }
-//     });
-//   });
-// }
+    Object.entries(LOBBIES).forEach(([lobbyID, lobbyData]) => {
+      lobbyClear();
+    });
+  });
+}
+
+/*******************************************************/
+// lobbyDisconnect
+// Called by a listener, waiting for "leave lobby" button to be pressed
+// Updates and removes user data in firebase for the user that left
+// Updates player count in html
+// Input: n/a
+// Return: n/a
+/*******************************************************/
+function lobbyDisconnect(lobbyID) {
+
+}
+
 /*******************************************************/
 //lobbyDetect
 //Checks for changes in the lobbies in firebase, allowing for lobbies to be displayed on html for both players
