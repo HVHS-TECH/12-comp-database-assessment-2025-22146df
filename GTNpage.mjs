@@ -125,6 +125,7 @@ export function lobbyCreate() {
     .then(() => {
       console.log("Lobby created with ID:", RECORDPATH);
     });
+    console.log("let me commit");
 
 }
 
