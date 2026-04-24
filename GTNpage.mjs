@@ -125,7 +125,6 @@ export function lobbyCreate() {
     .then(() => {
       console.log("Lobby created with ID:", RECORDPATH);
     });
-    console.log("let me commit");
 
 }
 
@@ -165,21 +164,35 @@ function lobbyBtn(lobbyDiv, lobbyID) {
 
 
   // Event listener for the Join button
-  joinBtn.addEventListener("click", () => {
+  joinBtn.addEventListener("click", async () => {
     console.log("Attempting to join lobby:", lobbyID);
-    lobbyJoin(lobbyID);
+    
+    joinBtn.disabled = true;
+    const JOINED = await lobbyJoin(lobbyID, joinBtn);
+    
+    if (JOINED) {
+      joinBtn.remove();
+    }else {
+      joinBtn.disabled = false;
+    }
   });
 
-  const LOBBYREF = ref(FB_GAMEDB, "lobbies", lobbyID);
+  const LOBBYREF = ref(FB_GAMEDB, "lobbies/" + lobbyID);
   onValue(LOBBYREF, (snapshot) => {
     const LOBBY = snapshot.val();
+    if (!LOBBY || !currentUser) return;
 
-    if (LOBBY.player2 && currentUser.uid == player2) {
+    if (LOBBY.player2) {
+      joinBtn.remove();
+    }
+    
+    if (LOBBY.player2 === currentUser.uid && !lobbyDiv.querySelector(".disconBtn")) {
       // Create the Disconnect button
       const disconBtn = document.createElement("button");
       disconBtn.innerText = "Leave Lobby";
       disconBtn.className = "disconBtn";
       lobbyDiv.appendChild(disconBtn);
+      console.log("User is in the lobby, showing disconnect button.");
 
       // Event listener for the Disconnect button
       disconBtn.addEventListener("click", () => {
@@ -213,8 +226,6 @@ async function ownerCheck(Btn, lobbyID) {
     }
 
     const PLAYERUID = SNAPSHOT.val();
-    console.log("Lobby owner UID:", PLAYERUID);
-    console.log("Current user's UID:", currentUser.uid);
 
     if (currentUser.uid === PLAYERUID) {
       console.log("User is the owner of this lobby. Indicating ownership.");
@@ -245,24 +256,24 @@ async function ownerCheck(Btn, lobbyID) {
 // writes to firebase that the 2nd player has joined the lobby, allowing the game to start
 // Called by lobbyBtn() when a user clicks the "Join Lobby" button on a lobby box
 /*******************************************************/
-async function lobbyJoin(lobbyID) {
+async function lobbyJoin(lobbyID, Btn) {
   try {
     if (!currentUser) {
       console.warn("No user found, please log in.");
       window.location.href = "index.html";
-      return;
+      return false;
     }
     const RECORDPATH = "lobbies/" + lobbyID;
     const DATAREF = ref(FB_GAMEDB, RECORDPATH);
     const SNAPSHOT = await get(DATAREF);
     if (!SNAPSHOT.exists()) {
       console.warn("Lobby does not exist:", lobbyID);
-      return;
+      return false;
     }
     const LOBBYDATA = SNAPSHOT.val();
     if (LOBBYDATA.players >= 2) {
       console.warn("Lobby is full:", lobbyID);
-      return;
+      return false;
     }
 
 
@@ -274,10 +285,12 @@ async function lobbyJoin(lobbyID) {
       player2Pfp: currentUser.photoURL || null,
     });
     console.log("Joined lobby:", lobbyID);
+    return true;
+    
 
   } catch (error) {
     console.error("Error joining lobby:", error);
-    return;
+    return false;
   }
 }
 
@@ -335,7 +348,7 @@ function lobbyEmpty() {
 // Return: n/a
 /*******************************************************/
 function lobbyDisconnect(lobbyID) {
-
+  console.log("Disconnecting from lobby:", lobbyID);
 }
 
 /*******************************************************/
