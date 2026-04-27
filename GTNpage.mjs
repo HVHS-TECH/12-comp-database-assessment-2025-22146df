@@ -325,16 +325,28 @@ function lobbyClear() {
 
 function lobbyEmpty() {
   const LOBBYREF = ref(FB_GAMEDB, "lobbies");
+
   onValue(LOBBYREF, (snapshot) => {
     const LOBBIES = snapshot.val();
 
     if (!LOBBIES) {
-      console.log("No lobbies found, skipping empty check.");
+      console.log("No lobbies found.");
       return;
     }
 
     Object.entries(LOBBIES).forEach(([lobbyID, lobbyData]) => {
-      lobbyClear();
+      if (!lobbyData.players || lobbyData.players === 0 || !lobbyData.player1) {
+        console.log("Deleting empty lobby:", lobbyID);
+
+        const DELETEREF = ref(FB_GAMEDB, "lobbies/" + lobbyID);
+        remove(DELETEREF)
+          .then(() => {
+            console.log("%cLobby deleted: " + lobbyID, "color: red; font-weight: bold;");
+          })
+          .catch((e) => {
+            console.error("Error deleting lobby:", e);
+          });
+      }
     });
   });
 }
@@ -349,6 +361,33 @@ function lobbyEmpty() {
 /*******************************************************/
 function lobbyDisconnect(lobbyID) {
   console.log("Disconnecting from lobby:", lobbyID);
+  const LOBBYREF = ref(FB_GAMEDB, "lobbies/" + lobbyID);
+  get(LOBBYREF).then((snapshot) => {
+    if (!snapshot.exists()) {
+      console.warn("Lobby does not exist:", lobbyID);
+      return;
+    }
+    const LOBBYDATA = snapshot.val();
+    if (LOBBYDATA.player1 === currentUser.uid) {
+      update(LOBBYREF, {
+        player1: null,
+        player1Name: null,
+        player1Pfp: null,
+        players: LOBBYDATA.players - 1
+      });
+    } else if (LOBBYDATA.player2 === currentUser.uid) {
+      update(LOBBYREF, {
+        player2: null,
+        player2Name: null,
+        player2Pfp: null,
+        players: LOBBYDATA.players - 1,
+        active: true,
+      });
+
+    }
+    lobbyEmpty(); // Check if lobby is empty and delete if so
+  });
+
 }
 
 /*******************************************************/
