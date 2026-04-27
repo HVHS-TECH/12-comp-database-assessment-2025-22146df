@@ -23,7 +23,6 @@ let confirmState = false; // for menu button confirmation
 import { FB_GAMEAPP, FB_GAMEDB, FB_AUTH, fb_getPfp } from './fb_core.mjs';
 import { ref, query, orderByChild, limitToLast, onValue, get, set, remove, update } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-database.js";
 import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-auth.js";
-
 /**********************************************************/
 //setupGTN
 // Check if user is signed in and runs initialization functions for GTN game
@@ -422,8 +421,16 @@ function lobbyDetect() {
 
 
       if (lobbyData.players === 2 && (lobbyData.player1 === currentUser.uid || lobbyData.player2 === currentUser.uid)) {
-        STATUS.textContent = "Game starting...";
         STATUS.classList.remove("waveText");
+        if (lobbyData.player2 === currentUser.uid) {
+          STATUS.textContent = "Waiting for host to start the game...";
+        
+       } else {
+          STATUS.textContent = "Start the game...";
+       }
+        
+        
+        
       }
 
 
@@ -534,4 +541,6 @@ deleteLobbiesBtn.addEventListener("click", async () => {
 /*******************************************************/
 //TO DO
 // SORT LOBBYDETECT split into multiple functions for better readability and organization
-
+// Fix bug where if player 2 leaves, player 2 still sees their pfp in lobby.
+// Fix start game button for host
+// When player 2 leaves, match status doesn't update back to "Waiting for players..."
