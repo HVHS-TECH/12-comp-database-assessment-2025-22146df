@@ -128,7 +128,7 @@ function validateInput(RAWNAME, AGE, PHONENUMBER) {
     alert("Age must be a REAL number between 1 and 120");
     return false;
   } else if (isNaN(PHONENUMBER) || PHONENUMBER.length < 7) {
-    alert("Please enter a valid phone number");
+    alert("Please enter a valid phone number longer than 6 digits");
     return false; 
   }
   return true; // input is valid

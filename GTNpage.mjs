@@ -64,7 +64,7 @@ function waveText() {
   [...text].forEach((char, i) => {
     const span = document.createElement("span");
     span.textContent = char === " " ? "\u00A0" : char; // preserve spaces by replacing normal spaces with non-breaking spaces
-    span.style.animationDelay = `${i * 0.05}s`;
+    span.style.animationDelay = `${i * 0.06}s`;
     WAVETEXT.appendChild(span);
   });
 }
@@ -542,5 +542,5 @@ deleteLobbiesBtn.addEventListener("click", async () => {
 //TO DO
 // SORT LOBBYDETECT split into multiple functions for better readability and organization
 // Fix bug where if player 2 leaves, player 2 still sees their pfp in lobby.
-// Fix start game button for host
+// Make start game button for host
 // When player 2 leaves, match status doesn't update back to "Waiting for players..."
