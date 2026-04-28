@@ -58,7 +58,7 @@ export function setupGTN() {
 function waveText() {
   const WAVETEXT = document.getElementById("matchStatus");
   const text = WAVETEXT.innerText;
-
+  console.log("Applying wave animation to text:", text);
   WAVETEXT.innerHTML = "";
 
   [...text].forEach((char, i) => {
@@ -425,15 +425,20 @@ function lobbyDetect() {
         if (lobbyData.player2 === currentUser.uid) {
           STATUS.textContent = "Waiting for host to start the game...";
         
-       } else {
+       } else if (lobbyData.player1 === currentUser.uid) {
           STATUS.textContent = "Start the game...";
        }
-        
-        
-        
+      }
+      if (lobbyData.players != 2 && STATUS.textContent !== "No lobbies available") {
+        STATUS.textContent = "Waiting for players...";
+        STATUS.classList.add("waveText");
       }
 
-
+      if (!lobbyData.player1){
+        player1Pfp.src = "images/defaultpfp.png";
+      } else if (!lobbyData.player2){
+        player2Pfp.src = "images/defaultpfp.png";
+      }
 
       if (lobbyData.player1 === currentUser.uid || lobbyData.player2 === currentUser.uid) {
         if (p1) {
