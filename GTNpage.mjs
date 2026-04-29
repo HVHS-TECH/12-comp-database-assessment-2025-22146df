@@ -165,13 +165,13 @@ function lobbyBtn(lobbyDiv, lobbyID) {
   // Event listener for the Join button
   joinBtn.addEventListener("click", async () => {
     console.log("Attempting to join lobby:", lobbyID);
-    
+
     joinBtn.disabled = true;
     const JOINED = await lobbyJoin(lobbyID, joinBtn);
-    
+
     if (JOINED) {
       joinBtn.remove();
-    }else {
+    } else {
       joinBtn.disabled = false;
     }
   });
@@ -184,7 +184,7 @@ function lobbyBtn(lobbyDiv, lobbyID) {
     if (LOBBY.player2) {
       joinBtn.remove();
     }
-    
+
     if (LOBBY.player2 === currentUser.uid && !lobbyDiv.querySelector(".disconBtn")) {
       // Create the Disconnect button
       const disconBtn = document.createElement("button");
@@ -285,7 +285,7 @@ async function lobbyJoin(lobbyID, Btn) {
     });
     console.log("Joined lobby:", lobbyID);
     return true;
-    
+
 
   } catch (error) {
     console.error("Error joining lobby:", error);
@@ -400,57 +400,114 @@ function lobbyDisconnect(lobbyID) {
 
 function lobbyDetect() {
   const LOBBYREF = ref(FB_GAMEDB, "lobbies");
+
   onValue(LOBBYREF, (snapshot) => {
     const LOBBIES = snapshot.val();
-    const lobbyContainer = document.getElementById("lobbyElm");
-    const STATUS = document.getElementById("matchStatus");
 
-    const p1 = document.getElementById("player1Pfp");
-    const p2 = document.getElementById("player2Pfp");
-
-    lobbyContainer.innerHTML = "";
     if (!LOBBIES) {
       lobbyContainer.innerHTML = "<p>No lobbies available</p>";
       return;
     }
 
-    Object.entries(LOBBIES).forEach(([lobbyID, lobbyData]) => { //generates a lobby on screen for player 2 when player 1 creates a lobby.
-      lobbyAdd(lobbyID, lobbyData);
-      console.log("Lobby generated for player 2 " + lobbyID);
+    lobbyGeneration(LOBBIES);
+    lobbyStatus(LOBBIES);
+    lobbyPfpHandler(LOBBIES);
+  });
+}
 
+/*******************************************************/
+//lobbyGeneration
+//Clears the lobby container and generates lobby elements for player 2 from firebase
+//Called by lobbyDetect whenever firebase detects a change in lobby data
+//Uses lobbyAdd to create each lobby
+//Ensures the lobby list is always up to date for all users viewing the page
+/*******************************************************/
+function lobbyGeneration(LOBBIES) {
+  const lobbyContainer = document.getElementById("lobbyElm");
+  lobbyContainer.innerHTML = "";
 
+  Object.entries(LOBBIES).forEach(([lobbyID, lobbyData]) => {
+    lobbyAdd(lobbyID, lobbyData);
+    console.log("Lobby generated:", lobbyID);
+  });
+}
 
-      if (lobbyData.players === 2 && (lobbyData.player1 === currentUser.uid || lobbyData.player2 === currentUser.uid)) {
+/*******************************************************/
+//lobbyStatus
+//Updates the match status text on screen
+//Checks if the user is in a lobby
+//If 2 players are in, shows start button / wait message depending on if user is host or not
+//If not full, shows waiting for players with animation
+//Called by lobbyDetect when firebase changes
+/*******************************************************/
+
+function lobbyStatus(LOBBIES) {
+  const STATUS = document.getElementById("matchStatus");
+
+  if (!LOBBIES) return;
+
+  let inLobby = false;
+
+  Object.values(LOBBIES).forEach((lobbyData) => {
+    if (lobbyData.player1 === currentUser.uid || lobbyData.player2 === currentUser.uid) {
+      inLobby = true;
+
+      if (lobbyData.players === 2) {
         STATUS.classList.remove("waveText");
+
         if (lobbyData.player2 === currentUser.uid) {
           STATUS.textContent = "Waiting for host to start the game...";
-        
-       } else if (lobbyData.player1 === currentUser.uid) {
+        } else {
           STATUS.textContent = "Start the game...";
-       }
-      }
-      if (lobbyData.players != 2 && STATUS.textContent !== "No lobbies available") {
+        }
+
+      } else {
         STATUS.textContent = "Waiting for players...";
         STATUS.classList.add("waveText");
       }
+    }
+  });
 
-      if (!lobbyData.player1 || !lobbyData.player2) {
-        player1Pfp.src = "images/defaultpfp.png";
-        player2Pfp.src = "images/defaultpfp.png";
-      }
-      if (lobbyData.player1 === currentUser.uid || lobbyData.player2 === currentUser.uid) {
-        if (p1) {
-          p1.src = lobbyData.player1Pfp || "images/defaultpfp.png";
-        }
-
-        if (p2) {
-          p2.src = lobbyData.player2Pfp || "images/defaultpfp.png";
-        }
-      }
-    });
-  })
+  if (!inLobby) {
+    STATUS.textContent = "Join a lobby to start!";
+  }
 }
 
+/*******************************************************/
+//lobbyPfpHandler
+//Shows pfps for your lobby
+//Only shows pfps if you're in that lobby, otherwise uses default
+//Stops other players from seeing pfps they shouldn’t
+//Called by lobbyDetect when firebase changes
+/*******************************************************/
+
+function lobbyPfpHandler(LOBBIES) {
+  const p1 = document.getElementById("player1Pfp");
+  const p2 = document.getElementById("player2Pfp");
+
+  if (!LOBBIES) return;
+
+  let found = false;
+
+  Object.values(LOBBIES).forEach((lobbyData) => {
+    if (lobbyData.player1 === currentUser.uid || lobbyData.player2 === currentUser.uid) {
+      found = true;
+
+      if (p1) {
+        p1.src = lobbyData.player1Pfp || "images/defaultpfp.png";
+      }
+
+      if (p2) {
+        p2.src = lobbyData.player2Pfp || "images/defaultpfp.png";
+      }
+    }
+  });
+
+  if (!found) {
+    if (p1) p1.src = "images/defaultpfp.png";
+    if (p2) p2.src = "images/defaultpfp.png";
+  }
+}
 /*******************************************************/
 //menuBtn
 // Called by GTNpage.html when menu button is clicked
