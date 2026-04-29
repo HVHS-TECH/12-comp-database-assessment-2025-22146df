@@ -434,12 +434,10 @@ function lobbyDetect() {
         STATUS.classList.add("waveText");
       }
 
-      if (!lobbyData.player1){
+      if (!lobbyData.player1 || !lobbyData.player2) {
         player1Pfp.src = "images/defaultpfp.png";
-      } else if (!lobbyData.player2){
         player2Pfp.src = "images/defaultpfp.png";
       }
-
       if (lobbyData.player1 === currentUser.uid || lobbyData.player2 === currentUser.uid) {
         if (p1) {
           p1.src = lobbyData.player1Pfp || "images/defaultpfp.png";
@@ -546,6 +544,5 @@ deleteLobbiesBtn.addEventListener("click", async () => {
 /*******************************************************/
 //TO DO
 // SORT LOBBYDETECT split into multiple functions for better readability and organization
-// Fix bug where if player 2 leaves, player 2 still sees their pfp in lobby.
 // Make start game button for host
-// When player 2 leaves, match status doesn't update back to "Waiting for players..."
+
