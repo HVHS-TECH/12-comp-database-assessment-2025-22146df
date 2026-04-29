@@ -5,9 +5,9 @@
 /*******************************************************/
 
 console.log(
-  "%c🎲 GUESS THE NUMBER 🎲",
+  "%c🎲 GUESS THE NUMBER LOBBY 🎲",
   `
-  color: #00ffcc;
+  color: #c77dff;
   background: linear-gradient(90deg, #000000, #111111);
   `
 );
@@ -145,6 +145,15 @@ function lobbyAdd(lobbyID, lobbyData) {
   LOBBYELM.appendChild(LOBBY);
 
   lobbyBtn(LOBBY, lobbyID);
+
+  if (lobbyData.player1 === currentUser.uid && lobbyData.players === 2) {
+    const startBtn = document.createElement("button");
+    startBtn.innerText = "Start Game";
+
+    startBtn.onclick = () => sendToGame(lobbyID);
+
+    LOBBY.appendChild(startBtn);
+  }
 }
 
 /*******************************************************/
@@ -404,14 +413,10 @@ function lobbyDetect() {
   onValue(LOBBYREF, (snapshot) => {
     const LOBBIES = snapshot.val();
 
-    if (!LOBBIES) {
-      lobbyContainer.innerHTML = "<p>No lobbies available</p>";
-      return;
-    }
-
     lobbyGeneration(LOBBIES);
     lobbyStatus(LOBBIES);
     lobbyPfpHandler(LOBBIES);
+    lobbyStartGameCheck(LOBBIES);
   });
 }
 
@@ -423,8 +428,14 @@ function lobbyDetect() {
 //Ensures the lobby list is always up to date for all users viewing the page
 /*******************************************************/
 function lobbyGeneration(LOBBIES) {
+  
   const lobbyContainer = document.getElementById("lobbyElm");
   lobbyContainer.innerHTML = "";
+  if (!LOBBIES) {
+    lobbyContainer.innerHTML = "<p>No lobbies available</p>";
+    return;
+  }
+
 
   Object.entries(LOBBIES).forEach(([lobbyID, lobbyData]) => {
     lobbyAdd(lobbyID, lobbyData);
@@ -508,6 +519,19 @@ function lobbyPfpHandler(LOBBIES) {
     if (p2) p2.src = "images/defaultpfp.png";
   }
 }
+
+function lobbyStartGameCheck(LOBBIES) {
+  Object.values(LOBBIES).forEach((lobbyData) => {
+
+    if (
+      lobbyData.gameStarted &&
+      (lobbyData.player1 === currentUser.uid || lobbyData.player2 === currentUser.uid)
+    ) {
+      window.location.href = "GTNgame.html";
+    }
+
+  });
+}
 /*******************************************************/
 //menuBtn
 // Called by GTNpage.html when menu button is clicked
@@ -566,7 +590,22 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 });
 
+/*******************************************************/
+//sendToGame
+//Starts the game by updating firebase
+//Sets gameStarted to true for this lobby
+//Called when host clicks Start Game button
+/*******************************************************/
 
+async function sendToGame(lobbyID) {
+  const LOBBYREF = ref(FB_GAMEDB, "lobbies/" + lobbyID);
+
+  await update(LOBBYREF, {
+    gameStarted: true
+  });
+
+  console.log("Game started for lobby:", lobbyID);
+}
 
 /*******************************************************/
 // TEMPORARY FUNCTIONS FOR TESTING

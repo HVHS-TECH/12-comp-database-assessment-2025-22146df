@@ -1,0 +1,120 @@
+:root {
+  --electric-blue: #6FE0E8;
+  --aero: #05BEDD;
+
+  --rich-black: #050517;
+  --space-cadet: #1E1F3F;
+  --panel-bg: #0B0F1F;
+
+  --antiflash-white: #F3F6F9;
+  --text-muted: #9FB3C8;
+
+  --accent-glow: #00E0FF;
+  --accent-danger: #FF3C3C;
+
+  --border-subtle: rgba(111, 224, 232, 0.2);
+}
+
+/*******************************************************/
+/* GLOBAL */
+/*******************************************************/
+* {
+  box-sizing: border-box;
+}
+
+body {
+  background-color: var(--rich-black);
+  color: var(--antiflash-white);
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  margin: 0;
+  padding: 1.5rem;
+}
+
+h1 {
+  text-align: center;
+  color: var(--electric-blue);
+  font-size: 3rem;
+  margin-bottom: 1.5rem;
+}
+
+h2, h3, p {
+  margin-top: 0;
+}
+
+button {
+  background: linear-gradient(135deg, var(--electric-blue), var(--aero));
+  color: var(--rich-black);
+  border: none;
+  padding: 16px 24px;
+  border-radius: 8px;
+  font-weight: bold;
+  cursor: pointer;
+  margin: 10px 5px 10px 0;
+  font-size: 18px;
+}
+
+button:hover {
+  filter: brightness(1.05);
+  transform: translateY(-1px);
+}
+
+/*******************************************************/
+/* NAVBAR */
+/*******************************************************/
+nav.pages {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background-color: var(--space-cadet);
+  border: 1px solid var(--border-subtle);
+  padding: 1rem 1.25rem;
+  border-radius: 12px;
+  margin-bottom: 1.5rem;
+}
+
+.pagesLeft {
+  display: flex;
+  gap: 60px;
+}
+
+.page a {
+  color: var(--antiflash-white);
+  text-decoration: none;
+  font-weight: 600;
+  font-size: 22px;
+}
+
+.page a:hover {
+  color: var(--electric-blue);
+}
+
+.pfp {
+  width: 67px;
+  height: 67px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 2px solid var(--electric-blue);
+}
+
+/*******************************************************/
+/* RESPONSIVE */
+/*******************************************************/
+@media (max-width: 700px) {
+  nav.pages {
+    flex-direction: column;
+    gap: 1rem;
+  }
+
+  .pagesLeft {
+    gap: 1rem;
+    flex-wrap: wrap;
+  }
+
+  h1 {
+    font-size: 2.2rem;
+  }
+
+  button {
+    width: 100%;
+  }
+}
