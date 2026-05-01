@@ -16,6 +16,7 @@ console.log(
 /*******************************************************/
 let currentUser = null; // will hold the authenticated user object
 let confirmState = false; // for menu button confirmation
+let redirected = false;
 /*******************************************************/
 //FIREBASE IMPORTS AND PAGE SETUP
 /*******************************************************/
@@ -40,7 +41,7 @@ export function setupGTN() {
       console.log("User signed in:", currentUser.displayName || currentUser.email);
     } else {
       console.warn("No user signed in.");
-      // window.location.href = "index.html";
+      window.location.href = "index.html";
     }
   });
   fb_getPfp(currentUser);
@@ -519,19 +520,50 @@ function lobbyPfpHandler(LOBBIES) {
     if (p2) p2.src = "images/defaultpfp.png";
   }
 }
-
+/*******************************************************/
+// lobbyStartGameCheck
+// Checks all lobbies for a started game
+// Verifies if the current user is in the lobby
+// Redirects the user to the GTN game page if true
+// Called by lobbyDetect when firebase changes, due to .gamestarted being updated
+// Deletes lobby that was used to send players to game page
+/*******************************************************/
 function lobbyStartGameCheck(LOBBIES) {
-  Object.values(LOBBIES).forEach((lobbyData) => {
+  if (redirected) return;
+
+  Object.entries(LOBBIES).forEach(([lobbyID, lobbyData]) => {
 
     if (
       lobbyData.gameStarted &&
       (lobbyData.player1 === currentUser.uid || lobbyData.player2 === currentUser.uid)
     ) {
+      redirected = true;
+
+      const LOBBYREF = ref(FB_GAMEDB, "lobbies/" + lobbyID);
+      remove(LOBBYREF);
+
       window.location.href = "GTNgame.html";
     }
 
   });
 }
+/*******************************************************/
+//sendToGame
+//Starts the game by updating firebase
+//Sets gameStarted to true for this lobby
+//Called when host clicks Start Game button
+/*******************************************************/
+
+async function sendToGame(lobbyID) {
+  const LOBBYREF = ref(FB_GAMEDB, "lobbies/" + lobbyID);
+
+  await update(LOBBYREF, {
+    gameStarted: true
+  });
+
+  console.log("Game started for lobby:", lobbyID);
+}
+
 /*******************************************************/
 //menuBtn
 // Called by GTNpage.html when menu button is clicked
@@ -590,22 +622,6 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 });
 
-/*******************************************************/
-//sendToGame
-//Starts the game by updating firebase
-//Sets gameStarted to true for this lobby
-//Called when host clicks Start Game button
-/*******************************************************/
-
-async function sendToGame(lobbyID) {
-  const LOBBYREF = ref(FB_GAMEDB, "lobbies/" + lobbyID);
-
-  await update(LOBBYREF, {
-    gameStarted: true
-  });
-
-  console.log("Game started for lobby:", lobbyID);
-}
 
 /*******************************************************/
 // TEMPORARY FUNCTIONS FOR TESTING
@@ -639,6 +655,4 @@ deleteLobbiesBtn.addEventListener("click", async () => {
 });
 /*******************************************************/
 //TO DO
-// SORT LOBBYDETECT split into multiple functions for better readability and organization
-// Make start game button for host
 

@@ -41,5 +41,22 @@ import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/9.6.1/fir
 /*******************************************************/
 
 export function setupGTNgame() {
+  const auth = FB_AUTH;
+  onAuthStateChanged(auth, (user) => {
+    if (user) {
+      currentUser = user;
+      console.log("User signed in:", currentUser.displayName || currentUser.email);
+    } else {
+      console.warn("No user signed in.");
+      window.location.href = "index.html";
+    }
+  });
+  fb_getPfp(currentUser);
+  lobbyDetect();
+  waveText();
 
 }
+
+
+/*******************************************************/
+// TO DO
