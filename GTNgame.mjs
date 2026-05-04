@@ -23,6 +23,7 @@ console.log(
 /*******************************************************/
 let currentUser = null; // will hold the authenticated user object
 let confirmState = false; // for menu button confirmation
+let randomNumber;
 /*******************************************************/
 //FIREBASE IMPORTS AND PAGE SETUP
 /*******************************************************/
@@ -37,7 +38,6 @@ import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/9.6.1/fir
 // Calls fb_getPfp() to display user's profile picture
 // Input: n/a
 // Return n/a
-
 /*******************************************************/
 
 export function setupGTNgame() {
@@ -52,10 +52,27 @@ export function setupGTNgame() {
     }
   });
   fb_getPfp(currentUser);
-  lobbyDetect();
-  waveText();
+  createGTNgameNumber();
+  transferlobbyData();
 
 }
+
+
+/**********************************************************/
+//createGTNgameNumber
+// Centralized function to generate random number for GTN game
+// Generates a random number between 1 and 100
+// Input: n/a
+// Return: The Random Number
+/*******************************************************/
+function createGTNgameNumber() {
+  randomNumber = Math.floor(Math.random() * 100) + 1;
+  console.log("Generated random number:", randomNumber);
+  return randomNumber;
+}
+
+
+
 
 
 /*******************************************************/

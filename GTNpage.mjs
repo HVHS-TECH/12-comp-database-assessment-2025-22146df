@@ -113,13 +113,13 @@ export function lobbyCreate() {
     window.location.href = "index.html";
     return;
   }
-  const RECORDPATH = "lobbies/" + generateLobbyID(currentUser);
+  const RECORDPATH = "GTN/lobbies/" + generateLobbyID(currentUser);
   const DATAREF = ref(FB_GAMEDB, RECORDPATH);
   set(DATAREF, {
     player1: currentUser.uid,
     active: true,
     players: 1,
-    creator: currentUser.displayName || "Anon Player",
+    player1Name: currentUser.displayName || "Anon Player",
     player1Pfp: currentUser.photoURL || null,
   })
     .then(() => {
@@ -134,7 +134,7 @@ export function lobbyCreate() {
 // Displays created lobbys as a box sidebar on the left side
 // Each lobby box displays the Username of the creator
 // Shows amount of players in the lobby (max 2)
-// Called by lobbyCreate() after a lobby is created
+// Called by lobbyDetect() after a lobby is created
 /*******************************************************/
 function lobbyAdd(lobbyID, lobbyData) {
 
@@ -142,7 +142,7 @@ function lobbyAdd(lobbyID, lobbyData) {
   const LOBBY = document.createElement("div");
   LOBBY.className = "lobbyBox";
   LOBBY.user = lobbyData.player1;
-  LOBBY.innerText = "Lobby Name: " + lobbyData.creator + "\nPlayers: " + lobbyData.players + "/2";
+  LOBBY.innerText = "Lobby Name: " + lobbyData.player1Name + "\nPlayers: " + lobbyData.players + "/2";
   LOBBYELM.appendChild(LOBBY);
 
   lobbyBtn(LOBBY, lobbyID);
@@ -186,7 +186,7 @@ function lobbyBtn(lobbyDiv, lobbyID) {
     }
   });
 
-  const LOBBYREF = ref(FB_GAMEDB, "lobbies/" + lobbyID);
+  const LOBBYREF = ref(FB_GAMEDB, "GTN/lobbies/" + lobbyID);
   onValue(LOBBYREF, (snapshot) => {
     const LOBBY = snapshot.val();
     if (!LOBBY || !currentUser) return;
@@ -223,8 +223,8 @@ function lobbyBtn(lobbyDiv, lobbyID) {
 /*******************************************************/
 async function ownerCheck(Btn, lobbyID) {
   try {
-    const RECORDPATH = "lobbies/" + lobbyID + "/player1";
-    const DATAREF = ref(FB_GAMEDB, RECORDPATH);
+    const LOBBBYREF  = "GTN/lobbies/" + lobbyID + "/player1";
+    const DATAREF = ref(FB_GAMEDB, LOBBBYREF);
     const LOBBYDIV = Btn.parentElement;
 
 
@@ -272,8 +272,8 @@ async function lobbyJoin(lobbyID, Btn) {
       window.location.href = "index.html";
       return false;
     }
-    const RECORDPATH = "lobbies/" + lobbyID;
-    const DATAREF = ref(FB_GAMEDB, RECORDPATH);
+    const LOBBBYREF  = "GTN/lobbies/" + lobbyID;
+    const DATAREF = ref(FB_GAMEDB, LOBBBYREF);
     const SNAPSHOT = await get(DATAREF);
     if (!SNAPSHOT.exists()) {
       console.warn("Lobby does not exist:", lobbyID);
@@ -333,7 +333,7 @@ function lobbyClear() {
 /*******************************************************/
 
 function lobbyEmpty() {
-  const LOBBYREF = ref(FB_GAMEDB, "lobbies");
+  const LOBBYREF = ref(FB_GAMEDB, "GTN/lobbies");
 
   onValue(LOBBYREF, (snapshot) => {
     const LOBBIES = snapshot.val();
@@ -347,7 +347,7 @@ function lobbyEmpty() {
       if (!lobbyData.players || lobbyData.players === 0 || !lobbyData.player1) {
         console.log("Deleting empty lobby:", lobbyID);
 
-        const DELETEREF = ref(FB_GAMEDB, "lobbies/" + lobbyID);
+        const DELETEREF = ref(FB_GAMEDB, "GTN/lobbies/" + lobbyID);
         remove(DELETEREF)
           .then(() => {
             console.log("%cLobby deleted: " + lobbyID, "color: red; font-weight: bold;");
@@ -370,7 +370,7 @@ function lobbyEmpty() {
 /*******************************************************/
 function lobbyDisconnect(lobbyID) {
   console.log("Disconnecting from lobby:", lobbyID);
-  const LOBBYREF = ref(FB_GAMEDB, "lobbies/" + lobbyID);
+  const LOBBYREF = ref(FB_GAMEDB, "GTN/lobbies/" + lobbyID);
   get(LOBBYREF).then((snapshot) => {
     if (!snapshot.exists()) {
       console.warn("Lobby does not exist:", lobbyID);
@@ -409,7 +409,7 @@ function lobbyDisconnect(lobbyID) {
 /*******************************************************/
 
 function lobbyDetect() {
-  const LOBBYREF = ref(FB_GAMEDB, "lobbies");
+  const LOBBYREF = ref(FB_GAMEDB, "GTN/lobbies");
 
   onValue(LOBBYREF, (snapshot) => {
     const LOBBIES = snapshot.val();
@@ -529,23 +529,38 @@ function lobbyPfpHandler(LOBBIES) {
 // Deletes lobby that was used to send players to game page
 /*******************************************************/
 function lobbyStartGameCheck(LOBBIES) {
-  if (redirected) return;
+  if (redirected || !LOBBIES || !currentUser) return;
 
   Object.entries(LOBBIES).forEach(([lobbyID, lobbyData]) => {
-
     if (
       lobbyData.gameStarted &&
       (lobbyData.player1 === currentUser.uid || lobbyData.player2 === currentUser.uid)
     ) {
       redirected = true;
 
-      const LOBBYREF = ref(FB_GAMEDB, "lobbies/" + lobbyID);
+      lobbyTransfer(lobbyID, lobbyData);
+
+      const LOBBYREF = ref(FB_GAMEDB, "GTN/lobbies/" + lobbyID);
       remove(LOBBYREF);
 
       window.location.href = "GTNgame.html";
     }
-
   });
+}
+
+function lobbyTransfer(lobbyID, lobbyData) {
+  if (!lobbyData.active){
+    const TRANSFERREF = ref(FB_GAMEDB, "GTN/activeGames/" + lobbyID);
+    set(TRANSFERREF, {
+      player1: lobbyData.player1,
+        player2: lobbyData.player2,
+        player1Name: lobbyData.player1Name,
+        player2Name: lobbyData.player2Name,
+        player1Pfp: lobbyData.player1Pfp,
+        player2Pfp: lobbyData.player2Pfp,
+        gameActive: true,
+      });
+    }
 }
 /*******************************************************/
 //sendToGame
@@ -555,7 +570,7 @@ function lobbyStartGameCheck(LOBBIES) {
 /*******************************************************/
 
 async function sendToGame(lobbyID) {
-  const LOBBYREF = ref(FB_GAMEDB, "lobbies/" + lobbyID);
+  const LOBBYREF = ref(FB_GAMEDB, "GTN/lobbies/" + lobbyID);
 
   await update(LOBBYREF, {
     gameStarted: true
@@ -644,7 +659,7 @@ deleteLobbiesBtn.addEventListener("click", async () => {
   }
 
   try {
-    const LOBBYREF = ref(FB_GAMEDB, "lobbies");
+    const LOBBYREF = ref(FB_GAMEDB, "GTN/lobbies");
     await remove(LOBBYREF);
     console.log("%cSuccess: All lobbies deleted!",
       "color: red; font-weight: bold; font-size: 25px; background: black; padding: 10px; border: 3px solid red;");
