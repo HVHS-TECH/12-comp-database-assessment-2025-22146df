@@ -1,13 +1,10 @@
 /**************************************************************/
 // main.mjs
-// Main entry for index.html
-// Written by Dylan Figliola, Term 2 2025
+// Handles shared button event setup for the main pages.
+// Connects HTML buttons to functions imported from other JavaScript modules.
+// Exposes selected functions to the window for HTML onclick events.
+// Written by Dylan Figliola for 13COMP Programming Internal (3.7) 2026.
 /**************************************************************/
-
-console.log(
-  '%c main.mjs ',
-  'color: #FF6F61; background-color: #0D0D0D; font-weight: bold; font-size: 16px; padding: 6px 12px; border-radius: 2px; border: 2px solid #ff0000;'
-);
 /**************************************************************/
 /****************************************************************/
 //Functions from registration.mjs
@@ -20,7 +17,6 @@ window.addEventListener("DOMContentLoaded", () => {
   if (btn) {
     btn.addEventListener("click", writeUserInfo);
   } else {
-    console.warn("submitBtn not found in DOM.");
   }
 });
 

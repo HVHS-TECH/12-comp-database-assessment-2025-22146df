@@ -53,7 +53,6 @@ export function setupGTN() {
 function waveText() {
   const waveTextElm = document.getElementById("matchStatus");
   const text = waveTextElm.innerText;
-  console.log("Applying wave animation to text:", text);
   waveTextElm.innerHTML = "";
 
   [...text].forEach((char, i) => {
@@ -90,8 +89,6 @@ function generateLobbyID() {
   }
 
   let lobbyID = nameAttach + ": " + result;
-  console.log("Generated lobby ID:", lobbyID);
-
   return lobbyID;
 }
 
@@ -274,7 +271,6 @@ async function ownerCheck(btn, lobbyID) {
     const PLAYERUID = SNAPSHOT.val();
 
     if (currentUser.uid === PLAYERUID) {
-      console.log("User is the owner of this lobby. Indicating ownership.");
 
       LOBBYDIV.classList.add("owner");
       btn.remove();
@@ -378,7 +374,6 @@ function lobbyEmpty() {
     const LOBBIES = snapshot.val();
 
     if (!LOBBIES) {
-      console.log("No lobbies found.");
       return;
     }
 

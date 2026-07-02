@@ -1,10 +1,9 @@
-console.log(
-  '%c choosegame.mjs ',
-  'color: #00FF00; background-color: #001100; font-weight: bold; font-size: 14px; padding: 4px 8px; border-radius: 4px;'
-);
-
-
-
+/**************************************************************/
+// choosegame.mjs
+// Handles the game selection page for the game manager.
+// Manages navigation buttons for the available games.
+// Written by Dylan Figliola for 13COMP Programming Internal (3.7) 2026.
+/**************************************************************/
 /**************************************************************/
 // Essential Firebase Imports
 import { FB_AUTH } from '../firebase/fb_core.mjs';
@@ -28,7 +27,6 @@ export {
 // Return: n/a
 /******************************************************/
 export function setupChooseGame() {
-  console.log("setupChooseGame called");
   document.addEventListener("DOMContentLoaded", () => {
     onAuthStateChanged(FB_AUTH, (user) => {
       if (!user) {
@@ -53,7 +51,6 @@ export function setupChooseGame() {
 // Return: n/a
 /******************************************************/
  function initChooseGame(user) {
-    console.log("choosegame.mjs loaded", user);
     const pfpImg = document.getElementById("pfp");
     if (pfpImg && user && user.photoURL) {
         pfpImg.src = user.photoURL;
@@ -72,7 +69,6 @@ function gnomeButton() {
   const auth = FB_AUTH;
   onAuthStateChanged(auth, (user) => {
     if (user) {
-      console.log("Transporting to the Gnome game");
       window.location.href = "../gnome/game1.html";
     } else if (!user) {
       alert("No user found, taking you back to login page");
@@ -93,7 +89,6 @@ function GTNpageBtn() {
   const auth = FB_AUTH;
   onAuthStateChanged(auth, (user) => {
     if (user) {
-      console.log("Transporting to the GTN game");
       window.location.href = "../gtn/GTNpage.html";
     } else if (!user) {
       alert("No user found, taking you back to login page");

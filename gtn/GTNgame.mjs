@@ -57,8 +57,6 @@ export function setupGTNgame() {
 
     onDisconHandler();
     onDisconListener();
-
-    console.log("GTN game setup complete for:", currentUser.displayName || currentUser.email);
   });
 }
 
@@ -574,7 +572,6 @@ function leaveActiveGame() {
     const gameData = snapshot.val();
 
     if (gameData.gameState === "finished") {
-      console.log("Game already finished. Leave button will not award another win.");
       window.location.href = "./GTNpage.html";
       return;
     }
@@ -693,6 +690,7 @@ function checkGameEnd(gameData, USERREF) {
 // Return: N/A
 /*******************************************************/
 function deleteActiveGame() {
+  cancelDisconnectHandler();
   remove(GAMEREF);
 }
 

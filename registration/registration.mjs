@@ -1,7 +1,10 @@
-console.log(
-  '%c registration.mjs ',
-  'color: #4FC3F7; background-color: #0B1E3F; font-weight: bold; font-size: 14px; padding: 4px 8px; border-radius: 4px;'
-);
+/**************************************************************/
+// registration.mjs
+// Handles user registration for the game manager.
+// Validates user form inputs before saving details to Firebase Database.
+// Writes and updates user profile data after Google authentication.
+// Written by Dylan Figliola for 13COMP Programming Internal (3.7) 2026.
+/**************************************************************/
 /**************************************************************/
 // Essential Firebase Imports
 import {FB_GAMEAPP, FB_GAMEDB, FB_AUTH } from '../firebase/fb_core.mjs';
@@ -13,7 +16,6 @@ import { fb_checkUser } from '../firebase/fb_core.mjs';
 export {
   writeUserInfo,
   adminPage,
-  // loginHandler,
 };
 /******************************************************/
 // writeUserInfo

@@ -1,13 +1,12 @@
 
-/**********************************************************/
-//Leaderboards page
-//Functions for leaderboard buttons and displaying scores
-//Leaderboards for GTN and Gnome Dodger
+/**************************************************************/
+// leaderboards.mjs
+// Handles the leaderboard page for the game manager.
+// Displays sorted scores for Gnome Dodger and Guess The Number.
+// Reads score and user data from Firebase Database.
+// Written by Dylan Figliola for 13COMP Programming Internal (3.7) 2026.
+/**************************************************************/
 
-console.log(
-  '%c leaderboards.mjs ',
-  'color: #00FFF7; background-color: #1B263B; font-weight: bold; font-size: 14px; padding: 4px 8px; border-radius: 4px;'
-);
 /**************************************************************/
 // Essential Firebase Imports
 import { FB_GAMEAPP, FB_GAMEDB, FB_AUTH } from '../firebase/fb_core.mjs';

@@ -1,15 +1,10 @@
-//**************************************************************/
-// admin.mjs
-// Admin commands for database project
-// Written by Dylan Figliola, Term 2 2025
-//
-// All function/s begin with fb_ 
-// Diagnostic code lines have a comment appended to them //DIAG
 /**************************************************************/
-console.log(
-  '%c fb_admin.mjs ',
-  'color: #FFD700; background-color: #1B263B; font-weight: bold; font-size: 14px; padding: 4px 8px; border-radius: 4px;'
-);
+// admin.mjs
+// Handles the admin page for the game manager.
+// Checks admin access and manages admin database tools.
+// Allows admins to read, write, delete, and view Firebase data.
+// Written by Dylan Figliola for 13COMP Programming Internal (3.7) 2026.
+/**************************************************************/
 /**************************************************************/
 // Essential Firebase Imports
 import {FB_GAMEAPP, FB_GAMEDB, FB_AUTH } from '../firebase/fb_core.mjs';
@@ -24,8 +19,6 @@ export {
   fb_ReadAll,
   fb_deleteAll,
   fb_logoutUser
-  // fb_ReadSorted,
-  // fb_ReadOn,
 };
 
 /**************************************************************/
@@ -192,18 +185,31 @@ function fb_deleteAll() {
 
 }
 
-
+/**************************************************************/
+// fb_logoutUser
+// Signs the current user out of Firebase Auth
+// Redirects the user back to the registration page
+// Called by logoutBtn when clicked
+// Input: n/a
+// Return: n/a
+/**************************************************************/
 
  function fb_logoutUser() {
   const auth = FB_AUTH;
   signOut(auth).then(() => {
-    console.log("✅ User signed out.");
     window.location.href = "../index.html";
   }).catch((error) => {
-    console.error("❌ Sign out error:", error);
+    console.error("Sign out error:", error);
   });
 }
-
+/**************************************************************/
+// checkAdmin
+// Checks if the signed-in user has an admin record in Firebase
+// Redirects non-admin users back to the choose game page
+// Called by setupAdmin() after auth
+// Input: user
+// Return: n/a
+/**************************************************************/
 function checkAdmin(user) {
   const currentUID = user.uid;
   const ADMINREF = ref(FB_GAMEDB, "admins/" + currentUID);

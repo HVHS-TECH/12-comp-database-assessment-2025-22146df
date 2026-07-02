@@ -1,8 +1,9 @@
-
-console.log(
-    '%c fb_core.mjs ',
-    'color: #00FFF7; background-color: #1B263B; font-weight: bold; font-size: 14px; padding: 4px 8px; border-radius: 4px;'
-);
+/**************************************************************/
+// fb_core.mjs
+// Handles the shared Firebase setup for the game manager.
+// Manages Firebase imports, authentication, login, and user checks.
+// Written by Dylan Figliola for 13COMP Programming Internal (3.7) 2026.
+/**************************************************************/
 //**************************************************************/
 // Importing required functions
 /**************************************************************/
