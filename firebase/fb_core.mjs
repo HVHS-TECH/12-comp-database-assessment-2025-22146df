@@ -152,7 +152,7 @@ function fb_checkUser() {
         } else {
             console.log("No user logged in, redirecting to login..."); // Redirect to login page
             if (!document.URL.includes("index.html")) {
-               // window.location.href = "index.html";
+               window.location.href = "../index.html";
             }
         }
     });

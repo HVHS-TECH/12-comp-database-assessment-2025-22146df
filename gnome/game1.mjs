@@ -1,19 +1,10 @@
-// ************************************************************
-// GAME 1 || GNOME DODGER
-// ************************************************************
-// P5.play: GnomeDodger
-// By Dylan Figliola
-// ************************************************************
-
-console.log(
-  "%c🐾 GNOME DODGER 🐾",
-  `
-  color: #00ff99;
-  background: black;
-  `
-);
-
-
+/**************************************************************/
+// game1.mjs
+// Gnome Dodger game logic 
+// Manages player movement, gnome spawning, collisions, timer, and score.
+// Saves valid high scores to Firebase Database.
+// Written by Dylan Figliola for 13COMP Programming Internal (3.7) 2026.
+/**************************************************************/
 /*******************************************************/
 //FIREBASE IMPORTS AND PAGE SETUP
 /*******************************************************/
@@ -32,18 +23,18 @@ export let currentUser = null; // will hold the authenticated user object
 // If not signed in, redirect to index.html
 /*******************************************************/
 export function setupGame1(){
-const auth = FB_AUTH;
-onAuthStateChanged(auth, (user) => {
-  if (user) {
+  onAuthStateChanged(FB_AUTH, (user) => {
+    if (!user) {
+      console.warn("No user logged in. Redirecting...");
+      window.location.href = "../registration/index.html";
+      return;
+    }
+
     currentUser = user;
-    console.log("User signed in:", user.displayName || user.email);
-  } else {
-    console.warn("No user signed in.");
-    window.location.href = "../registration/index.html";
-  }
-});
-fb_getPfp();
-preload();
+
+  });
+      fb_getPfp();
+    preload();
 }
 
 // ************************************************************/
@@ -182,7 +173,7 @@ function gnomeDetectH() {
     if (gnomesH[i].x > GAMEWIDTH) {
       gnomesH[i].remove();
       gnomesH.splice(i, 1);
-      score += 1;
+      score += 20;
     }
   }
 }
@@ -201,7 +192,7 @@ function gnomeDetectV() {
     if (gnomesV[i].y > GAMEHEIGHT) {
       gnomesV[i].remove();
       gnomesV.splice(i, 1);
-      score += 1;
+      score += 20;
     }
   }
 }
@@ -299,5 +290,4 @@ export function fb_saveScore() {
     });
 }
 /******************************************************/
-// button detections (remove this)
 window.fb_saveScore = fb_saveScore;

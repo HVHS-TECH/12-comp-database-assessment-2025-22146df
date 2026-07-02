@@ -111,31 +111,7 @@ document.addEventListener("DOMContentLoaded", () => {
     btn.addEventListener("click", lobbyCreate);
   }
 });
-// window.menuBtn = menuBtn;
-
-/****************************************************/
-/****************************************************************/
-//Functions from GTNgame.mjs
-//Listeners for creating a lobby and navigating back to menu
-/**************************************************************/
-// import { leaveActiveGame} from './GTNgame.mjs';
-// document.addEventListener("DOMContentLoaded", () => {
-//   const btn = document.getElementById("createBtn");
-//   if (btn) {
-//     btn.addEventListener("click", lobbyCreate);
-//   }
-// });
-// window.menuBtn = menuBtn;
 
 
 /****************************************************/
-//TO DO LIST
-// - add a username restriction field, where if a user is creating an account, they cannot enter a username that already exists in the database.
-//  This is to prevent overwriting other users data, and also to make sure users can only access their own data. 
-// Make sure all functions and modules have comments and are well documented.
-//Functions should only do one action.
-//File management
-//Function names convention
-// NextJS Google Address Autocomplete API
-
 /****************************************************/

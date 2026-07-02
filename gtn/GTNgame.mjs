@@ -1,33 +1,18 @@
-/*******************************************************/
+/**************************************************************/
 // GTNgame.mjs
-// Guess The Number Lobby Page
-// Made by Dylan Figliola
-/*******************************************************/
-
-console.log(
-  "%c🎲 GUESS THE NUMBER GAME 🎲",
-  `
-  color: #ffffff;
-  background: linear-gradient(90deg, #000000, #00ffcc);
-  font-size: 18px;
-  font-weight: bold;
-  padding: 8px 16px;
-  border-radius: 6px;
-  border: 2px solid #00ffcc;
-  letter-spacing: 1px;
-  text-shadow: 0 0 6px #00ffcc;
-  `
-);
+// Handles the active Guess The Number game page.
+// Manages turns, guesses, player displays, win conditions, and game ending.
+// Reads and updates active game data, wins, and fewest guesses using Firebase Database.
+// Written by Dylan Figliola for 13COMP Programming Internal (3.7) 2026.
+/**************************************************************/
 /*******************************************************/
 //VARIABLES AND GAME SETUP
 /*******************************************************/
 let currentUser = null; // will hold the authenticated user object
-let confirmState = false; // for menu button confirmation
 let randomNumber;
-let gameID = localStorage.getItem("GTNgameID");
-const GAMEREF = ref(FB_GAMEDB, "GTN/activeGames/" + gameID);
 let USERREF = null;
 let DISCONREF = null;
+let activeGameListener = null;
 
 let isPlayer1 = false;
 let isPlayer2 = false;
@@ -35,6 +20,9 @@ let isMyTurn = false;
 let player1Guesses = [];
 let player2Guesses = [];
 let numberGenerated = false;
+
+let gameID = localStorage.getItem("GTNgameID");
+const GAMEREF = ref(FB_GAMEDB, "GTN/activeGames/" + gameID);
 /*******************************************************/
 //FIREBASE IMPORTS AND PAGE SETUP
 /*******************************************************/
@@ -52,39 +40,37 @@ import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/9.6.1/fir
 /*******************************************************/
 
 export function setupGTNgame() {
-  const auth = FB_AUTH;
-  onAuthStateChanged(auth, (user) => {
-    if (user) {
-      currentUser = user;
-      console.log("User signed in:", currentUser.displayName || currentUser.email);
-      USERREF = ref(FB_GAMEDB, "userInfo/" + currentUser.uid);
-
-      fb_getPfp(currentUser);
-      loadActiveGame(USERREF);
-      setupGuessButton();
-      setupLeaveButton();
-      console.log("GAME ID: " + gameID);
-
-      // onDisconnect handling functions
-      onDisconHandler();
-      onDisconListener();
-
-    } else {
+  onAuthStateChanged(FB_AUTH, (user) => {
+    if (!user) {
       console.warn("No user signed in.");
-      // window.location.href = "../registration/index.html";
+      window.location.href = "../index.html";
+      return;
     }
-  });
 
+    currentUser = user;
+    USERREF = ref(FB_GAMEDB, "userInfo/" + currentUser.uid);
+
+    fb_getPfp();
+    loadActiveGame(USERREF);
+    setupGuessButton();
+    setupLeaveButton();
+
+    onDisconHandler();
+    onDisconListener();
+
+    console.log("GTN game setup complete for:", currentUser.displayName || currentUser.email);
+  });
 }
 
 
-/**********************************************************/
-//createGTNgameNumber
-// Centralized function to generate random number for GTN game
-// Generates a random number between 1 and 100
+/**************************************************************/
+// createGTNgameNumber
+// Generates the random number used in the active GTN game.
+// Creates a number between 1 and 100 for players to guess.
+// Called by loadActiveGame() when player 1 starts a new game.
 // Input: n/a
-// Returns the random number
-/*******************************************************/
+// Return: randomNumber
+/**************************************************************/
 function createGTNgameNumber(gameData) {
   if (currentUser.uid === gameData.player1) {
     randomNumber = Math.floor(Math.random() * 100) + 1;
@@ -94,7 +80,6 @@ function createGTNgameNumber(gameData) {
     });
 
   }
-  console.log("RANDOM NUMBER IS: " + randomNumber);
   return randomNumber;
 }
 
@@ -103,11 +88,11 @@ function createGTNgameNumber(gameData) {
 // Loads the active game data from Firebase and sets up real-time listeners
 // Checks if the current user is part of the game and updates the UI accordingly
 // Calls playerPFPDisplay() to show player profile pictures and names
-// Input: n/a
+// Input: USERREF
 // Return n/a
 /*******************************************************/
 function loadActiveGame(USERREF) {
-  onValue(GAMEREF, (snapshot) => {
+  activeGameListener = onValue(GAMEREF, (snapshot) => {
     if (!snapshot.exists()) {
       console.warn("Active game no longer exists.");
       return;
@@ -135,10 +120,8 @@ function loadActiveGame(USERREF) {
     if (!numberGenerated) {
       numberGenerated = true;
       if (gameData.player1 === currentUser.uid || gameData.player2 === currentUser.uid) {
-        console.log("Player is part of this game.");
       } else {
-        console.warn("Player is not part of this game.");
-        // window.location.href = "./GTNpage.html";
+        window.location.href = "./GTNpage.html";
         return;
       }
       createGTNgameNumber(gameData);
@@ -208,12 +191,14 @@ function setupGuessButton() {
 }
 
 /*******************************************************/
-//submitGuess
-// Handles logic for entering guesses
-// Validates input: checks if 1 < guess < 100, and checks for if it's the player's turn
-// If valid, displays the guess and calls displayGuessResult() to show if guess is too high, low, or correct
-// Then calls turnSwitch() to update the turn in Firebase
-/*******************************************************/
+// submitGuess
+// Handles the logic for submitting a player's guess.
+// Validates guess and player turn
+// Updates Firebase with the latest guess, then calls displayGuessResult() and turnSwitch().
+// Called by setupGuessButton() when the guess button is clicked.
+// Input: n/a
+// Return: n/a
+/**************************************************************/
 function submitGuess() {
   const guessInput = document.getElementById("guessInput");
   const guess = parseInt(guessInput.value);
@@ -242,11 +227,11 @@ function submitGuess() {
     gameData.lastGuess = guess;
     gameData.lastGuesser = currentUser.uid;
 
-    console.log("Player guessed: " + guess);
-    const gameEnded = displayGuessResult(guess, gameData);
 
+    const gameEnded = displayGuessResult(guess, gameData);
     if (!gameEnded) {
       turnSwitch(gameData, guess);
+      // only swap turns if game still ongoing
     }
   });
 }
@@ -261,13 +246,11 @@ function submitGuess() {
 function storeGuess(guess, gameData) {
   if (gameData.player1 === currentUser.uid) {
     player1Guesses.push(guess);
-    console.log(guess + " stored for Player 1");
     update(GAMEREF, {
       lastGuessp1: guess
     });
   } else if (gameData.player2 === currentUser.uid) {
     player2Guesses.push(guess);
-    console.log(guess + " stored for Player 2");
     update(GAMEREF, {
       lastGuessp2: guess
     });
@@ -280,6 +263,8 @@ function storeGuess(guess, gameData) {
 // Compares stored turn uid with player1 and player2 uid to determine whose turn is next
 // Called by submitGuess() after validating the guess and displaying the result
 // Only updates turn after guess has been processed.
+// Input: gameData, guess
+// Return: n/a
 /*******************************************************/
 
 function turnSwitch(gameData, guess) {
@@ -352,6 +337,8 @@ function fb_AddGuess(playerWhoGuessed, playerField) {
 // Displays the result of the player's guess (too high, too low, or correct)
 // Compares the player's guess to the random number stored in Firebase and updates the UI accordingly
 // Called by submitGuess() after validating the guess and logging it to the console
+// Input: guess, gameData
+// Return: true if the guess is correct, or false
 /*******************************************************/
 function displayGuessResult(guess, gameData) {
   const ARROW = document.getElementById("guessArrow");
@@ -409,14 +396,15 @@ function displayTurn(gameData) {
   }
 }
 
-/*******************************************************/
-// displayCrown
-// Displays a crown over the player with the most GTN wins
-// Reads both player win counts from Firebase and updates the crown UI
-// Also calls displayWins() to update displayed win totals
-// Input: gameData
+/**************************************************************/
+// displayTurn
+// Displays whose turn it is using the turn UID stored in Firebase.
+// Updates the turn indicator profile picture to match the current player.
+// Adds a visual highlight when it is the current user's turn.
+// Called by loadActiveGame() whenever active game data is read from Firebase.
+// Input: gameData 
 // Return: n/a
-/*******************************************************/
+/**************************************************************/
 function displayCrown(gameData) {
 
   const p1Crown = document.getElementById("player1Crown");
@@ -466,9 +454,6 @@ function displayCrown(gameData) {
 function displayWins(p1Wins, p2Wins) {
   const p1Info = document.querySelector(".leftPlayer .gamePlayerInfo");
   const p2Info = document.querySelector(".rightPlayer .gamePlayerInfo");
-
-
-  console.log(`Player 1 Wins: ${p1Wins}, Player 2 Wins: ${p2Wins}`);
   p1Info.innerText = ` Player 1 \n Wins: ${p1Wins}`;
   p2Info.innerText = ` Player 2 \n Wins: ${p2Wins}`;
 }
@@ -480,6 +465,9 @@ function displayWins(p1Wins, p2Wins) {
 // Return: n/a
 /*******************************************************/
 function displayGameOver(gameData) {
+
+  stopActiveGameListener();
+
   const RESULT = document.getElementById("otherGuessDisplay");
   const guessBtn = document.getElementById("guessBtn");
   const guessInput = document.getElementById("guessInput");
@@ -551,8 +539,6 @@ function updateFewestGuesses(userData, USERREF, guessAmount) {
     update(USERREF, {
       GTNFewestGuesses: guessAmount
     });
-
-    console.log("New fewest guesses saved:", guessAmount);
   }
 }
 
@@ -568,7 +554,6 @@ function setupLeaveButton() {
     console.warn("leaveBtn not found in HTML.");
     return;
   }
-
   leaveBtn.addEventListener("click", leaveActiveGame);
 }
 
@@ -580,8 +565,6 @@ function setupLeaveButton() {
 // Return: N/A
 /*******************************************************/
 function leaveActiveGame() {
-
-
   get(GAMEREF).then((snapshot) => {
     if (!snapshot.exists()) {
       console.warn("Game does not exist.");
@@ -620,6 +603,7 @@ function leaveActiveGame() {
       winType: "leave",
       resultSaved: true
     }).then(() => {
+      stopActiveGameListener();
       deleteActiveGame();
       window.location.href = "./GTNpage.html";
     });
@@ -651,9 +635,6 @@ function logPlayerWins(gameData) {
       if (p2Snap.exists()) {
         p2Wins = p2Snap.val();
       }
-
-      console.log("Player 1 wins: " + p1Wins);
-      console.log("Player 2 wins: " + p2Wins);
     });
   });
 }
@@ -667,7 +648,6 @@ function logPlayerWins(gameData) {
 /*******************************************************/
 function saveLeaveWin(winnerUID) {
   const WINNERREF = ref(FB_GAMEDB, "userInfo/" + winnerUID);
-
   get(WINNERREF).then((snapshot) => {
     if (!snapshot.exists()) {
       console.warn("Winner data not found.");
@@ -680,8 +660,6 @@ function saveLeaveWin(winnerUID) {
     update(WINNERREF, {
       GTNwins: currentWins + 1,
     });
-
-    console.log("Leave win saved.");
   });
 }
 
@@ -691,13 +669,13 @@ function saveLeaveWin(winnerUID) {
 // Checks if the game has finished
 // Saves result only if the win came from a correct guess
 // Displays the game over screen for all finished game types
+// Input: gameData, USERREF
 // Return: T/F
 /*******************************************************/
 function checkGameEnd(gameData, USERREF) {
   if (gameData.gameState !== "finished") {
     return false;
   }
-
   if (gameData.winType === "guess" && gameData.winner === currentUser.uid && !gameData.resultSaved) {
     saveGameResult(gameData, USERREF);
   }
@@ -710,7 +688,7 @@ function checkGameEnd(gameData, USERREF) {
 /*******************************************************/
 // deleteActiveGame
 // Only called once game is over and all relevant rresults have been saved to Firebase
-// Deletes the active game from Firebase to prevent further interaction and cleans up firebase
+// Deletes active game to clean up FB
 // Input: gameData 
 // Return: N/A
 /*******************************************************/
@@ -730,11 +708,8 @@ function onDisconHandler() {
     console.warn("Cannot setup disconnect handler. Missing user or gameID.");
     return;
   }
-
   DISCONREF = ref(FB_GAMEDB, "GTN/activeGames/" + gameID + "/disconnectedUser");
-
   onDisconnect(DISCONREF).set(currentUser.uid);
-  console.log("discon handler set");
 }
 
 /*******************************************************/
@@ -747,6 +722,21 @@ function onDisconHandler() {
 function cancelDisconnectHandler() {
   if (DISCONREF) {
     onDisconnect(DISCONREF).cancel();
+  }
+}
+
+/**************************************************************/
+// stopActiveGameListener
+// Stops the main Firebase listener for the active GTN game.
+// Prevents loadActiveGame() from continuing to run after the game has finished.
+// Called by displayGameOver() when the final game over screen is shown.
+// Input: n/a
+// Return: n/a
+/**************************************************************/
+function stopActiveGameListener() {
+  if (activeGameListener) {
+    activeGameListener();
+    activeGameListener = null;
   }
 }
 
@@ -802,7 +792,6 @@ function onDisconListener() {
     }
 
     if (currentUser.uid !== winnerUID) {
-      console.log("This user is not the winner, so they will not save the win.");
       return;
     }
     handleDisconnectWin(winnerUID, gameData);
@@ -827,7 +816,6 @@ function handleDisconnectWin(winnerUID, gameData) {
     resultSaved: true
   })
     .then(() => {
-      console.log("Leave/disconnect win saved for:", winnerUID);
       saveLeaveWin(winnerUID);
       deleteActiveGame();
     })
@@ -853,11 +841,6 @@ function getDisconWinnerName(gameData, winnerUID) {
 }
 
 /*******************************************************/
-// TO DO
-
-
-
-// OPTIONAL: Add a chat feature for players to talk during the game
-//Add data stealer for google autofill, to get classmates address
+//END
 /*******************************************************/
 

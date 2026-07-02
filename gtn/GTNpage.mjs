@@ -1,18 +1,12 @@
-/*******************************************************/
+/**************************************************************/
 // GTNpage.mjs
-// Guess The Number Game
-// Made by Dylan Figliola
+// Handles the Guess The Number lobby page.
+// Manages lobby creation, joining, player cards, and lobby status.
+// Reads and updates lobby data using Firebase Database.
+// Written by Dylan Figliola for 13COMP Programming Internal (3.7) 2026.
+/**************************************************************/
 /*******************************************************/
-
-console.log(
-  "%c🎲 GUESS THE NUMBER LOBBY 🎲",
-  `
-  color: #c77dff;
-  background: linear-gradient(90deg, #000000, #111111);
-  `
-);
-/*******************************************************/
-//VARIABLES AND GAME SETUP
+//GLOBAL VARIABLES
 /*******************************************************/
 let currentUser = null; // will hold the authenticated user object
 let confirmState = false; // for menu button confirmation
@@ -26,86 +20,94 @@ import { ref, query, orderByChild, limitToLast, onValue, get, set, remove, updat
 import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-auth.js";
 /**********************************************************/
 //setupGTN
-// Check if user is signed in and runs initialization functions for GTN game
+// Check if user is signed in and runs initialization functions for GTN lobby page
 // If not signed in, redirect to index.html
 // Calls fb_getPfp() to display user's profile picture
 // Input: n/a
 // Return n/a
-
 /*******************************************************/
 export function setupGTN() {
-  const auth = FB_AUTH;
-  onAuthStateChanged(auth, (user) => {
-    if (user) {
-      currentUser = user;
-      console.log("User signed in:", currentUser.displayName || currentUser.email);
-    } else {
-      console.warn("No user signed in.");
-      window.location.href = "../registration/index.html";
+  onAuthStateChanged(FB_AUTH, (user) => {
+    if (!user) {
+      console.warn("No user logged in.");
+      window.location.href = "../index.html";
+      return;
     }
+
+    currentUser = user;
+
+    fb_getPfp();
+    lobbyDetect();
+    waveText();
   });
-  fb_getPfp(currentUser);
-  lobbyDetect();
-  waveText();
-
 }
-
-/************************************************************/
-//waveText
-// Adds a wave animation to the match status text on GTNpage.html
-// Called by setupGTN() on page load
-/*******************************************************/
+/**************************************************************/
+// waveText
+// Adds animated wave styling to the match status text.
+// Splits the status message into individual animated characters.
+// Used to make lobby feedback more noticeable to the user.
+// Input: n/a
+// Return: n/a
+/**************************************************************/
 
 function waveText() {
-  const WAVETEXT = document.getElementById("matchStatus");
-  const text = WAVETEXT.innerText;
+  const waveTextElm = document.getElementById("matchStatus");
+  const text = waveTextElm.innerText;
   console.log("Applying wave animation to text:", text);
-  WAVETEXT.innerHTML = "";
+  waveTextElm.innerHTML = "";
 
   [...text].forEach((char, i) => {
     const span = document.createElement("span");
     span.textContent = char === " " ? "\u00A0" : char; // preserve spaces by replacing normal spaces with non-breaking spaces
     span.style.animationDelay = `${i * 0.06}s`;
-    WAVETEXT.appendChild(span);
+    waveTextElm.appendChild(span);
   });
 }
-/************************************************************/
-//generateLobbyID
-//Generates a unique lobby ID everytime a lobby is created
-//Attaches Lobby with the user that created it
-//Binds the lobby to their username
-//Input: n/a
-// Called by lobbyCreate() when "Create a Lobby" button is clicked on GTNpage.html
-/*******************************************************/
+/**************************************************************/
+// generateLobbyID
+// Creates a unique lobby ID when a user creates a lobby.
+// Combines the user's display name with a random string.
+// Called by lobbyCreate() when a new lobby is created.
+// Input: n/a
+// Return: lobbyID
+/**************************************************************/
 function generateLobbyID() {
   const CHARS = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
   let result = '';
+
   for (let i = 0; i < 16; i++) {
     result += CHARS.charAt(Math.floor(Math.random() * CHARS.length));
-    // DASH AFTER EVERY 4 CHARACTERS 
+
     if ((i + 1) % 4 === 0 && i < 15) {
       result += '-';
     }
   }
-  // Removes spaces from username if there is no name, sets Anon Player Lobby
-  const NAMEATTACH = currentUser.displayName ? currentUser.displayName.replace(/\s+/g, '') : "Anon Player";
-  let lobbyID = NAMEATTACH + ": " + result; // 1 in 580 tredicillion chance of collision with 16 char ID and username match.
+
+  let nameAttach = "AnonPlayer";
+
+  if (currentUser.displayName) {
+    nameAttach = currentUser.displayName.replace(/\s+/g, "");
+  }
+
+  let lobbyID = nameAttach + ": " + result;
   console.log("Generated lobby ID:", lobbyID);
+
   return lobbyID;
-
-
 }
-/************************************************************/
-//lobbyCreate
+
+/**************************************************************/
+// lobbyCreate
+// Creates a new GTN lobby in Firebase for the current user.
+// Checks that the user is not already in a lobby before creating one.
 // Called when "Create a Lobby" button is clicked on GTNpage.html (button with id "createLobbyBtn")
-// Creates a new lobby in Firebase with a unique ID, and adds the current user to it
 // Input: n/a
-/*******************************************************/
+// Return: n/a
+/**************************************************************/
 export function lobbyCreate() {
   currentUser = FB_AUTH.currentUser;
   lobbyUserCheck(currentUser).then((alreadyInLobby) => {
     if (alreadyInLobby) {
-      const status = document.getElementById("p_lobbyStatus");
+      const status = document.getElementById("lobbyStatus");
       if (status) {
         status.innerText = "You are already in a lobby. Leave it before creating another one.";
       }
@@ -123,10 +125,10 @@ export function lobbyCreate() {
       player1Name: currentUser.displayName || "Anon Player",
       player1Pfp: currentUser.photoURL || null,
     }).then(() => {
-      console.log(
-        "%cCreated lobby for user: " + currentUser.displayName,
-        "color: green; font-weight: bold;"
-      );
+      const status = document.getElementById("lobbyStatus");
+      if (status) {
+        status.innerText = "Lobby created successfully!";
+      }
     });
   });
 }
@@ -165,9 +167,10 @@ function lobbyUserCheck(currentUser) {
 /*******************************************************/
 // lobbyAdd
 // Displays created lobbys as a box sidebar on the left side
-// Each lobby box displays the Username of the creator
-// Shows amount of players in the lobby (max 2)
+// Each lobby box displays the Username of the creator and amount of players in the lobby
 // Called by lobbyDetect() after a lobby is created
+// Input: lobbyID, lobbyData
+// Return: n/a
 /*******************************************************/
 function lobbyAdd(lobbyID, lobbyData) {
 
@@ -190,11 +193,14 @@ function lobbyAdd(lobbyID, lobbyData) {
   }
 }
 
-/*******************************************************/
+/**************************************************************/
 // lobbyBtn
-// Creates a button for each Lobby created, allowing other users to join the lobby by clicking the button
-// Called by lobbyAdd() when a lobby box is created.
-/*******************************************************/
+// Creates a join button for a lobby card.
+// Connects the button to the correct lobby using the lobby ID.
+// Prevents the host from joining their own lobby.
+// Input: lobbyDiv, lobbyID
+// Return: n/a
+/**************************************************************/
 function lobbyBtn(lobbyDiv, lobbyID) {
   // Create the Join button
   const joinBtn = document.createElement("button");
@@ -207,10 +213,8 @@ function lobbyBtn(lobbyDiv, lobbyID) {
 
   // Event listener for the Join button
   joinBtn.addEventListener("click", async () => {
-    console.log("Attempting to join lobby:", lobbyID);
-
     joinBtn.disabled = true;
-    const JOINED = await lobbyJoin(lobbyID, joinBtn);
+    const JOINED = await lobbyJoin(lobbyID);
 
     if (JOINED) {
       joinBtn.remove();
@@ -218,6 +222,7 @@ function lobbyBtn(lobbyDiv, lobbyID) {
       joinBtn.disabled = false;
     }
   });
+
 
   const LOBBYREF = ref(FB_GAMEDB, "GTN/lobbies/" + lobbyID);
   onValue(LOBBYREF, (snapshot) => {
@@ -227,18 +232,14 @@ function lobbyBtn(lobbyDiv, lobbyID) {
     if (LOBBY.player2) {
       joinBtn.remove();
     }
-
     if (LOBBY.player2 === currentUser.uid && !lobbyDiv.querySelector(".disconBtn")) {
       // Create the Disconnect button
       const disconBtn = document.createElement("button");
       disconBtn.innerText = "Leave Lobby";
       disconBtn.className = "disconBtn";
       lobbyDiv.appendChild(disconBtn);
-      console.log("User is in the lobby, showing disconnect button.");
-
       // Event listener for the Disconnect button
       disconBtn.addEventListener("click", () => {
-        console.log("Attempting to leave lobby:", lobbyID);
         lobbyDisconnect(lobbyID);
       });
     }
@@ -249,16 +250,19 @@ function lobbyBtn(lobbyDiv, lobbyID) {
 
 
 
-/*******************************************************/
+/**************************************************************/
 // ownerCheck
-// Checks if the current user is the owner of the lobby and disables the join button if they are
-// Called by lobbyBtn() when a lobby button is created
-/*******************************************************/
-async function ownerCheck(Btn, lobbyID) {
+// Checks if the current user is the owner of the selected lobby.
+// Removes or disables the join button if the current user is the host.
+// Called by lobbyBtn() when a lobby join button is created.
+// Input: btn, lobbyID
+// Return: n/a
+/**************************************************************/
+async function ownerCheck(btn, lobbyID) {
   try {
     const LOBBBYREF = "GTN/lobbies/" + lobbyID + "/player1";
     const DATAREF = ref(FB_GAMEDB, LOBBBYREF);
-    const LOBBYDIV = Btn.parentElement;
+    const LOBBYDIV = btn.parentElement;
 
 
     const SNAPSHOT = await get(DATAREF);
@@ -273,10 +277,10 @@ async function ownerCheck(Btn, lobbyID) {
       console.log("User is the owner of this lobby. Indicating ownership.");
 
       LOBBYDIV.classList.add("owner");
-      Btn.remove();
+      btn.remove();
 
       const OWNERLABEL = document.createElement("div");
-      
+
       OWNERLABEL.innerText = "Your Lobby";
       OWNERLABEL.style.fontWeight = "bold";
       OWNERLABEL.style.color = "#68b6ff";
@@ -293,22 +297,24 @@ async function ownerCheck(Btn, lobbyID) {
 
 }
 
-/*******************************************************/
 
-/*******************************************************/
+/**************************************************************/
 // lobbyJoin
-// writes to firebase that the 2nd player has joined the lobby, allowing the game to start
-// Called by lobbyBtn() when a user clicks the "Join Lobby" button on a lobby box
-/*******************************************************/
-async function lobbyJoin(lobbyID, Btn) {
+// Adds the current user to the selected GTN lobby as player 2.
+// Updates the lobby data in Firebase so the game can start.
+// Called by lobbyBtn() when a user clicks the join button.
+// Input: lobbyID
+// Return: n/a
+/**************************************************************/
+async function lobbyJoin(lobbyID) {
   try {
     if (!currentUser) {
       console.warn("No user found, please log in.");
       window.location.href = "../registration/index.html";
       return false;
     }
-    const LOBBBYREF = "GTN/lobbies/" + lobbyID;
-    const DATAREF = ref(FB_GAMEDB, LOBBBYREF);
+    const LOBBYREF = "GTN/lobbies/" + lobbyID;
+    const DATAREF = ref(FB_GAMEDB, LOBBYREF);
     const SNAPSHOT = await get(DATAREF);
     if (!SNAPSHOT.exists()) {
       console.warn("Lobby does not exist:", lobbyID);
@@ -328,7 +334,6 @@ async function lobbyJoin(lobbyID, Btn) {
       active: false,
       player2Pfp: currentUser.photoURL || null,
     });
-    console.log("Joined lobby:", lobbyID);
     return true;
 
 
@@ -342,7 +347,7 @@ async function lobbyJoin(lobbyID, Btn) {
 // lobbyClear
 // Clears any lobbies from the same user, to prevent duplicates when refreshing page or creating multiple lobbies
 // Called by lobbyCreate() before creating a new lobby, and also on page load to clear any old lobbies
-// Input: n/a
+// Input: currentUser
 // Return: n/a
 /*******************************************************/
 function lobbyClear(currentUser) {
@@ -353,7 +358,6 @@ function lobbyClear(currentUser) {
   for (let i = LOBBYNUM.length - 1; i >= 0; i--) {
     if (LOBBYNUM[i].user === currentUser.uid) {
       LOBBYELM.removeChild(LOBBYNUM[i]);
-      console.log("%cRemoved lobby for user: " + currentUser.displayName, "color: red; font-weight: bold;");
       return;
     }
   }
@@ -380,15 +384,10 @@ function lobbyEmpty() {
 
     Object.entries(LOBBIES).forEach(([lobbyID, lobbyData]) => {
       if (!lobbyData.players || lobbyData.players === 0 || !lobbyData.player1) {
-        console.log("Deleting empty lobby:", lobbyID);
 
         const DELETEREF = ref(FB_GAMEDB, "GTN/lobbies/" + lobbyID);
-        remove(DELETEREF)
-          .then(() => {
-            console.log("%cLobby deleted: " + lobbyID, "color: red; font-weight: bold;");
-          })
-          .catch((e) => {
-            console.error("Error deleting lobby:", e);
+        remove(DELETEREF).catch((error) => {
+            console.error("Error deleting lobby:", error);
           });
       }
     });
@@ -400,11 +399,10 @@ function lobbyEmpty() {
 // Called by a listener, waiting for "leave lobby" button to be pressed
 // Updates and removes user data in firebase for the user that left
 // Updates player count in html
-// Input: n/a
+// Input: lobbyID
 // Return: n/a
 /*******************************************************/
 function lobbyDisconnect(lobbyID) {
-  console.log("Disconnecting from lobby:", lobbyID);
   const LOBBYREF = ref(FB_GAMEDB, "GTN/lobbies/" + lobbyID);
   get(LOBBYREF).then((snapshot) => {
     if (!snapshot.exists()) {
@@ -441,9 +439,8 @@ function lobbyDisconnect(lobbyID) {
 //lobbyDetect
 //Checks for changes in the lobbies in firebase, allowing for lobbies to be displayed on html for both players
 //Called on page load to start listening for lobby changes (setupGTN)
-//Lobby functions like lobbyAdd and lobbyJoin also trigger changes in firebase that this function listens for
-// watches for 2 players joining the same lobby, and changes the match status text to "Game starting..." with animation
-// Loads pfp for players only in the lobby, so that other users can't see pfps of lobbies they aren't in (basic privacy measure)
+//Input: n/a
+//Return: n/a
 /*******************************************************/
 
 function lobbyDetect() {
@@ -463,8 +460,9 @@ function lobbyDetect() {
 //lobbyGeneration
 //Clears the lobby container and generates lobby elements for player 2 from firebase
 //Called by lobbyDetect whenever firebase detects a change in lobby data
-//Uses lobbyAdd to create each lobby
 //Ensures the lobby list is always up to date for all users viewing the page
+//Input: LOBBIES
+//Return: n/a
 /*******************************************************/
 function lobbyGeneration(LOBBIES) {
 
@@ -478,17 +476,16 @@ function lobbyGeneration(LOBBIES) {
 
   Object.entries(LOBBIES).forEach(([lobbyID, lobbyData]) => {
     lobbyAdd(lobbyID, lobbyData);
-    console.log("Lobby generated:", lobbyID);
   });
 }
 
 /*******************************************************/
 //lobbyStatus
 //Updates the match status text on screen
-//Checks if the user is in a lobby
-//If 2 players are in, shows start button / wait message depending on if user is host or not
-//If not full, shows waiting for players with animation
+//If 2 players are in, shows start button / wait message depending on if user is host or not. If not full, shows waiting for players with animation
 //Called by lobbyDetect when firebase changes
+//Input: LOBBIES
+//Return: n/a
 /*******************************************************/
 
 function lobbyStatus(LOBBIES) {
@@ -529,6 +526,8 @@ function lobbyStatus(LOBBIES) {
 //Only shows pfps if you're in that lobby, otherwise uses default
 //Stops other players from seeing pfps they shouldn’t
 //Called by lobbyDetect when firebase changes
+//Input: LOBBIES
+//Return: n/a
 /*******************************************************/
 
 function lobbyPfpHandler(LOBBIES) {
@@ -561,9 +560,8 @@ function lobbyPfpHandler(LOBBIES) {
 /*******************************************************/
 // lobbyStartGameCheck
 // Checks all lobbies for a started game
-// Verifies if the current user is in the lobby
 // Redirects the user to the GTN game page if true
-// Called by lobbyDetect when firebase changes, due to .gamestarted being updated
+// Called by lobbyDetect when firebase changes, due to gamestarted being updated
 // Deletes lobby that was used to send players to game page
 /*******************************************************/
 function lobbyStartGameCheck(LOBBIES) {
@@ -591,6 +589,7 @@ function lobbyStartGameCheck(LOBBIES) {
 // Transfers lobby data to the activeGames section of firebase, allowing the game page to access it
 // Called by lobbyStartGameCheck when a game is started, before redirecting to the game page
 //Input: lobbyID, lobbyData 
+//Return: n/a
 /*******************************************************/
 async function lobbyTransfer(lobbyID, lobbyData) {
   const TRANSFERREF = ref(FB_GAMEDB, "GTN/activeGames/" + lobbyID);
@@ -611,7 +610,6 @@ async function lobbyTransfer(lobbyID, lobbyData) {
     gameState: "Loading",
   });
 
-  console.log("Lobby transferred to activeGames:", lobbyID);
 }
 
 /*******************************************************/
@@ -630,7 +628,3 @@ async function sendToGame(lobbyID) {
 
 /*******************************************************/
 //TO DO
-// Add a home button with timeout to prevent accidental clicks
-// NAMING CONVENTIONS - module comments - function comments - variable names
-// ADD MODULE / JS FILE BIG COMMENTS
-// REFINE FUNCTIONS

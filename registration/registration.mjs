@@ -205,10 +205,3 @@ const RECORDPATH = "userInfo/" + currentUser.uid;
 /****************************************************/
 //END
 /****************************************************/
-//Registration TO DO List:
-// - Add error handling for writeUserInfo (e.g. empty fields, non-numeric age, etc.) 
-// - Add comments to functions 
-// - Add function to be called at bottom of loginhandler to check if user has existing data, 
-// and if so, redirect to choosegame.html without overwriting data. 
-
-// add form  https://docs.google.com/forms/d/e/1FAIpQLSeE0SHhufoeBEotN9emljoAf3mjBMWic2ADOQ0ci-ee7MXEQA/viewform?usp=publish-editor

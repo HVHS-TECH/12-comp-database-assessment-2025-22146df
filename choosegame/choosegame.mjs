@@ -97,7 +97,7 @@ function GTNpageBtn() {
       window.location.href = "../gtn/GTNpage.html";
     } else if (!user) {
       alert("No user found, taking you back to login page");
-      window.location.href = "../registration/index.html";
+      window.location.href = "../index.html";
     }else {
       console.error("Unexpected error state in GTNpageBtn");
     }
